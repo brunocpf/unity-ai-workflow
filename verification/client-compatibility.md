@@ -4,7 +4,7 @@ Installer release: 0.1.0. This record distinguishes file/layout checks from actu
 
 | Check | Result |
 |---|---|
-| Standard-library installer regression suite | 20 cases passed locally on macOS; CI covers Linux/macOS/Windows |
+| Standard-library installer regression suite | 21 cases passed locally on macOS; CI covers Linux/macOS/Windows |
 | Codex project skill discovery | Pass: all six enabled project skills via app-server skills/list (0.158.0-alpha.2.1) |
 | Claude Code project skill discovery | Pass: all six project commands in stream-json initialization (2.1.198) |
 | Model invocation and workflow behavior | Not tested by the installer suite |

@@ -23,6 +23,14 @@ class InstallError(Exception):
 
 
 def digest(data):
+    # Git/editor line-ending conversion must not look like a policy edit.
+    # Keep binary content byte-exact; normalize only UTF-8 text without NULs.
+    try:
+        data.decode('utf-8')
+        if b'\0' not in data:
+            data = data.replace(b'\r\n', b'\n')
+    except UnicodeDecodeError:
+        pass
     return hashlib.sha256(data).hexdigest()
 
 
@@ -193,7 +201,10 @@ def install(source, root, command, agent=None, dry_run=False):
             if inspected is None and relative in previous and wanted is not None:
                 conflicts.append(relative)
                 continue
-            output = merge_block(current, wanted) if category == 'blocks' else wanted
+            if inspected is not None and wanted is not None and digest(inspected) == digest(wanted):
+                output = current
+            else:
+                output = merge_block(current, wanted) if category == 'blocks' else wanted
             if current != output:
                 changes[relative] = output
     if conflicts:

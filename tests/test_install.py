@@ -85,6 +85,18 @@ class InstallationTests(unittest.TestCase):
             self.run_install()
         self.assertEqual(before, self.snapshot())
 
+    def test_git_crlf_checkout_is_not_local_drift(self):
+        self.run_install()
+        for p in self.target.rglob('*'):
+            if p.is_file():
+                data = p.read_bytes()
+                p.write_bytes(data.replace(b'\r\n', b'\n').replace(b'\n', b'\r\n'))
+        before = self.snapshot()
+        installer.verify(self.target)
+        self.assertEqual(self.run_install('update')['changes'], {})
+        self.assertEqual(before, self.snapshot())
+        self.assertNotEqual(installer.digest(b'\0\r\n'), installer.digest(b'\0\n'))
+
     def test_local_modification_prevents_all_update_writes(self):
         self.run_install()
         (self.target / 'docs/standards/references/adoption.md').write_text('Local changes')

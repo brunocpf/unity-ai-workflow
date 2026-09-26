@@ -38,7 +38,7 @@ Claude's `@` imports make shared rules explicit even when automatic AGENTS.md lo
 
 ## Verify discovery separately
 
-`check` verifies installed hashes, expected paths and core dependency presence. It does not execute a model, test Unity, or prove skill invocation. Restart the client if newly installed skills do not appear.
+`check` verifies installed hashes, expected paths and core dependency presence. UTF-8 text hashes normalize CRLF/LF for cross-platform Git checkouts; binary hashes remain byte-exact. Unchanged content retains its existing line endings. It does not execute a model, test Unity, or prove skill invocation. Restart the client if newly installed skills do not appear.
 
 - **Codex:** confirm all six `unity-*` skills in the skill picker (or app-server `skills/list` for this workspace), then invoke `$unity-project-bootstrap` with a read-only request to explain the two milestones.
 - **Claude Code:** confirm all six `/unity-*` commands, use `/context` to inspect the instruction imports, then invoke `/unity-project-bootstrap` with the same read-only request.
