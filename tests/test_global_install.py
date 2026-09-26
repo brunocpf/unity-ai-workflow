@@ -45,7 +45,7 @@ class GlobalTests(unittest.TestCase):
         cache = Path(result['kit_root'])
         for client, folder in global_install.LOCATIONS.items():
             for name in global_install.NAMES:
-                text = (self.home / folder / name / 'SKILL.md').read_text()
+                text = (self.home / folder / name / 'SKILL.md').read_text(encoding='utf-8')
                 self.assertIn(cache.as_posix(), text)
                 self.assertNotIn('{{', text)
         self.assertEqual(0, self.run_install()['changed_files'])
@@ -69,7 +69,7 @@ class GlobalTests(unittest.TestCase):
         path.write_text('my skill')
         with self.assertRaises(core.InstallError):
             self.run_install()
-        self.assertEqual('my skill', path.read_text())
+        self.assertEqual('my skill', path.read_text(encoding='utf-8'))
         self.assertFalse((self.home / global_install.BASE).exists())
 
     def test_modified_adapter_or_cache_blocks_update(self):
@@ -87,7 +87,7 @@ class GlobalTests(unittest.TestCase):
         core.install(self.source, game, 'install')
         manifest = (game / core.STATE).read_bytes()
         p = self.source / 'README.md'
-        p.write_text(p.read_text() + '\nA reviewed update.\n')
+        p.write_text(p.read_text(encoding='utf-8') + '\nA reviewed update.\n', encoding='utf-8')
         new = self.run_install()
         self.assertNotEqual(old['kit_root'], new['kit_root'])
         self.assertTrue(Path(old['kit_root']).exists())
@@ -125,7 +125,7 @@ class GlobalTests(unittest.TestCase):
         game = self.base / 'game'
         core.install(self.source, game, 'install')
         owned = game / 'docs/standards/references/adoption.md'
-        owned.write_text(owned.read_text() + '\nLocal exception.\n')
+        owned.write_text(owned.read_text(encoding='utf-8') + '\nLocal exception.\n', encoding='utf-8')
         (self.source / 'references/new-policy.md').write_text('New policy')
         (self.source / 'references/vfx.md').unlink()
         before = {str(p): p.read_bytes() for p in game.rglob('*') if p.is_file()}
