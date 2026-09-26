@@ -12,6 +12,21 @@ python3 install.py check --target /path/to/game
 
 Use `--agent codex`, `--agent claude` or `--agent both`. Both is the initial default. Paths with spaces must be quoted. Commit installed files with the game so other sessions and contributors inherit the same version.
 
+## Global entrypoints
+
+Run `python3 install.py install-global --agent both` from a reviewed kit checkout, then `python3 install.py check-global`. `--dry-run` previews changes. `--home /temporary/home` supports isolated tests; normally omit it.
+
+| User destination | Content |
+|---|---|
+| `~/.agents/skills/unity-workflow-{start,update}/` | Codex global skills |
+| `~/.claude/skills/unity-workflow-{start,update}/` | Claude Code global skills |
+| `~/.local/share/unity-ai-workflow/kits/<version>-<hash>/` | Complete pinned kit snapshot |
+| `~/.local/share/unity-ai-workflow/global.json` | Global ownership and integrity manifest |
+
+These two entrypoints have different names from the six project skills. Restart/open a session and invoke `unity-workflow-start` in a new workspace, or `unity-workflow-update` in an adopted game. The start skill installs local rules first; continued development uses those local rules. Neither global installation nor an update starts Unity or generates assets.
+
+To update the global kit, fetch a reviewed upstream commit into a separate checkout and rerun `install-global` there. Its content hash selects a new cache; old caches remain, existing projects stay pinned. `check-global` checks file integrity, not upstream freshness or client discovery. Do not edit caches; global local edits/collisions block updates. Review the candidate before running its installer. Network access is the agent's explicit update step, not an installer side effect.
+
 ## What is installed
 
 | Destination in the game | Purpose |
@@ -51,10 +66,13 @@ See [client evidence](verification/client-compatibility.md) for what was actuall
 Choose a reviewed kit tag or commit in a separate kit checkout; updating the checkout does not update any game automatically. Version is in kit.json; the installed payload hash identifies exact content, including changes made before a release. Source revision is provenance, not a promise that the source checkout was clean.
 
 ```sh
+python3 install.py assess --target /path/to/game
 python3 install.py update --target /path/to/game --dry-run
 python3 install.py update --target /path/to/game
 python3 install.py check --target /path/to/game
 ```
+
+Follow the [applicability review](references/workflow-updates.md) before applying: inspect changed requirements and project code/pins, record apply/defer/not-applicable/migration decisions, then validate affected boundaries. `assess` is read-only; hashes cannot establish semantic compatibility.
 
 Updates retain the existing clients; `--agent both` adds the other client. They do not uninstall adapters. Repeating install/update with identical inputs is a no-op. Review the game's diff before committing the upgrade.
 

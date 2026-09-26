@@ -2,34 +2,42 @@
 
 Opinionated professional architecture for long-lived Unity projects: modular boundaries, MVVM, scoped composition and enforceable quality gates, with source examples and task skills. **A reusable standards/source kit, not a certified project template.** Pocket Arena supplies one evaluated macOS implementation; see the [field evaluation](REVIEW.md#pocket-arena-field-evaluation--18-september-2026) for evidence and limits. Current evaluation target: **Unity 6000.7.0b2 / CLI 1.0.0-beta.10**. See the [b2 upgrade record](references/upgrades/unity-6000.7.0b2.md) for release changes, fresh API/pure checks and pending Editor/player acceptance; compiler/package setup is checked during bootstrap; runtime and platform compatibility require slice acceptance.
 
-## Install into a project
+## Install globally (recommended)
 
-Requires Python 3.10+. Clone the kit separately from your game workspace:
+Requires Python 3.10+. Clone separately from game workspaces, then install the two global entrypoints for Codex and Claude Code:
 
 ```sh
 git clone https://github.com/brunocpf/unity-ai-workflow.git
 cd unity-ai-workflow
-python3 install.py install --target /path/to/game --agent both
-python3 install.py check --target /path/to/game
+python3 install.py install-global --agent both
+python3 install.py check-global
 ```
 
-Choose `--agent codex`, `--agent claude` or `--agent both`. Use `--dry-run` to preview installation. This installs all six skills, shared standards/examples and instruction routing; it **does not create a Unity project or install its dependencies**. Existing project instructions are preserved. Commit the installed files with the game.
-
-For updates from a reviewed kit version, run `python3 install.py update --target /path/to/game --dry-run`, review the plan, then rerun without `--dry-run`. Edited managed files cause a conflict rather than being overwritten. [Installation, discovery and update details](INSTALL.md).
+Choose `codex`, `claude` or `both`. Restart/open a new client session after installation. A complete versioned copy lives in `~/.local/share/unity-ai-workflow/kits/`; the original checkout is no longer needed to start projects. Existing games keep their project-local versions.
 
 ## Start a new project
 
-Open the destination folder in a new session and say:
+Open an empty destination folder in a new session and say:
 
-> Use the Unity workflow kit at `<absolute-kit-path>/README.md` to bootstrap the foundation for [game concept, intended scope and constraints].
+> Use unity-workflow-start to bootstrap the foundation for [game concept, intended scope and constraints].
 
 Bootstrap alone ends at **Foundation ready**. To request both milestones, add: “Then implement and validate the first playable slice.” **First slice accepted** is a separate status; see [milestone criteria](references/adoption.md#milestones-and-request-scope).
 
 That is enough workflow input. The agent must follow the [bootstrap skill](skills/unity-project-bootstrap/SKILL.md), adopt the kit locally, and apply its architecture, dependency, asset and acceptance defaults without asking the user to repeat them. A request to try/test the workflow selects its evaluation profile. Product details and explicit overrides belong in the brief; technical defaults belong in the kit. The agent [asks about unresolved intent](references/clarification.md), including target platforms, supported languages and unclear mechanics, while continuing independent work; you do not need to pre-answer an architecture questionnaire.
 
-After installation, project-root AGENTS.md and the selected client adapter route future sessions to the local standards and task skills. You can simply ask for foundation setup or the first slice without supplying the kit path. The originating kit path is no longer required for ordinary work. There is no global installation requirement; a downloaded kit does not automatically apply to an unrelated project.
+After installation, project-root AGENTS.md and the selected client adapter route future sessions to the local standards and task skills. You can simply ask for foundation setup or the first slice without supplying the kit path. The originating kit path is no longer required for ordinary work. Global entrypoints are optional; downloading the kit alone does not install them.
 
 **Continuous development is the default:** bootstrap once, then evolve the same project across tasks and sessions. Prompts can simply request a feature, fix, balance change or visual refinement; the adopted rules supply the architecture. Use [WORKFLOW.md](WORKFLOW.md) and read only the references needed for the current task.
+
+## Update with project review
+
+In an adopted game, say:
+
+> Use unity-workflow-update to check upstream for kit updates, evaluate their applicability to this project, and apply compatible workflow changes. Report deferred migrations. Also update my global kit.
+
+For assessment only, say “review” instead of “apply.” The agent reviews changed requirements against the project's implementation, version pins and decisions. The installer reports file differences and protects local edits; semantic applicability requires that review. Updating global entrypoints never automatically updates games.
+
+For project-only installation without global entrypoints, run `python3 install.py install --target /path/to/game --agent both`, then `check --target /path/to/game`. This installs six task skills and shared rules; it does not create Unity content. See [installation and update details](INSTALL.md).
 
 | Task | Entry |
 |---|---|

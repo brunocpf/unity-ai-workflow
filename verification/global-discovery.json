@@ -1,0 +1,37 @@
+{
+  "kit_version": "0.2.0",
+  "date": "2026-09-26",
+  "platform": "macOS arm64",
+  "workspace": "empty temporary workspace outside project installations",
+  "model_execution": false,
+  "codex": {
+    "version": "codex-cli 0.158.0-alpha.2.1",
+    "method": "app-server skills/list with isolated CODEX_HOME and actual user .agents/skills",
+    "skills": [
+      {
+        "name": "unity-workflow-start",
+        "enabled": true,
+        "scope": "user"
+      },
+      {
+        "name": "unity-workflow-update",
+        "enabled": true,
+        "scope": "user"
+      }
+    ]
+  },
+  "claude": {
+    "version": "2.1.198 (Claude Code)",
+    "method": "stream-json initialize with actual user skills; hooks disabled, MCP disabled, no model turn",
+    "skills": [
+      {
+        "name": "unity-workflow-start",
+        "user_scope": true
+      },
+      {
+        "name": "unity-workflow-update",
+        "user_scope": true
+      }
+    ]
+  }
+}

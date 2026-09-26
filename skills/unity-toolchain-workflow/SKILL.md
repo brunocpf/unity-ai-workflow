@@ -1,6 +1,6 @@
 ---
 name: unity-toolchain-workflow
-description: Choose or upgrade Unity editors, packages, compiler/analyzer configuration and library defaults for this workflow.
+description: Assess/update the project workflow kit, or choose/upgrade Unity editors, packages, compiler/analyzer configuration and library defaults for this workflow.
 ---
 
 Resolve references under `docs/standards/references/` in an adopted project, or `references/` at the supplied kit root. Read only the files listed for the current operation. Follow applicable project AGENTS.md and the feature/asset contract. Apply `clarification.md` when intent or consequential constraints are unresolved; inspect/recommend before asking, preserve approved defaults, and continue independent work.
@@ -12,3 +12,5 @@ Inspect native version authorities and installed CLI help. Resolve a pinned cand
 Review incremental release notes, known issues and archive/content compatibility; load the matching note under `references/upgrades/` (or `docs/standards/references/upgrades/` after adoption). Keep historical evidence labeled by its original version and record checks not rerun. Record resolved versions, compatibility results and migration notes. Upgrade an active project's files only within scope; an installed editor upgrade is not a project migration.
 
 Compiler/analyzer or IDE changes also follow `ide.md` and `code-organization.md`: synchronize the three compiler contexts, regenerate and repeat capability/rejection probes.
+
+For workflow-kit updates, follow `workflow-updates.md` instead of treating the operation as an engine upgrade. Compare the candidate with the installed manifest and project implementation; record applicability and deferred migrations before applying.

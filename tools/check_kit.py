@@ -60,8 +60,8 @@ for folder, dirs, names in os.walk(root):
 
 if (root / 'kit.json').exists():
     metadata = json.loads((root / 'kit.json').read_text(encoding='utf-8'))
-    for name in metadata['skills']:
-        skill = root / 'skills' / name / 'SKILL.md'
+    for folder, name in [('skills', n) for n in metadata['skills']] + [('global', n) for n in metadata.get('global_skills', [])]:
+        skill = root / folder / name / 'SKILL.md'
         text = skill.read_text(encoding='utf-8')
         front = text.split('---', 2)
         if len(front) != 3 or not re.search(r'^name: ' + re.escape(name) + r'$', front[1], re.M) or not re.search(r'^description: .+', front[1], re.M):

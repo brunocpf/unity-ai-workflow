@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install project-local workflow instructions; never creates or runs a Unity project."""
+"""Install global entrypoints or project-local workflow instructions; never creates or runs Unity."""
 import argparse
 import hashlib
 import json
@@ -231,12 +231,17 @@ def install(source, root, command, agent=None, dry_run=False):
     result = {'operation': command, 'dry_run': dry_run, 'version': state['version'], 'agents': agents, 'changes': {p: 'remove' if d is None else 'write' for p, d in changes.items()}}
     if dry_run or not changes:
         return result
-    lock = safe_path(root, '.unity-workflow/install.lock')
+    apply_changes(root, changes, snapshots, '.unity-workflow/install.lock')
+    return result
+
+
+def apply_changes(root, changes, snapshots, lock_relative):
+    lock = safe_path(root, lock_relative)
     lock.parent.mkdir(parents=True, exist_ok=True)
     try:
         fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
     except FileExistsError:
-        raise InstallError('Another installation is running (or a stale .unity-workflow/install.lock exists)') from None
+        raise InstallError(f'Another installation is running (or a stale {lock_relative} exists)') from None
     applied = []
     try:
         os.close(fd)
@@ -261,19 +266,56 @@ def install(source, root, command, agent=None, dry_run=False):
             raise
     finally:
         lock.unlink()
-    return result
+
+
+def assess(source, root):
+    """Report candidate differences without claiming semantic applicability or writing files."""
+    old = read_state(root)
+    if old is None:
+        raise InstallError('No project installation manifest to assess')
+    metadata, files, blocks = payload(source, old['agents'])
+    changes = []
+    for category, desired in (('files', files), ('blocks', blocks)):
+        for path in sorted(set(old[category]) | set(desired)):
+            current = read(root, path)
+            if category == 'blocks':
+                current = block(current)
+            actual = digest(current) if current is not None else None
+            incoming = digest(desired[path]) if path in desired else None
+            previous = old[category].get(path)
+            if previous != incoming or actual != previous:
+                changes.append({'path': path, 'installed_hash': previous, 'current_hash': actual,
+                                'candidate_hash': incoming, 'local_drift': actual != previous,
+                                'candidate_change': 'remove' if incoming is None else 'add' if previous is None else 'unchanged' if incoming == previous else 'modify'})
+    return {'operation': 'assess', 'installed_version': old['version'], 'candidate_version': metadata['version'],
+            'changes': changes, 'writes': 0,
+            'applicability': 'Unreviewed. Inspect changed source, project contracts, Unity/package pins and evidence before deciding. This report does not establish runtime compatibility.'}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=['install', 'update', 'check'])
-    parser.add_argument('--target', type=Path, required=True, help='Game workspace (not the kit checkout)')
+    parser.add_argument('command', choices=['install', 'update', 'assess', 'check', 'install-global', 'check-global'])
+    parser.add_argument('--target', type=Path, help='Game workspace (not the kit checkout)')
+    parser.add_argument('--home', type=Path, help='Global install home override (for isolated tests)')
     parser.add_argument('--agent', choices=['codex', 'claude', 'both'], help='Default: both on install, existing clients on update; selections only add clients')
     parser.add_argument('--dry-run', action='store_true', help='Show the plan without writing files')
     args = parser.parse_args()
     try:
+        if args.command in ('install-global', 'check-global'):
+            if args.target or (args.command == 'check-global' and (args.agent or args.dry_run)):
+                parser.error('Global commands do not accept --target; check-global accepts only --home')
+            import global_install
+            result = global_install.run(SOURCE, (args.home or Path.home()).expanduser().resolve(), args.command, args.agent, args.dry_run, sys.modules[__name__])
+            print(json.dumps(result, indent=2))
+            return 0
+        if args.target is None or args.home:
+            parser.error('Project commands require --target and do not accept --home')
         root = args.target.expanduser().resolve()
-        if args.command == 'check':
+        if args.command == 'assess':
+            if args.agent or args.dry_run:
+                parser.error('assess accepts only --target and never writes files')
+            result = assess(SOURCE, root)
+        elif args.command == 'check':
             if args.agent or args.dry_run:
                 parser.error('check does not accept --agent or --dry-run')
             result = verify(root)

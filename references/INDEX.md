@@ -27,6 +27,7 @@ Do not read this entire directory. References below are authoritative by subject
 | Textures / sprites / pixel art | [Asset contract](assets.md), [2D pipeline](assets-2d.md) | [Validation](validation.md) |
 | CI / builds | [CI](ci.md) | [Toolchain](toolchain.md), [validation](validation.md) |
 | Tests / visual review | [Validation](validation.md) | [Scenario clocks / fresh captures](test-scenarios.md); [lifecycle](lifecycle.md) for reload/resource issues |
+| Workflow kit update | [Applicability and updates](workflow-updates.md) | Project contracts, ADRs and native version pins |
 | Package decision | [Dependencies](dependencies.md) | [Optional libraries](dependencies-optional.md), [profiles](profiles.md) |
 | Shared helpers / optimization | [Utilities](utilities.md) | [Lifecycle](lifecycle.md), affected feature reference |
 
