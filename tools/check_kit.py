@@ -24,7 +24,7 @@ def headings(path):
 
 
 for folder, dirs, names in os.walk(root):
-    dirs[:] = [d for d in dirs if d not in {'.git', 'bin', 'obj', '__pycache__', '.venv'}]
+    dirs[:] = [d for d in dirs if d not in {'.git', 'bin', 'obj', '__pycache__', '.venv', 'node_modules'}]
     for name in names:
         path = Path(folder) / name
         try:

@@ -35,7 +35,7 @@ The user supplies a game brief and this kit's entrypoint, not a restatement of a
 
 ## Continuous development
 
-Bootstrap once; evolve the same project through features, fixes, balancing, content and polish. A brief can describe a long-term game without specifying every future detail. Record the product scope and current milestone in docs/project.md; keep feature acceptance in docs/features/.
+Bootstrap once; evolve the same project through features, fixes, balancing, content and polish. A brief can describe a long-term game without specifying every future detail. Record the product scope and current milestone in docs/project.md; keep behavioral specs and acceptance in openspec/specs and openspec/changes; existing docs/features entries link there after reconciliation. Apply [spec-driven development](spec-driven-development.md) to each increment; foundation establishes its documentation/traceability gate while gameplay requirements remain deferred to the authorized slice.
 
 - On resumption, read root rules, docs/index.md, the relevant feature and latest applicable handoff; inspect actual source, authored assets and working-tree changes before editing. Reconcile stale notes with implementation and evidence. Prior chat history is optional context, not required project memory.
 - Complete the authorized increment through implementation, affected tests and visual refinement. Intermediate slices are checkpoints, not permission to leave requested scope unfinished; a future backlog is not authorization to implement unrelated features.
@@ -50,7 +50,7 @@ Bootstrap once; evolve the same project through features, fixes, balancing, cont
 3. Establish the [Editor authoring defaults](authoring.md), authoring map and scoped generation ownership. Save the startup/smoke assets needed for foundation checks; add gameplay scenes, prefabs and tuning definitions with their slice consumers. Ordinary setup/build must preserve authored edits.
 4. Keep the installer-managed instruction routing intact; do not replace root AGENTS.md/CLAUDE.md with starter files. Merge starter .editorconfig, .gitignore and .gitattributes into the project root; copy Directory.Build.props to tooling/dotnet/ and set the language profile and SDK pin. Follow code-quality.md and developer-tooling.md for nullable enforcement, analyzer installation and local hook setup. Place the Core asmdef beside Core sources and merge the selected csc.rsp beside every owned asmdef; retain explicit analyzer configuration and prove its effect in the Editor compiler; never assume inheritance from Assets/Game. Adopt ide.md and code-organization.md: track VS Code configuration, install the owned-project generation hook, keep the Unity and pure SDK solutions separate, and install the shared full-coverage quality entrypoint. Import chosen UI fixtures through Unity so it creates metadata.
 5. Verify all six skills in the selected client: .agents/skills for Codex, .claude/skills for Claude Code, both when selected. Skills read docs/standards/references; the shared rules are docs/standards/PROJECT-RULES.md. File-integrity checks and live client discovery are separate. No global installation is required.
-6. Create project-specific docs below. Implement scripts and put real commands in the project README; starter prose is not executable automation.
+6. Create project-specific docs below, including spec/active-change navigation. Activate the pinned profile through [OpenSpec setup](openspec-setup.md) and qualify its evidence gate; standards installation alone does not activate it. Implement scripts and put real commands in the project README; starter prose is not executable automation.
 7. Run the Foundation ready checks above and record the milestone status. Stop here for setup-only scope.
 8. When authorized, implement and validate milestone 2 from the existing foundation. Record First slice accepted only after its gates pass; qualify a template release separately against its supported target matrix.
 
@@ -69,7 +69,8 @@ Bootstrap once; evolve the same project through features, fixes, balancing, cont
 | docs/localization.md | Source/supported locales, table/provider ownership, selection/fallback, font/layout policy and translation/visual evidence |
 | docs/performance-budgets.md | Device/scenario budgets and measured results |
 | docs/decisions/ | Exceptions and material decisions |
-| docs/features/, docs/assets/ | Behavior contracts and asset briefs |
+| openspec/specs/, openspec/changes/ | Canonical behavior, proposed deltas, tasks and acceptance evidence |
+| docs/features/, docs/assets/ | Feature navigation/history and asset briefs |
 | docs/handoffs/ | Resumable state, evidence and next action |
 
 Use [document forms](../starter/DOCUMENT-TEMPLATES.md) as needed. Avoid transcripts and duplicated policy. Mark proposed/implemented/verified separately. Promote required captures/reports from ignored artifacts to retained CI or a versioned evidence store and link durable locations/hashes.

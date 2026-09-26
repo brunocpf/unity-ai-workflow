@@ -16,3 +16,5 @@ For visual acceptance/evaluations, apply `ui-art-direction.md` to the actual scr
 Runtime success does not establish authoring usability. For authored content or generation changes run the authoring-edit and preservation checks in validation.md.
 
 For a first template/CI implementation prove required gates reject deliberate faults, then pass from a clean checkout. For an ordinary change select affected boundaries rather than rebuilding every platform.
+
+Apply `spec-driven-development.md` to changed behavior and acceptance: read the affected spec/active change, preserve requirement IDs and link evidence. Scale records to the change; do not add an approval phase to already authorized work.

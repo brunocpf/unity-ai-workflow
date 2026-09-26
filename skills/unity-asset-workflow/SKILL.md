@@ -12,3 +12,5 @@ For UI or a new game's visual direction, follow `ui-art-direction.md`. Choose ge
 Use available provider skills/tools within the task's generation budget. Preserve job identity and accepted source/export lineage. For recurring cleanup/export operations use project-owned Blender/import presets rather than repeated ad hoc edits.
 
 Promote a candidate only after technical import checks and in-game inspection from `validation.md`. Video reference does not itself supply a skeleton or animation clip. Update the asset registry and evidence, not a new generic art manual.
+
+Apply `spec-driven-development.md` to changed behavior and acceptance: read the affected spec/active change, preserve requirement IDs and link evidence. Scale records to the change; do not add an approval phase to already authorized work.

@@ -15,7 +15,7 @@ STATE = '.unity-workflow/installation.json'
 BEGIN = b'<!-- unity-ai-workflow:begin -->'
 END = b'<!-- unity-ai-workflow:end -->'
 CLIENTS = {'codex': '.agents/skills', 'claude': '.claude/skills'}
-EXCLUDED = {'.git', 'bin', 'obj', '__pycache__', '.DS_Store'}
+EXCLUDED = {'.git', 'bin', 'obj', '__pycache__', '.DS_Store', 'node_modules'}
 
 
 class InstallError(Exception):

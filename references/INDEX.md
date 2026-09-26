@@ -6,6 +6,8 @@ Do not read this entire directory. References below are authoritative by subject
 
 | Task | Required reference | Conditional reference |
 |---|---|---|
+| OpenSpec setup / workflow migration | [Setup and upgrades](openspec-setup.md) | [Spec-driven development](spec-driven-development.md) |
+| Specify / plan / change / accept behavior | [Spec-driven development](spec-driven-development.md) | Affected feature spec, active change and [forms](../starter/DOCUMENT-TEMPLATES.md#feature-spec) |
 | Foundation / first slice | [Milestones and adoption](adoption.md#milestones-and-request-scope), [architecture](architecture.md), [repository](repository.md), [toolchain](toolchain.md) | [Dependencies](dependencies.md), selected [profile](profiles.md) |
 | Unclear requirements / user choices | [Clarification](clarification.md) | [Dependencies](dependencies.md) for framework tradeoffs |
 | Languages / translated UI / locale testing | [Localization](localization.md) | [Binding](ui-binding.md), [text effects](ui-text-effects.md) |

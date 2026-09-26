@@ -90,3 +90,9 @@ python3 tools/check_kit.py
 ```
 
 Installer regression tests run in disposable workspaces and exercise conflicts, preservation, update/removal, symlinks, dry runs and rollback. CI runs these checks on Linux, macOS and Windows. Client discovery is a separately recorded integration check; a filesystem test is not a client acceptance result.
+
+## OpenSpec process activation (0.3)
+
+Global/project workflow installation still only installs passive instructions. Requested foundation setup or an authorized existing-project workflow migration activates [OpenSpec](references/openspec-setup.md): Node 24.15.0, OpenSpec 1.13.2 with a locked npm graph, the unity-game schema, selected-client integrations and an evidence-mapping gate. Existing projects preserve ongoing work and migrate behavioral authority incrementally. CI must still run real game tests; the structural evidence gate cannot establish correctness or a user's playtest verdict.
+
+Maintainer CLI integration check (requires the pinned Node/npm and network for npm ci): `python3 tools/check_openspec_integration.py`. It uses disposable synthetic fixtures, not a Unity player or a model-generated feature.

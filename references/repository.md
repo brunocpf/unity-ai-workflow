@@ -32,10 +32,17 @@ Game/                                # Git + Unity project root
       examples/                      # On-demand source reference; not imported wholesale
     modules/                         # Public contracts, dependencies and ownership
     decisions/                       # Numbered architectural decisions
-    features/                        # Observable feature contracts
+    features/                        # Navigation/history; link canonical OpenSpec behavior
     assets/                          # Briefs and provenance references
     handoffs/                        # Concise active task state
+  openspec/
+    config.yaml
+    schemas/unity-game/              # Versioned Unity lifecycle/templates
+    specs/<capability>/spec.md        # Accepted behavior; label unverified imported intent
+    changes/<change-id>/              # Proposal, deltas, design, tasks, verification.json
+    changes/archive/                 # Historical completed increments
   tooling/
+    specs/                           # Pinned OpenSpec/Node, launcher and evidence gate
     bootstrap/                       # Idempotent local setup/provision checks
     ci/                              # Same validation/build entrypoints as local
     hooks/                           # Staged verification, no implicit rewriting

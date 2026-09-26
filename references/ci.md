@@ -37,6 +37,10 @@ The beta.10 preview selected Ubuntu for StandaloneOSX, kept the source project's
 
 Cache Library by editor, target, packages and relevant settings; keep a periodic clean import. Build rendering tests on a graphics-capable runner, not no-graphics batch mode. License authentication is distinct from CLI/service-account authentication. Follow [validation](validation.md) for player/visual evidence and [toolchain](toolchain.md) for version policy.
 
+## Spec traceability
+
+Follow [spec-driven development](spec-driven-development.md#acceptance-and-ci): activate the shipped OpenSpec profile/evidence gate using [setup](openspec-setup.md), run spec validation and independent mapped executable checks, and retain explicit manual verdicts. A Markdown link check is not this gate. Verify rejection of missing mappings and failed mapped tests; scope pending evidence to in-progress work and never mark it accepted.
+
 ## Delivery governance
 
 Pin action revisions, runner images/tool versions where supported and the CLI/SDK/package inputs. Use immutable release manifests and retain player/content artifacts with matching hashes; generate a dependency/license inventory. Release jobs cover the supported target matrix, migration fixtures and representative budgets. Local setup never weakens CI checks. Hooks use the shared selected-file semantic/style entrypoint; see [developer tooling](developer-tooling.md). Use [engineering baseline](engineering-baseline.md) for protected branches, compatibility and rollback requirements.

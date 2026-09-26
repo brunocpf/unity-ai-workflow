@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "fingerprint": "",
+  "requirements": [
+    {
+      "id": "FEATURE-001",
+      "status": "pending",
+      "required_kinds": ["automated"],
+      "evidence": []
+    }
+  ]
+}

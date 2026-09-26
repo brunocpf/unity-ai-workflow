@@ -27,7 +27,7 @@ That is enough workflow input. The agent must follow the [bootstrap skill](skill
 
 After installation, project-root AGENTS.md and the selected client adapter route future sessions to the local standards and task skills. You can simply ask for foundation setup or the first slice without supplying the kit path. The originating kit path is no longer required for ordinary work. Global entrypoints are optional; downloading the kit alone does not install them.
 
-**Continuous development is the default:** bootstrap once, then evolve the same project across tasks and sessions. Prompts can simply request a feature, fix, balance change or visual refinement; the adopted rules supply the architecture. Use [WORKFLOW.md](WORKFLOW.md) and read only the references needed for the current task.
+**Spec-driven continuous development is the default:** bootstrap once, then evolve the same project across tasks and sessions. The agent uses pinned OpenSpec with a Unity schema to maintain [behavioral specs, scoped change plans and requirement-linked evidence](references/spec-driven-development.md), with lightweight records for small fixes. Prompts can simply request a feature, fix, balance change or visual refinement; the adopted rules supply the architecture. Use [WORKFLOW.md](WORKFLOW.md) and read only the references needed for the current task.
 
 ## Update with project review
 

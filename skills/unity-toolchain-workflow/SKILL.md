@@ -14,3 +14,5 @@ Review incremental release notes, known issues and archive/content compatibility
 Compiler/analyzer or IDE changes also follow `ide.md` and `code-organization.md`: synchronize the three compiler contexts, regenerate and repeat capability/rejection probes.
 
 For workflow-kit updates, follow `workflow-updates.md` instead of treating the operation as an engine upgrade. Compare the candidate with the installed manifest and project implementation; record applicability and deferred migrations before applying.
+
+Apply `spec-driven-development.md` to changed behavior and acceptance: read the affected spec/active change, preserve requirement IDs and link evidence. Scale records to the change; do not add an approval phase to already authorized work.

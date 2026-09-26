@@ -1,0 +1,127 @@
+{
+  "kit_version": "0.3.0",
+  "date": "2026-09-26",
+  "platform": "macOS arm64",
+  "workspace": "disposable Unity/OpenSpec integration workspace",
+  "model_execution": false,
+  "codex": {
+    "version": "codex-cli 0.158.0-alpha.2.1",
+    "method": "app-server skills/list with isolated CODEX_HOME in the project workspace",
+    "skills": [
+      {
+        "name": "openspec-apply-change",
+        "enabled": true,
+        "scope": "repo"
+      },
+      {
+        "name": "openspec-archive-change",
+        "enabled": true,
+        "scope": "repo"
+      },
+      {
+        "name": "openspec-explore",
+        "enabled": true,
+        "scope": "repo"
+      },
+      {
+        "name": "openspec-propose",
+        "enabled": true,
+        "scope": "repo"
+      },
+      {
+        "name": "openspec-sync-specs",
+        "enabled": true,
+        "scope": "repo"
+      },
+      {
+        "name": "openspec-update-change",
+        "enabled": true,
+        "scope": "repo"
+      },
+      {
+        "name": "unity-asset-workflow",
+        "enabled": true,
+        "scope": "repo"
+      },
+      {
+        "name": "unity-feature-workflow",
+        "enabled": true,
+        "scope": "repo"
+      },
+      {
+        "name": "unity-project-bootstrap",
+        "enabled": true,
+        "scope": "repo"
+      },
+      {
+        "name": "unity-toolchain-workflow",
+        "enabled": true,
+        "scope": "repo"
+      },
+      {
+        "name": "unity-ui-workflow",
+        "enabled": true,
+        "scope": "repo"
+      },
+      {
+        "name": "unity-validation-workflow",
+        "enabled": true,
+        "scope": "repo"
+      }
+    ]
+  },
+  "claude": {
+    "version": "2.1.198 (Claude Code)",
+    "method": "stream-json initialize with actual user skills; hooks disabled, MCP disabled, no model turn",
+    "skills": [
+      {
+        "name": "openspec-apply-change",
+        "user_scope": false
+      },
+      {
+        "name": "openspec-archive-change",
+        "user_scope": false
+      },
+      {
+        "name": "openspec-explore",
+        "user_scope": false
+      },
+      {
+        "name": "openspec-propose",
+        "user_scope": false
+      },
+      {
+        "name": "openspec-sync-specs",
+        "user_scope": false
+      },
+      {
+        "name": "openspec-update-change",
+        "user_scope": false
+      },
+      {
+        "name": "unity-asset-workflow",
+        "user_scope": false
+      },
+      {
+        "name": "unity-feature-workflow",
+        "user_scope": false
+      },
+      {
+        "name": "unity-project-bootstrap",
+        "user_scope": false
+      },
+      {
+        "name": "unity-toolchain-workflow",
+        "user_scope": false
+      },
+      {
+        "name": "unity-ui-workflow",
+        "user_scope": false
+      },
+      {
+        "name": "unity-validation-workflow",
+        "user_scope": false
+      }
+    ]
+  }
+}

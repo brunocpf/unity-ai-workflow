@@ -1,0 +1,68 @@
+name: unity-game
+version: 1
+description: Unity capability changes with scoped implementation and evidence-based acceptance
+artifacts:
+  - id: proposal
+    generates: proposal.md
+    description: Intent, authority, scope, affected capabilities and issue link
+    template: proposal.md
+    instruction: |
+      Inspect existing specs and project decisions before proposing a delta.
+      Record authorization and unresolved product decisions; preserve selected platforms/locales.
+      For bugfixes identify actual, expected and unchanged behavior; for experiments state the question and stop condition.
+      An existing issue owns delivery status; link it instead of generating a second backlog.
+    requires: []
+  - id: specs
+    generates: "specs/**/*.md"
+    description: Behavioral deltas with stable requirement IDs and observable scenarios
+    template: spec.md
+    instruction: |
+      Use OpenSpec ADDED/MODIFIED/REMOVED Requirements. Each title starts with a stable ID.
+      For MODIFIED copy the full existing block, including unaffected scenarios.
+      For REMOVED retain the ID and record Reason and Migration; verify the old behavior is gone.
+      Preserve titles/IDs; edit display wording separately only with an explicit migration.
+      Every added/modified requirement needs a #### Scenario with WHEN/THEN outcomes.
+      New capabilities need a Purpose of at least 50 characters. Specs contain behavior, not class designs.
+      Purely nonbehavioral work may set skip_specs: true in .openspec.yaml with rationale in the proposal.
+      Do not invent behavioral requirements to satisfy tooling.
+    requires: [proposal]
+  - id: design
+    generates: design.md
+    description: Minimal implementation approach and affected Unity boundaries
+    template: design.md
+    instruction: |
+      Link existing architecture, ADRs and visual/asset briefs. Keep this short when reusing established patterns.
+      Map requirements to state/lifetime owners, pure/Unity boundaries and editable scenes/prefabs/definitions.
+      Identify target, input/locale, lifecycle, persistence and visual/performance checks that apply.
+      Resolve consequential unknowns before dependent work; leave independent tasks runnable.
+    requires: [proposal, specs]
+  - id: tasks
+    generates: tasks.md
+    description: Dependency-ordered slices, each with its own checks and documentation
+    template: tasks.md
+    instruction: |
+      Use numbered checkbox tasks: - [ ] 1.1 Description and completion check.
+      Link requirement IDs and the owning issue. Keep tasks change-local implementation steps.
+      Each slice includes implementation, relevant tests and documentation; finish a representative visual result early.
+      Mark tasks complete from evidence. Pending playtest/user verdicts remain pending.
+    requires: [design, specs]
+  - id: verification
+    generates: verification.json
+    description: Requirement-to-evidence mapping checked by tooling/specs/check.py
+    template: verification.json
+    instruction: |
+      Follow references/spec-driven-development.md in the installed standards.
+      List every added/modified/removed requirement ID in requirements; unchanged IDs may add regression coverage.
+      For no-spec changes use CHANGE-001 to map the scoped checks instead.
+      Each row records applicable check kinds, status and evidence with path, SHA-256, kind and reviewer for manual evidence.
+      Begin with pending rows and an empty fingerprint. Do not invent passing results or user approval.
+      After actual validation obtain the fingerprint with tooling/specs/check.py fingerprint --change NAME.
+      Run its acceptance check before archive; file existence is not proof of a passed test.
+    requires: [tasks]
+apply:
+  requires: [tasks]
+  tracks: tasks.md
+  instruction: |
+    Read the active change, affected specs and project rules. Implement ready tasks within authorized scope.
+    Run actual checks; capture and inspect visual work. Reconcile discoveries and produce missing tasks.
+    Verification may remain pending during work. Acceptance requires the Unity evidence gate, not just completed artifacts.

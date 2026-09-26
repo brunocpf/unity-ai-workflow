@@ -20,22 +20,11 @@ Copy the relevant section into the game's docs. Empty fields are intentionally p
 - Foundation status, setup evidence and unresolved setup blockers:
 - First vertical slice: planned scope, separate acceptance status/evidence and deferred checks:
 
-## Feature brief
+## Feature spec
 
-- ID and status: proposed / implemented / verified
-- Player-visible behavior:
-- Invariants and error cases:
-- Unclear behavior/tradeoffs, user answers and remaining blocked decisions:
-- Owning module, public commands/queries and Core/Application entrypoints:
-- Unity adapters and lifecycle owner:
-- Pure ViewModel, binding adapter and UI states, input/focus behavior, loading/error/empty states:
-- Authored scenes/prefabs/definitions, where to edit and preview them:
-- Generator-owned outputs, preserved overrides and runtime-construction exceptions:
-- Required asset IDs:
-- Save/schema/network effects:
-- Acceptance scenarios, relevant target platforms:
-- Commands actually run, revision, result/report location:
-- Unverified behavior and next action:
+Use the executable templates in [OpenSpec setup](../references/openspec-setup.md) and the [spec-driven process](../references/spec-driven-development.md). Canonical behavior lives in openspec/specs; proposed deltas, design, tasks and verification live in openspec/changes. Do not copy a second feature-spec form into docs/features. Existing briefs become navigation or explicitly historical context after reconciliation.
+
+Keep stable requirement IDs, observable scenarios, linked project constraints and the active issue/change. The shipped verification.json template owns requirement/evidence mapping; pending outcomes remain pending until actual checks and required reviews finish.
 
 ## Visual design brief
 

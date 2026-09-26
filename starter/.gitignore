@@ -50,3 +50,6 @@ __pycache__/
 
 # Transient workflow installer lock; keep installation.json tracked.
 .unity-workflow/install.lock
+
+# Project-local OpenSpec tooling
+**/node_modules/

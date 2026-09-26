@@ -14,3 +14,5 @@ For structure/loading read `ui-construction.md`; for values/input read `ui-bindi
 Keep ViewModels pure; binding adapters are mechanical and no parallel Presenter layer is introduced. Apply the selected constructor-complete control pattern with UXML-owned USS. Use the project's existing implementation; if absent, adapt only the needed source from the examples linked in the construction/binding references against the pinned editor. Treat illustrative type names as design contracts, not available Unity APIs.
 
 Use `validation.md` UI cases and gallery/player evidence. Report visual quality against the target separately from technical passes; a capture without defects is not sufficient visual acceptance. Editing ordinary USS does not require rereading asset pipelines or redesigning the template resolver. Update compatibility evidence when adopting an experimental feature.
+
+Apply `spec-driven-development.md` to changed behavior and acceptance: read the affected spec/active change, preserve requirement IDs and link evidence. Scale records to the change; do not add an approval phase to already authorized work.

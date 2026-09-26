@@ -1,0 +1,23 @@
+schema: unity-game
+context: |
+  Apply AGENTS.md and docs/standards/PROJECT-RULES.md.
+  Read docs/index.md for current decisions, contracts and milestone scope.
+  Follow docs/standards/references/spec-driven-development.md.
+  Keep architecture/library defaults in the kit; do not duplicate them here.
+rules:
+  specs:
+    - Use stable IDs in requirement titles, e.g. MOVE-001 - Movement responds to input.
+    - Requirements describe behavior; implementation choices belong in design.
+    - Preserve every unaffected scenario in MODIFIED requirements.
+  tasks:
+    - Each slice includes its own tests, authoring checks and documentation.
+    - Link the delivery issue; do not create a duplicate backlog or close issues automatically.
+operations:
+  apply:
+    guidance:
+      - Continue authorized scope; clarify unresolved intent before dependent implementation.
+      - Follow the Unity kit's testing, visual iteration and authored-content preservation rules.
+  archive:
+    guidance:
+      - Require the Unity evidence gate in acceptance mode before archiving completed work.
+      - Archive is not user acceptance, issue closure, merge authorization or release approval.

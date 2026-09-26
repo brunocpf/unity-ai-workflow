@@ -80,3 +80,5 @@ Record whether performance came from a release or development player, real-time 
 A clean slice is initial evidence, not proof that large inventories, scenes, content bundles or concurrent requests meet budgets. Add representative load/scaling fixtures before accepting the corresponding production capability. Retain the supported target/backend matrix and upgrade regression set.
 
 UI performance acceptance includes [small view-state projections](ui-binding.md#snapshot-size-and-render-scope): verify unrelated model changes do not refresh another region, and measure before/after on representative screens.
+
+Acceptance is requirement-based: follow [spec traceability](spec-driven-development.md#acceptance-and-ci), including invalidating affected evidence after a behavioral change. Test success alone cannot close unmapped or manually unverified requirements.
