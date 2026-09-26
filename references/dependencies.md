@@ -16,6 +16,7 @@ For general-purpose projects, use **R3 + UniTask + LitMotion**, the Unity Input 
 | Menus, HUDs, UI documents | **UI Toolkit + pure R3 ViewModels + project element library** | Thin R3 binding adapters for VM state; native localization bindings for authored text/assets, optional native binding for other declarative screens/forms. No additional MVVM framework. |
 | Player-facing languages/text/assets | **Native Unity 6.7 Localization Runtime**; compatible localization package on older profiles | Baseline even for a single source language. Native UITK bindings, pure text ports, no Unity dependency in Presentation. See [localization](localization.md) for the version-gated provider/package choice. |
 | Runtime composition/scopes | **VContainer** (third party) | Default for application/session/module roots; use explicit lightweight owners for screens/rentals. Keep resolution inside the composition root. Core has no container attributes. |
+| Authored particle effects | **VFX Graph** (Unity package) | Preferred over Shuriken; qualify target/renderer support and document fallback exceptions. See [VFX setup and ownership](vfx.md). |
 | Tests | **Unity Test Framework + a pinned .NET test harness** | Select NUnit for the harness as well unless an established repository already uses another runner. Keep framework references in tests only. |
 
 Sources for capabilities: [UniTask](https://github.com/Cysharp/UniTask), [LitMotion](https://github.com/annulusgames/LitMotion), [Cinemachine 3](https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/index.html), [Input System](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.14/manual/index.html), [VContainer](https://vcontainer.hadashikick.jp/). R3 mechanics are in [reactive ownership](reactive.md); test gates are in [validation](validation.md).
@@ -26,12 +27,14 @@ R3 owns ongoing application/presentation signals; UniTask finite engine operatio
 
 LitMotion installation documentation lists Burst/Collections/Mathematics requirements. For Unity 6.6+ verify whether the selected editor supplies a built-in module rather than blindly adding an older package; validate the resolved combination. Check actual UITK binding support before copying uGUI samples. [LitMotion installation](https://github.com/annulusgames/LitMotion/blob/main/docs/articles/en/installation.md).
 
+For Unity 6.7, qualify UniTask's Editor assemblies (including its tracker) as well as runtime/player code before accepting a pin. Upstream [2.5.11](https://github.com/Cysharp/UniTask/releases/tag/2.5.11) includes a TreeView deprecation fix for Unity 6.2+; it is a candidate to test, not evidence of a verified 6.7 integration. Record the exact package/commit, failing API and corrected Editor/player results. Do not disable all Editor tooling or edit PackageCache as a permanent workaround; prefer a verified upstream release, or a versioned patch with an owner and removal condition.
+
 Read [optional libraries](dependencies-optional.md) only when the required capability is outside this stack.
 
 ## Presets
 
 - **First mechanics slice:** standard architecture/scopes, Core, Application, Presentation when UI exists, R3, UniTask, VContainer, Input System, localization for player-facing text and tests. Add LitMotion when motion is consumed. This is a delivery stage, not a reduced architecture.
-- **Default polished game:** above plus LitMotion, UITK component library, qualified content/localization providers; Cinemachine when camera behavior is required.
+- **Default polished game:** above plus LitMotion, UITK component library, qualified content/localization providers; Cinemachine when camera behavior is required and VFX Graph when particle effects are planned. Resolve its compatible package during foundation setup; prove the effects in the slice.
 - **3D character game:** default plus Cinemachine, Animator, Animation Rigging, AI Navigation as needed. Tripo/Blender pipeline supplies validated clips/meshes. Animancer requires a recorded controller-maintenance reason.
 - **Pixel-art game:** default plus Unity's appropriate 2D/pixel-perfect tools, PixelLab pipeline, sprite import/atlas rules. A camera package is optional for a static screen game.
 - **Narrative game:** default plus Yarn Spinner integrated with the existing localization authority, Timeline when cinematic sequences exist.

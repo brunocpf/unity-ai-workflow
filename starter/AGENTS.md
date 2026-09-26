@@ -2,7 +2,7 @@
 
 Apply these project rules and referenced defaults to ordinary game requests without requiring the user to repeat the architecture.
 
-Read docs/index.md and the current feature/asset brief. Reference policy lives in docs/standards/references/INDEX.md; load only the relevant subject. Approved ADRs record deviations. Real validation commands live in the project README.
+Read docs/index.md and the current feature/asset brief when they exist. If docs/index.md is absent, only the workflow may be installed: use adoption.md for a requested bootstrap, and do not claim foundation readiness or create the project merely because these instructions loaded. Reference policy lives in docs/standards/references/INDEX.md; load only the relevant subject. Approved ADRs record deviations. Real validation commands live in the project README.
 
 - Bootstrap alone targets Foundation ready; First slice accepted is separate. Follow adoption.md#milestones-and-request-scope for scope and evidence. Continue through both when authorized; setup-only requests stop after foundation checks.
 - Default to continuous development: resume existing project state, complete the requested increment, preserve authored work and update a concise handoff when work spans sessions. Follow adoption.md#continuous-development; do not repeat bootstrap for ordinary changes.

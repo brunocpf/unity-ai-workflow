@@ -2,6 +2,21 @@
 
 Opinionated professional architecture for long-lived Unity projects: modular boundaries, MVVM, scoped composition and enforceable quality gates, with source examples and task skills. **A reusable standards/source kit, not a certified project template.** Pocket Arena supplies one evaluated macOS implementation; see the [field evaluation](REVIEW.md#pocket-arena-field-evaluation--18-september-2026) for evidence and limits. Current evaluation target: **Unity 6000.7.0b2 / CLI 1.0.0-beta.10**. See the [b2 upgrade record](references/upgrades/unity-6000.7.0b2.md) for release changes, fresh API/pure checks and pending Editor/player acceptance; compiler/package setup is checked during bootstrap; runtime and platform compatibility require slice acceptance.
 
+## Install into a project
+
+Requires Python 3.10+. Clone the kit separately from your game workspace:
+
+```sh
+git clone https://github.com/brunocpf/unity-ai-workflow.git
+cd unity-ai-workflow
+python3 install.py install --target /path/to/game --agent both
+python3 install.py check --target /path/to/game
+```
+
+Choose `--agent codex`, `--agent claude` or `--agent both`. Use `--dry-run` to preview installation. This installs all six skills, shared standards/examples and instruction routing; it **does not create a Unity project or install its dependencies**. Existing project instructions are preserved. Commit the installed files with the game.
+
+For updates from a reviewed kit version, run `python3 install.py update --target /path/to/game --dry-run`, review the plan, then rerun without `--dry-run`. Edited managed files cause a conflict rather than being overwritten. [Installation, discovery and update details](INSTALL.md).
+
 ## Start a new project
 
 Open the destination folder in a new session and say:
@@ -12,7 +27,7 @@ Bootstrap alone ends at **Foundation ready**. To request both milestones, add: â
 
 That is enough workflow input. The agent must follow the [bootstrap skill](skills/unity-project-bootstrap/SKILL.md), adopt the kit locally, and apply its architecture, dependency, asset and acceptance defaults without asking the user to repeat them. A request to try/test the workflow selects its evaluation profile. Product details and explicit overrides belong in the brief; technical defaults belong in the kit. The agent [asks about unresolved intent](references/clarification.md), including target platforms, supported languages and unclear mechanics, while continuing independent work; you do not need to pre-answer an architecture questionnaire.
 
-After adoption, project-root AGENTS.md routes future sessions to the local standards and task skills. The originating kit path is no longer required for ordinary work. There is no global installation requirement; a downloaded kit does not automatically apply to an unrelated project.
+After installation, project-root AGENTS.md and the selected client adapter route future sessions to the local standards and task skills. You can simply ask for foundation setup or the first slice without supplying the kit path. The originating kit path is no longer required for ordinary work. There is no global installation requirement; a downloaded kit does not automatically apply to an unrelated project.
 
 **Continuous development is the default:** bootstrap once, then evolve the same project across tasks and sessions. Prompts can simply request a feature, fix, balance change or visual refinement; the adopted rules supply the architecture. Use [WORKFLOW.md](WORKFLOW.md) and read only the references needed for the current task.
 
@@ -29,7 +44,8 @@ After adoption, project-root AGENTS.md routes future sessions to the local stand
 | Dependencies / editor upgrades | [Toolchain skill](skills/unity-toolchain-workflow/SKILL.md) |
 | Concrete resolver / controls / MVVM | [Source examples](examples/README.md) |
 | Reference navigation | [Index](references/INDEX.md) |
-| Install kit into a project | [Adoption](references/adoption.md) |
+| Install/update skills and rules | [Installer](INSTALL.md) |
+| Bootstrap the Unity foundation | [Adoption](references/adoption.md) |
 
 Engineering contract: [baseline](references/engineering-baseline.md), [assembly/module architecture](references/architecture.md), [Editor authoring](references/authoring.md), [code quality](references/code-quality.md), [local tooling/hooks](references/developer-tooling.md), [IDE setup](references/ide.md) and [code organization](references/code-organization.md).
 

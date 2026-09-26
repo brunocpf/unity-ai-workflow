@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-26",
+  "kit_version": "0.1.0",
+  "environment": "macOS arm64; isolated temporary client settings and game workspace",
+  "codex": {
+    "version": "0.158.0-alpha.2.1",
+    "method": "app-server initialize then skills/list with cwd and forceReload",
+    "status": "pass",
+    "enabled_project_skills": [
+      "unity-asset-workflow",
+      "unity-feature-workflow",
+      "unity-project-bootstrap",
+      "unity-toolchain-workflow",
+      "unity-ui-workflow",
+      "unity-validation-workflow"
+    ],
+    "errors": []
+  },
+  "claude_code": {
+    "version": "2.1.198",
+    "method": "stream-json initialize control response with project setting source",
+    "status": "pass",
+    "project_commands": [
+      "unity-asset-workflow",
+      "unity-feature-workflow",
+      "unity-project-bootstrap",
+      "unity-toolchain-workflow",
+      "unity-ui-workflow",
+      "unity-validation-workflow"
+    ]
+  },
+  "model_invocation_tested": false,
+  "runtime_instruction_import_tested": false,
+  "unity_launched": false
+}

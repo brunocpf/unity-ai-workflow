@@ -47,3 +47,6 @@ Thumbs.db
 # Generated Python tooling caches.
 __pycache__/
 *.py[cod]
+
+# Transient workflow installer lock; keep installation.json tracked.
+.unity-workflow/install.lock

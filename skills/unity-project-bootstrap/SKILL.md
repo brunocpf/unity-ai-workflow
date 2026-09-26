@@ -11,7 +11,7 @@ Read `engineering-baseline.md`, `adoption.md`, `architecture.md`, `repository.md
 
 Apply `authoring.md`, `composition.md`, `code-quality.md`, `ide.md`, `code-organization.md` and `developer-tooling.md` during setup; record actual baseline evidence/gaps. A small first slice retains the full architectural standard.
 
-Establish the actual project and native version locks. Adopt all six task skills and the root rules; copy the applicable configuration and create the project docs from adoption.md. Before ending bootstrap, ensure AGENTS.md, docs/index.md and the local standard/skill routes resolve without the original kit path. Use available Unity CLI/project-creation skills; inspect pinned help rather than assuming commands.
+Establish the actual project and native version locks. Use the kit installer for the selected client(s), or verify an existing installation; preserve its managed root instruction blocks. Apply the relevant starter configuration and create project docs from adoption.md. Installation alone is not foundation completion. Before ending bootstrap, ensure AGENTS.md, docs/index.md and the local standard/skill routes resolve without the original kit path. Use available Unity CLI/project-creation skills; inspect pinned help rather than assuming commands.
 
 Implement the setup validation entrypoints (`ci.md`, `validation.md`). Run adoption.md's foundation completion checks and record results before claiming Foundation ready. For setup-only scope, stop with a concise handoff and deferred slice checks; do not generate gameplay or polished UI.
 

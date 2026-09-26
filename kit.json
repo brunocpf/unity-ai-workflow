@@ -1,0 +1,12 @@
+{
+  "id": "unity-ai-workflow",
+  "version": "0.1.0",
+  "skills": [
+    "unity-project-bootstrap",
+    "unity-feature-workflow",
+    "unity-ui-workflow",
+    "unity-asset-workflow",
+    "unity-validation-workflow",
+    "unity-toolchain-workflow"
+  ]
+}

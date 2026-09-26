@@ -22,6 +22,7 @@ Do not read this entire directory. References below are authoritative by subject
 | Custom drawing / shaders / motion | [Advanced UI](ui-advanced.md) | [Capability gates](ui-capabilities.md), [text effects](ui-text-effects.md) |
 | Text rendering / reveal / counters | [Text effects](ui-text-effects.md) | [Advanced UI](ui-advanced.md) |
 | Effects / cascade / motion qualification | [Visual fixtures](visual-fixtures.md) | [Scenario clocks / fresh captures](test-scenarios.md) |
+| Particle effects / VFX Graph | [VFX authoring and setup](vfx.md) | [Dependencies](dependencies.md), [visual fixtures](visual-fixtures.md) |
 | 3D asset | [Asset contract](assets.md), [3D pipeline](assets-3d.md) | [Motion reference](assets-motion.md) |
 | Textures / sprites / pixel art | [Asset contract](assets.md), [2D pipeline](assets-2d.md) | [Validation](validation.md) |
 | CI / builds | [CI](ci.md) | [Toolchain](toolchain.md), [validation](validation.md) |

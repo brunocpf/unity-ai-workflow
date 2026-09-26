@@ -19,10 +19,11 @@ Every asset brief specifies role, style references, physical size, camera distan
 | Production animation control | Blender control rig/Rigify or custom rig | Bake to a stable deform skeleton |
 | Painting, concept sheets, non-pixel textures/sprites | Image generation | Surface mapping, alpha/seam/import validation |
 | Pixel characters, directional animations, terrain tiles | PixelLab | Palette/frame/tile cleanup and Unity import |
+| Authored particle effects | VFX Graph | Saved graph/prefab, target rendering and lifetime/budget validation |
 | Motion exploration | Veo through Gemini API | Motion specification, animation authoring or separate mocap |
 | UI icons requiring crisp scaling | Vector authoring | UI import and style integration |
 
-Read only the chosen pipeline: [3D](assets-3d.md), [images/pixel art](assets-2d.md), [motion reference](assets-motion.md). Use the asset/motion forms in [document templates](../starter/DOCUMENT-TEMPLATES.md). [Validation](validation.md) owns inspection and iteration.
+For particle effects, use the [VFX Graph preference and setup contract](vfx.md). Read only the chosen pipeline: [3D](assets-3d.md), [images/pixel art](assets-2d.md), [motion reference](assets-motion.md). Use the asset/motion forms in [document templates](../starter/DOCUMENT-TEMPLATES.md). [Validation](validation.md) owns inspection and iteration.
 
 For game UI and its surrounding art, [ui-art-direction.md](ui-art-direction.md) establishes the visual target and tool-selection criteria. Original/licensed assets still need to meet that target at gameplay scale; provenance is not a quality verdict.
 
