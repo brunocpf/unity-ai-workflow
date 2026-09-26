@@ -226,7 +226,7 @@ def install(source, root, command, agent=None, dry_run=False):
     state['payload_sha256'] = digest(json.dumps({'files': state['files'], 'blocks': state['blocks']}, sort_keys=True).encode())
     state_bytes = (json.dumps(state, indent=2, sort_keys=True) + '\n').encode()
     snapshots[STATE] = read(root, STATE)
-    if snapshots[STATE] != state_bytes:
+    if snapshots[STATE] is None or digest(snapshots[STATE]) != digest(state_bytes):
         changes[STATE] = state_bytes
     result = {'operation': command, 'dry_run': dry_run, 'version': state['version'], 'agents': agents, 'changes': {p: 'remove' if d is None else 'write' for p, d in changes.items()}}
     if dry_run or not changes:
