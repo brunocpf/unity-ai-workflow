@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:fx="Workflow.Examples.UI">
+    <ui:Style src="EffectsPreview.uss" />
+    <ui:VisualElement class="game-effects-preview">
+        <fx:ArcMeter name="meter" fill="0.65" thickness="6" />
+        <fx:WaveLabel name="message" text="Ready for adventure" amplitude="2" phase="0.8" />
+    </ui:VisualElement>
+</ui:UXML>

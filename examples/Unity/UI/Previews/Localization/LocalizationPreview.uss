@@ -1,0 +1,17 @@
+.localization-preview {
+    flex-grow: 1;
+    align-items: stretch;
+    padding: 20px;
+}
+
+.localization-preview__title {
+    white-space: normal;
+    font-size: 24px;
+    margin-bottom: 12px;
+}
+
+.localization-preview__continue {
+    white-space: normal;
+    min-height: 44px;
+    padding: 10px 16px;
+}

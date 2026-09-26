@@ -1,0 +1,14 @@
+{
+  "unitySolution": "Game.slnx",
+  "sdkSolution": "tooling/dotnet/Game.sln",
+  "ownedProjects": "tooling/ide/owned-projects.json",
+  "organizationProject": "tooling/quality/CodeOrganization/CodeOrganization.csproj",
+  "syntaxSymbols": [
+    "UNITY_EDITOR"
+  ],
+  "pureSourceRoots": [
+    "Assets/Game/Core",
+    "Assets/Game/Application",
+    "Assets/Game/Presentation"
+  ]
+}

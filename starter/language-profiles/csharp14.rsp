@@ -1,0 +1,4 @@
+-nullable:enable
+-warnaserror+
+-langversion:14.0
+-analyzerconfig:.editorconfig

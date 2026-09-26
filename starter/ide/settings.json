@@ -1,0 +1,17 @@
+{
+  "dotnet.defaultSolution": "Game.slnx",
+  "[csharp]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp",
+    "editor.formatOnSave": true
+  },
+  "files.exclude": {
+    "**/Library": true,
+    "**/Temp": true,
+    "**/obj": true,
+    "**/bin": true
+  },
+  "files.associations": {
+    "*.asmdef": "json",
+    "*.asmref": "json"
+  }
+}

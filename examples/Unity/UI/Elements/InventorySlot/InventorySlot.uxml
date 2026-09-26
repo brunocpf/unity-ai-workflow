@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+  <ui:Style src="InventorySlot.uss" />
+  <ui:Button name="activateButton" class="game-inventory-slot__button">
+    <ui:Label name="title" class="game-inventory-slot__title" />
+    <ui:Label name="quantity" class="game-inventory-slot__quantity" />
+  </ui:Button>
+</ui:UXML>

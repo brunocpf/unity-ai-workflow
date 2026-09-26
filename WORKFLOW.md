@@ -1,0 +1,14 @@
+# Task workflow
+
+Default to continuous development across sessions: bootstrap to **Foundation ready**, implement and validate the first slice to **First slice accepted**, then extend, test and refine the existing project. Apply the [milestone scope and completion criteria](references/adoption.md#milestones-and-request-scope); setup-only requests stop after foundation checks. Follow the [continuity contract](references/adoption.md#continuous-development); a completed slice is a checkpoint within the game's broader scope.
+
+Use a versioned template for reproducibility, a short project AGENTS.md for invariants, focused skills for procedures, and CI for executable checks. A kit download does not activate skills or create a tested template; follow [adoption](references/adoption.md).
+
+1. Read project rules and the relevant feature/asset contract. [Clarify unresolved intent](references/clarification.md) before dependent work; preserve known answers and continue independent work while waiting. Select a skill from the [index](references/INDEX.md); do not load every reference.
+2. For foundation work, complete the setup criteria in adoption.md. For gameplay work, implement the requested increment or next playable vertical slice within the [professional baseline](references/engineering-baseline.md) using the chosen architecture and dependency defaults. New game UI follows [art direction](references/ui-art-direction.md): establish the visual target and finish a representative screen early. Investigate uncertain APIs against the pinned editor.
+3. Run checks at changed boundaries. For visual work, capture **and inspect** the actual result against its target; refine design gaps as well as rendering defects. Report visual and technical acceptance separately. See [validation](references/validation.md).
+4. Update changed contracts/ADRs and durable evidence. Commit implementation, metadata and relevant docs together.
+
+First slice acceptance (required before a tested template release): pure Core/Application/Presentation, scoped composition, a representative game screen meeting its visual target with MVVM/R3-driven custom controls, selected content and [localized text/font loading](references/localization.md) in a built player, asset import, meaningful tests, CI entrypoints and clean checkout. The 6.7 UI profile must prove Content Directories and UI Builder compatibility before release. Implement reusable helpers only when this slice consumes them; use the [infrastructure backlog](references/utilities.md).
+
+Prefer a tested template tag for new games; otherwise bootstrap the foundation and qualify its first slice before releasing a reusable template. Existing games receive reviewed upgrades. Optional profiles declare additional dependencies and acceptance scenarios; listing a profile does not mean it is implemented. See [profiles](references/profiles.md).

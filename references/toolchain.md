@@ -1,0 +1,23 @@
+# Toolchain and compatibility
+
+Current evaluation target: **Editor 6000.7.0b2 arm64; CLI 1.0.0-beta.10**. The [b2 upgrade record](upgrades/unity-6000.7.0b2.md) separates release-note changes, available-assembly API checks and pending Editor/player acceptance. Earlier b1 records retain their original version and do not qualify b2. Keep production, 6.7 UITK evaluation and future Unity 7 migration profiles separate. Native ProjectVersion.txt/packages-lock.json remain resolved-version authorities; this target is not an automatic choice for shipping games.
+
+Record modules, CLI/checksum, Pipeline package, render pipeline, test/analyzer packages, .NET SDK, Blender/exporter, provider models, UI experimental flags, graphics APIs and validation date. Do not float latest/lts, Git main/current or CI installer channels in a template release.
+
+Unity 6.7's documented language baseline is C# 9. A CoreCLR player or newer host SDK does not confer C# 14. C#9 is temporary; [language profiles](language-profiles.md) defines the intended C#14 transition and modern adoption gates. Adopt modern syntax incrementally; compiler, APIs, serialization, AOT and Burst compatibility are distinct checks. Candidate features: file-scoped namespaces/collection expressions; pure DTO records/init/required; small-service primary constructors; C# 14 extension members, field properties and span conversions; partial events/constructors only for justified generators. [Unity compiler](https://docs.unity3d.com/6000.7/Documentation/Manual/csharp-compiler.html), [Unity 7 announcement](https://unity.com/blog/unite-seoul-keynote-2026-recap), [C# 14](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-14).
+
+## Lint enforcement
+
+[Code quality](code-quality.md) owns nullable/compiler/analyzer/style enforcement; [developer tooling](developer-tooling.md) owns local setup and hooks.
+
+Use the starter EditorConfig and a Roslyn-compatible Microsoft.Unity.Analyzers version. Install analyzers in the actual compiler hosts: Unity's documented analyzer import/scoping, and build-time style/analyzer settings in hand-maintained SDK projects. An IDE extension is insufficient. Keep generated/vendor code out of owned-code checks; prefer narrow suppressions and Unity-aware suppressors for serialized fields/messages. Prove a known diagnostic fails CI in a disposable change. Retain explicit `-analyzerconfig:.editorconfig` from the b1 finding until b2 rejection probes verify the actual compiler hosts; follow code-quality.md and inspect compiler arguments instead of assuming EditorConfig discovery. [Unity analyzers](https://github.com/microsoft/Microsoft.Unity.Analyzers), [diagnostics](https://github.com/microsoft/Microsoft.Unity.Analyzers/blob/main/doc/index.md), [Unity installation](https://docs.unity3d.com/6000.7/Documentation/Manual/roslyn-analyzers.html).
+
+## CLI
+
+Inspect pinned installed help. Live Editor automation requires the matching Pipeline package. Create/modify serialized scenes/prefabs through Editor operations, preserve GUIDs, mark dirty/save, wait for imports/compilation; author C#/UXML/USS as text. Setup operations must be idempotent. Package installation can reload assemblies: persist/recover operation state or use an external coordinator; a static Editor polling callback cannot be assumed to survive. Judge completion by resolved native locks plus a successful import/compile, not by the polling helper alone. Pipeline connection failures require checking compilation/Safe Mode before retrying.
+
+CLI beta.10 adds ci init; beta.8 lacked it. Generator output needs review. [CI recipe](ci.md) owns build/test commands and runner setup. [CLI reference](https://docs.unity.com/en-us/unity-cli/unity-cli-reference), [release notes](https://docs.unity.com/en-us/unity-cli/release-notes).
+
+## Upgrade acceptance
+
+Review the candidate's incremental release notes and known issues, distinguishing them from cumulative stream features. Check content/archive backward compatibility; for b2, follow the [content rebuild and rollback guidance](upgrades/unity-6000.7.0b2.md#content-and-rollback). Pin a candidate on an isolated branch/copy; resolve modules/packages, compile pure and Unity code, exercise impacted fixtures, build/launch the target, inspect graphics/content and compare budgets. Review settings/metadata migrations and record incompatibilities before promoting the pin. Use [lifecycle](lifecycle.md) for fast Play Mode and [UI capabilities](ui-capabilities.md) for experimental gates. Installed plugin skills may target older Unity: record verified project exceptions instead of editing downloaded caches.

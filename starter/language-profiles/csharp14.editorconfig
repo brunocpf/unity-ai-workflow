@@ -1,0 +1,9 @@
+# Merge into the root owned-code section only after selecting the validated modern profile.
+[{Assets/Game,tooling}/**/*.cs]
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_style_prefer_primary_constructors = true:suggestion
+dotnet_style_prefer_collection_expression = true:suggestion
+csharp_style_prefer_utf8_string_literals = true:suggestion
+csharp_style_prefer_readonly_struct = true:suggestion
+csharp_style_prefer_readonly_struct_member = true:suggestion
+csharp_style_prefer_extended_property_pattern = true:suggestion

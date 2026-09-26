@@ -1,0 +1,14 @@
+---
+name: unity-toolchain-workflow
+description: Choose or upgrade Unity editors, packages, compiler/analyzer configuration and library defaults for this workflow.
+---
+
+Resolve references under `docs/standards/references/` in an adopted project, or `references/` at the supplied kit root. Read only the files listed for the current operation. Follow applicable project AGENTS.md and the feature/asset contract. Apply `clarification.md` when intent or consequential constraints are unresolved; inspect/recommend before asking, preserve approved defaults, and continue independent work.
+
+Read `toolchain.md` and `dependencies.md`; add `dependencies-optional.md` when selecting an optional library; use `profiles.md` for new target/use-case selection. Changes to repository boundaries also require `architecture.md`/`repository.md`.
+
+Inspect native version authorities and installed CLI help. Resolve a pinned candidate in an isolated project copy/branch, respecting the user's authorized upgrade scope. Run impacted acceptance fixtures from `validation.md`, including player/AOT/render checks where relevant. Use `ci.md` for runner changes and `lifecycle.md` for reload changes.
+
+Review incremental release notes, known issues and archive/content compatibility; load the matching note under `references/upgrades/` (or `docs/standards/references/upgrades/` after adoption). Keep historical evidence labeled by its original version and record checks not rerun. Record resolved versions, compatibility results and migration notes. Upgrade an active project's files only within scope; an installed editor upgrade is not a project migration.
+
+Compiler/analyzer or IDE changes also follow `ide.md` and `code-organization.md`: synchronize the three compiler contexts, regenerate and repeat capability/rejection probes.

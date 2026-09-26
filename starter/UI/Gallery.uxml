@@ -1,0 +1,22 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+  <ui:Style src="Tokens.uss" />
+  <ui:Style src="InventorySlot.uss" />
+  <ui:Style src="Gallery.uss" />
+  <ui:VisualElement name="galleryRoot" class="game-ui game-gallery">
+    <ui:Button name="defaultSlot" class="game-inventory-slot">
+      <ui:Label name="itemTitle" text="Health potion" class="game-inventory-slot__title" />
+      <ui:Label name="quantity" text="3" class="game-inventory-slot__quantity" />
+    </ui:Button>
+    <ui:Button name="selectedSlot" class="game-inventory-slot game-inventory-slot--selected">
+      <ui:Label text="Selected: Iron sword" class="game-inventory-slot__title" />
+      <ui:Label text="1" class="game-inventory-slot__quantity" />
+    </ui:Button>
+    <ui:Button name="disabledSlot" enabled="false" class="game-inventory-slot">
+      <ui:Label text="Unavailable item" class="game-inventory-slot__title" />
+    </ui:Button>
+    <ui:Button name="longTextSlot" class="game-inventory-slot">
+      <ui:Label text="A deliberately long item name for checking wrapping and flexible layout" class="game-inventory-slot__title" />
+      <ui:Label text="99" class="game-inventory-slot__quantity" />
+    </ui:Button>
+  </ui:VisualElement>
+</ui:UXML>

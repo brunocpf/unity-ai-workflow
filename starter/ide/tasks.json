@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Regenerate Unity IDE projects (Editor closed)",
+      "type": "process",
+      "command": "${env:UNITY_EDITOR}",
+      "args": [
+        "-batchmode",
+        "-quit",
+        "-projectPath",
+        "${workspaceFolder}",
+        "-executeMethod",
+        "Workflow.Examples.Editor.IdeProjectSettings.Regenerate"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}

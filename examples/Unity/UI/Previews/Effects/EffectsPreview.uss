@@ -1,0 +1,13 @@
+.game-effects-preview {
+    padding: 16px;
+    background-color: rgb(24, 29, 38);
+    color: rgb(226, 237, 245);
+}
+
+.game-wave-label {
+    margin-top: 12px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    font-size: 22px;
+    white-space: normal;
+}

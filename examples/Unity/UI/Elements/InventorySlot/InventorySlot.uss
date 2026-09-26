@@ -1,0 +1,14 @@
+.game-inventory-slot__button {
+  flex-direction: row;
+  align-items: center;
+  min-height: 48px;
+  background-color: #202634;
+  color: #f1f4fa;
+  border-width: 2px;
+  border-color: #68768d;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+.game-inventory-slot__button:focus { border-color: #80d4ff; }
+.game-inventory-slot__title { flex-grow: 1; flex-shrink: 1; min-width: 0; white-space: normal; }
+.game-inventory-slot__quantity { flex-shrink: 0; margin-left: 12px; }

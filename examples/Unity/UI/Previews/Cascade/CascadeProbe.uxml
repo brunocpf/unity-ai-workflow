@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="CascadeProbe.uss" />
+    <Style src="Baseline.uss" />
+    <ui:VisualElement name="cascadeRoot" class="fixture-root">
+        <ui:Label name="heading" text="Component heading" class="fixture-heading" />
+        <ui:Label name="body" text="Component body wraps at the width of this fixture." class="fixture-body" />
+    </ui:VisualElement>
+</ui:UXML>

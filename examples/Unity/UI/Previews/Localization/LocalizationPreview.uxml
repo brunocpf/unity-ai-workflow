@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:loc="Unity.Localization">
+    <ui:Style src="LocalizationPreview.uss" />
+    <ui:VisualElement class="localization-preview">
+        <ui:Label name="title" class="localization-preview__title">
+            <Bindings>
+                <loc:LocalizedString property="text" table="UI.Common" entry="menu.title" />
+            </Bindings>
+        </ui:Label>
+        <ui:Button name="continue" class="localization-preview__continue">
+            <Bindings>
+                <loc:LocalizedString property="text" table="UI.Common" entry="menu.continue" />
+            </Bindings>
+        </ui:Button>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,26 @@
+/* Project defaults. Theme modifiers override semantic tokens on the root. */
+.game-ui {
+  --game-color-surface: #202634;
+  --game-color-surface-hover: #2c3546;
+  --game-color-text: #f1f4fa;
+  --game-color-muted: #b2bed1;
+  --game-color-border: #68768d;
+  --game-color-focus: #80d4ff;
+  --game-space-1: 4px;
+  --game-space-2: 8px;
+  --game-space-3: 12px;
+  --game-space-4: 16px;
+  --game-type-body: 16px;
+  --game-type-caption: 12px;
+  color: var(--game-color-text);
+  font-size: var(--game-type-body);
+}
+
+.game-ui--light {
+  --game-color-surface: #edf1f7;
+  --game-color-surface-hover: #dde5f0;
+  --game-color-text: #172130;
+  --game-color-muted: #46576f;
+  --game-color-border: #68768d;
+  --game-color-focus: #075e9d;
+}

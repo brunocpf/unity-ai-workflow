@@ -1,0 +1,10 @@
+.game-arc-meter {
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+    color: rgb(90, 216, 187);
+}
+
+.game-arc-meter__surface {
+    flex-grow: 1;
+}

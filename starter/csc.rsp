@@ -1,0 +1,4 @@
+-nullable:enable
+-warnaserror+
+-langversion:9.0
+-analyzerconfig:.editorconfig

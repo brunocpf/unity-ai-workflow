@@ -1,0 +1,37 @@
+{
+  "date": "2026-09-25",
+  "editor_target": "6000.7.0b2",
+  "architecture": "arm64",
+  "cli": "1.0.0-beta.10",
+  "sdk": "10.0.301",
+  "language": "9.0",
+  "api_target": "netstandard2.1",
+  "api_build": {
+    "status": "pass",
+    "warnings": 0,
+    "errors": 0
+  },
+  "pure_checks": 15,
+  "viewmodel_checks": 18,
+  "ide_xml_assertions": 28,
+  "localization_api_build": {
+    "status": "pass",
+    "warnings": 0,
+    "errors": 0
+  },
+  "observed_assembly_sha256_after_checks": {
+    "UnityEngine.CoreModule.dll": "a1e578f671ae8adca7cb3807eb47983f8c6fcdd772e93d7fcfd4044cb6c64af2",
+    "UnityEngine.UIElementsModule.dll": "19d379ea958124992c230c91430860db986ec9720424937d3db860d2efdc2177",
+    "UnityEngine.ContentLoadModule.dll": "7bb4b40d8f90e315a524ae38feb37de9fc35fed3a147993e3ada7e29de9c8efd",
+    "UnityEngine.LocalizationRuntimeModule.dll": "54cb54e5d1d805abcdaae5bcc082c99eef0a80dda256048ac85c7bd9ee10edca",
+    "UnityEngine.SmartStringsModule.dll": "f4aae507dacfde485b514ade24be6283c6e77571ed8bfda46b459f5b655c5ea4"
+  },
+  "installation_completion_verified": false,
+  "editor_launched": false,
+  "unity_import_verified": false,
+  "builder_verified": false,
+  "player_verified": false,
+  "performance_measured": false,
+  "optional_litmotion_rechecked": false,
+  "note": "SDK checks used available b2 files while another session owned installation. Hashes identify files observed after checks, not a before/after integrity guarantee. Repeat against completed installation before project promotion."
+}

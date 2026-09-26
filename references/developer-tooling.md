@@ -1,0 +1,21 @@
+# Developer setup and Git hooks
+
+**Default: repository-local Husky.NET with verify-only pre-commit checks, backed by mandatory CI.** The supplied Godot/Adytum setup inspired local tool manifests, build-enforced analysis and staged-file feedback. Unity gets its own SDK/source bridge and Editor checks; do not copy Godot projects, suppressions or language assumptions.
+
+## Bootstrap once
+
+1. Create a Git repository if needed. Generate tooling/dotnet/Game.sln from the hand-maintained Core/Application/Presentation/test projects; pin the selected SDK in repository-root global.json (CLI SDK selection follows the working directory) and lock dependencies. Keep this pure solution separate from the generated Unity IDE solution. Bootstrap the [IDE integration](ide.md) and [full quality coverage](code-organization.md); the shared hook requires both workspaces ready. Document Python 3.9+ (python3 on macOS/Linux; python on Windows in the supplied task), .NET and Git LFS provisioning alongside Unity CLI.
+2. Copy [tool manifest](../starter/hooks/dotnet-tools.json) to .config/dotnet-tools.json, [task runner](../starter/hooks/task-runner.json) to .husky/task-runner.json, [hook](../starter/hooks/pre-commit) to .husky/pre-commit and [verifier](../starter/hooks/check_staged.py) to tooling/hooks/check_staged.py. Husky 0.9.1 is the reference pin, not a floating latest request; validate/update deliberately. Merge existing manifests/hooks instead of replacing them.
+3. Explicit setup runs `dotnet tool restore`, then `dotnet husky install` to generate its support files and configure this repository. Preserve executable hook permissions. Keep generated .husky/_ support local according to the tool's ignore guidance. Do not execute installers on every normal restore/build or modify global Git configuration.
+4. Integrate `git lfs install --local` after choosing the hooks path. Preserve/combine existing pre-push behavior so `git lfs pre-push` still receives its arguments/stdin. Do not overwrite a conflicting custom hook or assume a passing pre-commit means LFS uploads run. LFS absence is a setup failure when the project tracks binary assets, not a silently ignored warning.
+5. Exercise hooks in an isolated clone/worktree: well-formed source, formatting failure, partial staging, paths with spaces, non-C# changes, failed command and actual LFS upload hook wiring. Record setup completion. The kit script is reference setup; Unity import/CI acceptance remains separate.
+
+Official tool behavior: [Husky installation](https://alirezanet.github.io/Husky.Net/guide/getting-started.html), [task runner](https://alirezanet.github.io/Husky.Net/guide/task-runner.html).
+
+## Check policy
+
+The supplied hook checks changed owned C# only, never auto-fixes/re-stages files. It refuses partially staged selected files because dotnet format reads the working tree, not the Git index. Developers may stage whole files or validate the exact index in a separate worktree. It delegates to tooling/quality/check.py for organization, evaluated coverage/profile parity and semantic formatting in the appropriate Unity/SDK workspaces. Missing generated projects require regeneration; there is no whitespace-only success path. Selected assemblies must have positive style/analyzer execution receipts. Run the shipped disposable semantic probes to prove IDE0005/IDE0240 rejection through this hook. A separate pure/whitespace-only fast command must say exactly that. Actual Unity compiler/analyzer acceptance remains a separate gate; hook success is not equivalent to Unity compilation.
+
+Use fast local feedback, not a full Unity player build per commit. Formatting repairs are explicit developer/agent actions followed by diff review. Source changes still require affected behavior tests. CI sets HUSKY=0, invokes checks directly and validates the entire required scope. Hooks are bypassable and therefore never the only enforcement layer.
+
+Worktrees share some Git configuration: verify hooks resolve in each checkout and never share Library directories. Pin CI actions/tooling, fail missing test reports and keep licensing/signing in trusted jobs. This deliberately differs from the inspiration's auto-install-on-restore, floating SDK/analyzer inputs and permissive report handling.

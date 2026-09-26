@@ -1,0 +1,42 @@
+{
+  "languageVersion": "9.0",
+  "nullable": "enable",
+  "projects": [
+    {
+      "name": "Game.Core",
+      "rootNamespace": "Game.Core"
+    },
+    {
+      "name": "Game.Application",
+      "rootNamespace": "Game.Application"
+    },
+    {
+      "name": "Game.Presentation",
+      "rootNamespace": "Game.Presentation"
+    },
+    {
+      "name": "Game.Unity.Runtime",
+      "rootNamespace": "Game.Runtime"
+    },
+    {
+      "name": "Game.UI",
+      "rootNamespace": "Game.UI"
+    },
+    {
+      "name": "Game.Composition",
+      "rootNamespace": "Game.Composition"
+    },
+    {
+      "name": "Game.Editor",
+      "rootNamespace": "Game.Editor"
+    },
+    {
+      "name": "Game.Tests.EditMode",
+      "rootNamespace": "Game.Tests.EditMode"
+    },
+    {
+      "name": "Game.Tests.PlayMode",
+      "rootNamespace": "Game.Tests.PlayMode"
+    }
+  ]
+}

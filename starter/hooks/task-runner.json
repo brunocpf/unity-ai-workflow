@@ -1,0 +1,16 @@
+{
+  "$schema": "https://alirezanet.github.io/Husky.Net/schema.json",
+  "tasks": [
+    {
+      "name": "owned-csharp-quality",
+      "group": "pre-commit",
+      "command": "python3",
+      "args": [
+        "tooling/hooks/check_staged.py"
+      ],
+      "windows": {
+        "command": "python"
+      }
+    }
+  ]
+}

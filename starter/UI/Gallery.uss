@@ -1,0 +1,10 @@
+/* Unity 6.7 example: gap is intentional. The host owns viewport sizing. */
+.game-gallery {
+  flex-grow: 1;
+  padding-left: var(--game-space-4);
+  padding-right: var(--game-space-4);
+  padding-top: var(--game-space-4);
+  padding-bottom: var(--game-space-4);
+  gap: var(--game-space-2);
+  background-color: var(--game-color-surface);
+}

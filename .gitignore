@@ -1,0 +1,9 @@
+# Local build and tooling output; starter policies live under starter/.
+.DS_Store
+**/bin/
+**/obj/
+**/__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*

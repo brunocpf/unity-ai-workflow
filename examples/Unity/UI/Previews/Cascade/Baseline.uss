@@ -1,0 +1,13 @@
+/* Deliberately loaded last: a type-only baseline must lose to component classes. */
+Label {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 14px;
+}
+
+/* Fault injection only. Never ship this selector/class as a production baseline. */
+.fixture-fault Label {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 14px;
+}

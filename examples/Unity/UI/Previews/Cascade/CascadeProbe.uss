@@ -1,0 +1,16 @@
+.fixture-root {
+    width: 320px;
+    padding: 16px;
+}
+
+.fixture-heading {
+    margin-top: 12px;
+    margin-bottom: 8px;
+    font-size: 24px;
+}
+
+.fixture-body {
+    margin-top: 4px;
+    font-size: 16px;
+    white-space: normal;
+}

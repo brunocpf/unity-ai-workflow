@@ -1,0 +1,51 @@
+/* Shared stylesheet. No domain state, global type selectors, or asset paths. */
+.game-inventory-slot {
+  flex-direction: row;
+  align-items: center;
+  min-height: 48px;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: var(--game-space-3);
+  padding-right: var(--game-space-3);
+  padding-top: var(--game-space-2);
+  padding-bottom: var(--game-space-2);
+  border-width: 2px;
+  border-color: var(--game-color-border);
+  border-radius: 4px;
+  background-color: var(--game-color-surface);
+  color: var(--game-color-text);
+}
+
+.game-inventory-slot__title {
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 0;
+  white-space: normal;
+}
+
+.game-inventory-slot__quantity {
+  flex-shrink: 0;
+  margin-left: var(--game-space-3);
+  color: var(--game-color-muted);
+  font-size: var(--game-type-caption);
+}
+
+.game-inventory-slot:hover {
+  background-color: var(--game-color-surface-hover);
+}
+
+.game-inventory-slot--selected {
+  border-color: var(--game-color-focus);
+}
+
+.game-inventory-slot:focus {
+  border-color: var(--game-color-focus);
+  /* Keep border geometry stable when focus changes. */
+}
+
+.game-inventory-slot:disabled {
+  opacity: 0.55;
+  background-color: var(--game-color-surface);
+}

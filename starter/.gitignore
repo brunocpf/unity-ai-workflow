@@ -1,0 +1,49 @@
+# Unity generated state (repository root is Unity project root).
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+/[Bb]uild/
+/[Bb]uilds/
+/artifacts/
+
+# Root-level Unity-generated IDE files; tooling/** project files remain tracked.
+/*.csproj
+/*.sln
+/*.slnx
+/*.suo
+/*.user
+/*.pidb
+/*.booproj
+/.vs/
+/.idea/
+
+# Hand-maintained .NET harness outputs.
+/tooling/**/bin/
+/tooling/**/obj/
+/tooling/**/TestResults/
+
+# Local credentials and OS files. Track a sanitized .env.example if needed.
+.env
+.env.*
+!.env.example
+*.keystore
+*.jks
+*.p12
+*.pfx
+*.ulf
+.DS_Store
+Thumbs.db
+
+# Preserve Assets, ProjectSettings, Packages manifests/locks, .meta files,
+# intentional DLL dependencies and authored StreamingAssets content.
+
+# Husky-generated local support; commit the authored hook/task configuration.
+/.husky/_/
+
+# Generated Python tooling caches.
+__pycache__/
+*.py[cod]

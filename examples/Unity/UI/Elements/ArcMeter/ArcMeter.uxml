@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="ArcMeter.uss" />
+    <ui:VisualElement name="surface" class="game-arc-meter__surface" picking-mode="Ignore" />
+</ui:UXML>
