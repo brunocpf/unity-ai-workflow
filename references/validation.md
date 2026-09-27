@@ -17,6 +17,8 @@ Choose checks at the changed boundary; documentation-only edits do not require a
 
 Use the same pure sources in the fast .NET harness and Unity. Fake time/frames replace sleeps in reactive tests. Test once-only actions after screen reopen/pool reuse. Include a few whole-slice tests; mocks cannot establish correct composition. In Editor input tests, explicitly route synthesized Input System devices to Game View and restore the prior routing during teardown; Editor focus can otherwise consume the input. Assert the resulting gameplay action, not just event injection. Separate compile, behavior, discovery and infrastructure failures. [CI](ci.md) owns commands; [lifecycle](lifecycle.md) owns reload cases.
 
+Use the [CLI iteration and completion contract](toolchain.md#cli) for fast script-compilation feedback, version-aware API lookup and detached-job status. Retain the checks above: compilation success alone proves neither behavior nor player compatibility.
+
 ## Scenario ownership and evidence
 
 For accelerated runs and captures, implement [single-clock ownership and capture freshness](test-scenarios.md). Manual stepping suspends live gameplay ticks; current-run manifests must reject earlier screenshots before visual review. Run the contract’s known-fault probes when introducing this runner (normally in the first slice) and when changing it; setup-only bootstrap does not require a gameplay capture runner.

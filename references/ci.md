@@ -2,7 +2,7 @@
 
 Requires a real project/build profile, provisioned runner/license and implemented validation/content steps. This is not drop-in CI YAML.
 
-Unity CLI 1.0.0-beta.10 exposes a generator. From a real project, preview with `unity ci init --project-path . --provider github --target StandaloneOSX --dry-run` (substitute your target). Review the generated workflow and pin its dependencies; add the project-specific stages below. The research workspace is not a Unity project. A read-only preview was inspected against an existing registered project; no workflow was written into that project and no CI run was performed.
+When the project's selected CLI exposes `ci init`, use its generator as a starting point. From a real project, preview with `unity ci init --project-path . --provider github --target StandaloneOSX --dry-run` (substitute your target). Review the generated workflow and pin its dependencies; add the project-specific stages below. The research workspace is not a Unity project. A read-only preview was inspected against an existing registered project; no workflow was written into that project and no CI run was performed.
 
 For GitHub Actions or equivalent, use these sequential stages:
 
@@ -24,6 +24,8 @@ unity test . --mode EditMode --output "$WORKFLOW_RUN_OUTPUT/editmode.xml" --time
 unity test . --mode PlayMode --output "$WORKFLOW_RUN_OUTPUT/playmode.xml" --timeout 900
 unity build . --profile "Assets/Game/Settings/Build Profiles/Desktop.asset" --output-path "$WORKFLOW_RUN_OUTPUT/player" --timeout 1800
 ```
+
+For live-Editor compile feedback and detached operations, follow the [CLI completion contract](toolchain.md#cli). A successful `recompile` is not this pipeline; a job-dispatch result is not test/build completion.
 
 Configure the job environment with UNITY_NON_INTERACTIVE=1 and HUSKY=0; run CI checks directly. Verify the flags on the pinned CLI. Use the chosen profile's platform-appropriate output path (directory, .app, or executable), rather than assuming one works everywhere.
 
