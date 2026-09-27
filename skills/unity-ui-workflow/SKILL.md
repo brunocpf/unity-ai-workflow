@@ -3,7 +3,7 @@ name: unity-ui-workflow
 description: Design and implement game UI, custom UITK controls, MVVM/R3 presentation, USS and UI content loading under this workflow.
 ---
 
-Resolve references under `docs/standards/references/` in an adopted project, or `references/` at the supplied kit root. Read only the files listed for the current operation. Follow applicable project AGENTS.md and the feature/asset contract.
+References resolve under `docs/standards/references/` (or `references/` at the kit root). Follow project rules, the active change and `context-efficiency.md`; load only sections triggered by this task.
 
 Use `clarification.md` for ambiguous behavior, languages, visual intent or constraints. Read `localization.md` when creating/changing player-facing text/assets or locale settings; authored localized properties use native UITK bindings, with one writer per property.
 
@@ -15,4 +15,4 @@ Keep ViewModels pure; binding adapters are mechanical and no parallel Presenter 
 
 Use `validation.md` UI cases and gallery/player evidence. Report visual quality against the target separately from technical passes; a capture without defects is not sufficient visual acceptance. Editing ordinary USS does not require rereading asset pipelines or redesigning the template resolver. Update compatibility evidence when adopting an experimental feature.
 
-Apply `spec-driven-development.md` to changed behavior and acceptance: read the affected spec/active change, preserve requirement IDs and link evidence. Scale records to the change; do not add an approval phase to already authorized work.
+Apply `spec-driven-development.md`; use `spec-evidence.md` when defining verification or delivering the increment.

@@ -1,22 +1,14 @@
 # Project rules
 
-Apply these project rules and referenced defaults to ordinary game requests without requiring the user to repeat the architecture.
+Apply the kit to ordinary requests without asking the user to restate architecture. Read docs/index.md, the active issue/change and applicable project decisions. Use references under docs/standards/references; `context-efficiency.md` governs focused loading and handoffs, `INDEX.md` routes unfamiliar work. Real check commands live in the project README.
 
-Read docs/index.md and the current feature/asset brief when they exist. If docs/index.md is absent, only the workflow may be installed: use adoption.md for a requested bootstrap, and do not claim foundation readiness or create the project merely because these instructions loaded. Reference policy lives in docs/standards/references/INDEX.md; load only the relevant subject. Approved ADRs record deviations. Real validation commands live in the project README.
-
-- Bootstrap alone targets Foundation ready; First slice accepted is separate. Follow adoption.md#milestones-and-request-scope for scope and evidence. Continue through both when authorized; setup-only requests stop after foundation checks.
-- Use project-local OpenSpec through `python tooling/specs/run.py` (substitute it for bare upstream CLI examples). Follow spec-driven-development.md for changes: establish observable requirements before dependent implementation, link them to checks/evidence, and reconcile accepted behavior afterward. Scale documentation to the change; authorized work does not need a separate sign-off at each phase.
-- Default to continuous development: resume existing project state, complete the requested increment, preserve authored work and update a concise handoff when work spans sessions. Follow adoption.md#continuous-development; do not repeat bootstrap for ordinary changes.
-- Ask about unresolved intent, including target platforms, languages and mechanics, before dependent implementation; use clarification.md. Preserve prior answers and settled defaults, explain consequential tradeoffs, and continue independent work while awaiting replies.
-- Core/Application/Presentation are transitively engine-independent; compile the same sources in Unity and tooling. Use the pinned C# profile.
-- R3 owns ongoing state, UniTask engine-side finite work. Every subscription/request/resource has a lifetime owner; handle stale results and fast Play Mode explicitly.
-- UI uses pure MVVM with mechanical R3 binding adapters; native binding is the default for authored localized properties and optional for other state. No separate Presenter layer. Follow ui-binding.md.
-- Localize player-facing text/assets from the first slice; use localization.md for the pinned native/package API, agreed languages, single locale authority, fonts and acceptance.
-- Custom controls construct complete visuals; UXML owns USS. Follow ui-construction.md for the scoped asset-only resolver exception and Builder compatibility.
-- New/substantial UI follows ui-art-direction.md: a concrete visual target, a polished representative screen early, and comparison-based visual acceptance separate from technical checks. Kit demo styling is not the game's visual target.
-- Apply the professional baseline regardless of team/game size. Use VContainer composition roots, explicit module contracts and required architecture checks.
-- Keep authored content editable in Unity: saved scenes/prefabs and validated tuning definitions; factories spawn those assets. Follow authoring.md; setup/build preserves authored changes.
-- Align Unity, SDK and generated IDE compiler settings; enable nullable everywhere owned. Follow code-quality.md, ide.md and code-organization.md; require full semantic coverage and organization checks.
-- Use selected dependency defaults; record and validate exceptions. Implement utilities only for actual consumers.
-- Commit accepted content, metadata and native locks. Preserve GUIDs; separate concurrent Editor workspaces. Generated media follows asset briefs, provenance and agreed budgets.
-- Validate the changed boundary. Accelerated tests have one clock owner; captures must pass current-run freshness checks. Visual changes require actual inspection, defect-driven refinement and target-player evidence. Report unverified behavior separately.
+- Use the pinned OpenSpec launcher `python tooling/specs/run.py`, including instead of bare CLI examples. Follow spec-driven-development.md; define behavior before dependent implementation, preserve requirement IDs/scenarios and verify before reconciliation/archive. No extra phase approval for authorized work.
+- Bootstrap alone means Foundation ready; gameplay/First slice accepted is separate (adoption.md). Do not create a project merely because the kit is installed. Resume existing work; ordinary features do not repeat bootstrap.
+- Clarify unresolved platforms, languages, mechanics or consequential choices before dependent work (clarification.md); preserve settled answers and continue independent work.
+- Core/Application/Presentation stay transitively engine-independent. Use the pinned C# profile, nullable/compiler parity and full owned-code semantic/organization coverage (code-quality.md, ide.md, code-organization.md).
+- Apply the professional baseline at any project size: VContainer scopes, explicit module contracts and architecture checks. R3 owns ongoing state, UniTask finite engine work; every resource has a lifetime owner and stale-result/reload handling.
+- UI uses pure MVVM/mechanical R3 adapters, no Presenter layer; native binding owns authored localized properties (ui-binding.md). Controls construct complete visuals, UXML owns USS, and Builder works (ui-construction.md).
+- Localize player-facing content from the first slice (localization.md). New/substantial UI needs a concrete visual target and polished representative screen; demo styling is not a target (ui-art-direction.md).
+- Preserve editable scenes/prefabs, validated tuning data, GUIDs and Inspector edits (authoring.md). Factories spawn authored assets. Keep concurrent Editor workspaces separate; commit accepted assets/metadata/locks and generation provenance/budgets.
+- Use selected dependency defaults and approved ADR exceptions; add utilities only for actual consumers.
+- Validate affected boundaries and required delivery gates. Accelerated tests have one clock owner; captures require current-run freshness, actual inspection/refinement and applicable target-player evidence. Keep technical, visual and user verdicts distinct; report gaps honestly.

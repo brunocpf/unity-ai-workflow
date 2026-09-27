@@ -78,6 +78,35 @@ class SpecTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'mapping'):
             self.check()
 
+    def test_deleted_source_invalidates_but_staging_is_stable(self):
+        source = self.root / 'source.cs'
+        source.write_text('// source', encoding='utf-8')
+        subprocess.run(['git', 'add', '.'], cwd=self.root, check=True)
+        self.data['fingerprint'] = gate.fingerprint(self.root, 'test-feature')
+        self.write()
+        source.unlink()
+        with self.assertRaisesRegex(ValueError, 'Stale'):
+            self.check()
+        before = gate.fingerprint(self.root, 'test-feature')
+        subprocess.run(['git', 'add', '-u'], cwd=self.root, check=True)
+        self.assertEqual(before, gate.fingerprint(self.root, 'test-feature'))
+
+    def test_tracked_archive_acceptance_survives_staging(self):
+        subprocess.run(['git', 'add', '.'], cwd=self.root, check=True)
+        archive = self.root / 'openspec/changes/archive/2026-09-27-test-feature'
+        archive.parent.mkdir(parents=True)
+        self.folder.rename(archive)
+        name = 'archive/2026-09-27-test-feature'
+        with self.assertRaisesRegex(ValueError, 'Stale'):
+            gate.check(self.root, name, True)
+        self.data['fingerprint'] = gate.fingerprint(self.root, name)
+        (archive / 'verification.json').write_text(json.dumps(self.data), encoding='utf-8')
+        subprocess.run(['git', 'add', '-A'], cwd=self.root, check=True)
+        self.assertEqual('pass', gate.check(self.root, name, True)['status'])
+        (self.root / 'later.cs').write_text('// changed source', encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'Stale'):
+            gate.check(self.root, name, True)
+
     def test_failed_pending_and_missing_kind_rejected(self):
         for status in ('fail', 'pending'):
             self.row['status'] = status

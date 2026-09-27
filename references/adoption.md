@@ -56,7 +56,7 @@ Bootstrap once; evolve the same project through features, fixes, balancing, cont
 
 | Project document | Owns |
 |---|---|
-| docs/index.md | Task navigation and executable command locations |
+| docs/index.md | Compact navigation: active issue/change/handoff, source/authoring entrypoints, applicable decisions and check-command locations; see [context discipline](context-efficiency.md) |
 | docs/project.md | Scope, targets, inputs, save/network requirements, selected profiles; accepted answers, pending questions and what they block |
 | docs/engineering-status.md | Foundation and first-slice status separately; requirement → milestone/owner/command/evidence/gap |
 | docs/modules/ | Module public contracts, state/lifetimes/dependencies and compatibility |

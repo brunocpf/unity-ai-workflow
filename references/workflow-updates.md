@@ -12,4 +12,6 @@ Record candidate/installed commit or hash, changed requirements, applicability, 
 
 To update global entrypoints, run a reviewed candidate's `install.py install-global`; it creates a new pinned cache and changes only the selected global adapters. Existing games remain unchanged. `check-global` verifies the current global installation. Old caches are retained for reference; never overwrite them in place or point active skills at an unversioned working directory.
 
+For 0.3.2 context optimizations, follow [the incremental migration](upgrades/context-efficiency-0.3.2.md).
+
 For adoption of the 0.3 OpenSpec process, follow openspec-setup.md. Updating managed standards does not activate project-owned tooling or migrate behavioral authority. Inspect existing issue/decision workflows and qualify the process migration separately; preserve historical evidence and unrelated version pins.

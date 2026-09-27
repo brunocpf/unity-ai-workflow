@@ -53,6 +53,8 @@ Archive is authorized as part of completing an authorized change only after its 
 5. Integrate spec validation in the existing hosted CI job with pinned Node and `npm ci` working-directory tooling/specs. Run mapping checks for active ready/implementing changes. Require acceptance mode for the increment declared delivered by the PR, plus its independent test jobs and manual verdicts. Capture the active change's evidence before archive; archived records retain their tested revision. Never treat no active change after archive as proof of acceptance.
 6. Prove missing mappings, stale inputs, failed executable tests and required-but-pending manual review fail the appropriate gate. Verify generated client discovery, continuation, a follow-up delta and archive reconciliation. Record unmet infrastructure requirements honestly, then commit the migration in its own PR/change. No gameplay rewrite is required.
 
+For the 0.3.2 context-efficiency update, see [existing-project migration](upgrades/context-efficiency-0.3.2.md); generated OpenSpec integrations need no regeneration; project-owned fingerprint helpers receive a reviewed narrow fix.
+
 ## Reproducibility and maintenance
 
 OpenSpec 1.13.2 and Node 24.15.0 are evaluated pins, not floating latest. Review future security/compatibility releases through the toolchain workflow. Update the tooling lock in place and qualify CLI/schema/integration behavior before regenerating client files. OpenSpec update can read user-global profile settings; inspect generated differences and preserve the project's selected clients/workflows. Kit standards, copied project-owned profile/helper files and generated OpenSpec integrations have distinct ownership: the kit installer does not silently overwrite active project tooling.

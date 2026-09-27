@@ -41,7 +41,7 @@ Cache Library by editor, target, packages and relevant settings; keep a periodic
 
 ## Spec traceability
 
-Follow [spec-driven development](spec-driven-development.md#acceptance-and-ci): activate the shipped OpenSpec profile/evidence gate using [setup](openspec-setup.md), run spec validation and independent mapped executable checks, and retain explicit manual verdicts. A Markdown link check is not this gate. Verify rejection of missing mappings and failed mapped tests; scope pending evidence to in-progress work and never mark it accepted.
+Follow [spec-driven development](spec-evidence.md): activate the shipped OpenSpec profile/evidence gate using [setup](openspec-setup.md), run spec validation and independent mapped executable checks, and retain explicit manual verdicts. A Markdown link check is not this gate. Verify rejection of missing mappings and failed mapped tests; scope pending evidence to in-progress work and never mark it accepted.
 
 ## Delivery governance
 

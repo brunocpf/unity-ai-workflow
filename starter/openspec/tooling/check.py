@@ -81,7 +81,8 @@ def fingerprint(root, name):
             continue
         path = root / relative
         if not path.exists() and not path.is_symlink():
-            entries[relative] = 'deleted'
+            # Hash the working tree, independent of whether a deletion is staged.
+            # Removing the former path/hash still invalidates its old fingerprint.
             continue
         entries[relative] = source_hash(safe_file(root, relative))
     return sha(json.dumps(entries, sort_keys=True).encode())

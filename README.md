@@ -35,6 +35,8 @@ In an adopted game, say:
 
 > Use unity-workflow-update to check upstream for kit updates, evaluate their applicability to this project, and apply compatible workflow changes. Report deferred migrations. Also update my global kit.
 
+For 0.3.2, the [context-efficiency migration](references/upgrades/context-efficiency-0.3.2.md) covers focused reading and a narrow project-helper fix; OpenSpec's lifecycle is unchanged.
+
 For assessment only, say “review” instead of “apply.” The agent reviews changed requirements against the project's implementation, version pins and decisions. The installer reports file differences and protects local edits; semantic applicability requires that review. Updating global entrypoints never automatically updates games.
 
 For project-only installation without global entrypoints, run `python3 install.py install --target /path/to/game --agent both`, then `check --target /path/to/game`. This installs six task skills and shared rules; it does not create Unity content. See [installation and update details](INSTALL.md).

@@ -3,9 +3,9 @@ name: unity-toolchain-workflow
 description: Assess/update the project workflow kit, or choose/upgrade Unity editors, packages, compiler/analyzer configuration and library defaults for this workflow.
 ---
 
-Resolve references under `docs/standards/references/` in an adopted project, or `references/` at the supplied kit root. Read only the files listed for the current operation. Follow applicable project AGENTS.md and the feature/asset contract. Apply `clarification.md` when intent or consequential constraints are unresolved; inspect/recommend before asking, preserve approved defaults, and continue independent work.
+References resolve under `docs/standards/references/` (or `references/` at the kit root). Follow project rules, the active change and `context-efficiency.md`; load only sections triggered by this task. Apply `clarification.md` when intent or consequential constraints are unresolved; inspect/recommend before asking, preserve approved defaults, and continue independent work.
 
-Read `toolchain.md` and `dependencies.md`; add `dependencies-optional.md` when selecting an optional library; use `profiles.md` for new target/use-case selection. Changes to repository boundaries also require `architecture.md`/`repository.md`.
+For kit updates, start with `workflow-updates.md`; load toolchain/package policies only if the assessed changes affect them. For Editor/CLI/compiler upgrades read `toolchain.md`; read `dependencies.md` when selecting/changing packages. Add `dependencies-optional.md` when selecting an optional library; use `profiles.md` for new target/use-case selection. Changes to repository boundaries also require `architecture.md`/`repository.md`.
 
 Inspect native version authorities and installed CLI help. Resolve a pinned candidate in an isolated project copy/branch, respecting the user's authorized upgrade scope. Run impacted acceptance fixtures from `validation.md`, including player/AOT/render checks where relevant. Use `ci.md` for runner changes and `lifecycle.md` for reload changes.
 
@@ -15,4 +15,4 @@ Compiler/analyzer or IDE changes also follow `ide.md` and `code-organization.md`
 
 For workflow-kit updates, follow `workflow-updates.md` instead of treating the operation as an engine upgrade. Compare the candidate with the installed manifest and project implementation; record applicability and deferred migrations before applying.
 
-Apply `spec-driven-development.md` to changed behavior and acceptance: read the affected spec/active change, preserve requirement IDs and link evidence. Scale records to the change; do not add an approval phase to already authorized work.
+Apply `spec-driven-development.md`; use `spec-evidence.md` when defining verification or delivering the increment.

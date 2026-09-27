@@ -6,6 +6,8 @@ Do not read this entire directory. References below are authoritative by subject
 
 | Task | Required reference | Conditional reference |
 |---|---|---|
+| Session start / resumption / context cost | [Context discipline](context-efficiency.md) | Current issue/change and handoff |
+| Evidence mapping / delivery / archive | [Evidence checks](spec-evidence.md) | [Validation](validation.md), project CI |
 | OpenSpec setup / workflow migration | [Setup and upgrades](openspec-setup.md) | [Spec-driven development](spec-driven-development.md) |
 | Specify / plan / change / accept behavior | [Spec-driven development](spec-driven-development.md) | Affected feature spec, active change and [forms](../starter/DOCUMENT-TEMPLATES.md#feature-spec) |
 | Foundation / first slice | [Milestones and adoption](adoption.md#milestones-and-request-scope), [architecture](architecture.md), [repository](repository.md), [toolchain](toolchain.md) | [Dependencies](dependencies.md), selected [profile](profiles.md) |

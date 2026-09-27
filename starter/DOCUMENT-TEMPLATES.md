@@ -121,10 +121,19 @@ Keep the machine-readable equivalent alongside the asset registry. Do not store 
 - Fallback:
 - Recheck trigger:
 
+## Project navigation (docs/index.md)
+
+- Active issue/PR, OpenSpec change and current handoff (links, not copied status):
+- Affected source/module and Editor authoring entrypoints:
+- Applicable decisions and visual/asset target:
+- Real validation-command location and retained evidence location:
+
+Keep this a small routing page; canonical documents own their facts.
+
 ## Session handoff
 
 - Objective and current acceptance status:
-- Branch/revision and files changed:
+- Branch/revision, dirty work and active issue/OpenSpec change:
 - Key decisions with links:
 - Exact checks run and result paths:
 - Open issue and most likely next investigation:
