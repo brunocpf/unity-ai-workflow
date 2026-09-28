@@ -80,9 +80,16 @@ def run():
                 raise AssertionError('Pending acceptance was not rejected')
             except ValueError:
                 pass
+            runner_command = [sys.executable, str(game / 'tooling/specs/ci.py'), '--change', name]
+            if iteration == 1:
+                runner_command.append('--quiet')
+            pending = subprocess.run(runner_command, cwd=game, env=env, capture_output=True, text=True, timeout=60)
+            assert pending.returncode != 0 and 'Unaccepted' in pending.stdout
             data['requirements'][0]['status'] = 'pass'
             verification.write_text(json.dumps(data), encoding='utf-8')
             gate.check(game, name, True)
+            completed = subprocess.run(runner_command, cwd=game, env=env, capture_output=True, text=True, timeout=60)
+            assert completed.returncode == 0, completed.stdout + completed.stderr
             cli('archive', name, '--yes')
             baseline = (game / 'openspec/specs/pause/spec.md').read_text(encoding='utf-8')
             assert f'revision {iteration}' in baseline
@@ -101,7 +108,7 @@ def run():
         print(json.dumps({'status': 'pass', 'openspec': '1.13.2', 'node': '24.15.0',
                           'checks': ['both client integrations generated', 'custom schema', 'instructions',
                                      'invalid scenario rejected', 'pending evidence rejected', 'new capability archive',
-                                     'follow-up delta archive', 'archived acceptance reconciliation', 'final strict validation'],
+                                     'quiet/verbose runner and pending rejection', 'follow-up delta archive', 'archived acceptance reconciliation', 'final strict validation'],
                           'unity_or_model_execution': False}, indent=2))
 
 

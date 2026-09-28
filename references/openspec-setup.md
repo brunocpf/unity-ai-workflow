@@ -55,6 +55,18 @@ Archive is authorized as part of completing an authorized change only after its 
 
 For the 0.3.2 context-efficiency update, see [existing-project migration](upgrades/context-efficiency-0.3.2.md); generated OpenSpec integrations need no regeneration; project-owned fingerprint helpers receive a reviewed narrow fix.
 
+## Verification output
+
+Newly staged profiles include an optional runner:
+
+```sh
+python3 tooling/specs/ci.py --change NAME --quiet
+```
+
+Omit `--quiet` for streamed output. Both modes run the same strict OpenSpec validation, mappings for every active change, and acceptance for the explicitly selected delivered change (also accepts archive/date-name). Failures stop the runner; child failure codes propagate. Logs are retained under a fresh artifacts/spec-validation/run-* directory; retain/upload them with CI artifacts. Quiet failures show at most the final 30 lines from the last 8 KiB; open the full log for earlier diagnostics. Success summaries report gate exit status, not game-test counts or owner acceptance. This runner does not execute or replace independent game/tooling test jobs, select delivery automatically, archive changes or refresh receipts.
+
+Projects with an existing runner should port only compatible output handling while preserving custom commands, delivery selection and report parsing. Do not install a parallel runner just for quiet output. Follow the [0.3.3 migration](upgrades/verification-output-0.3.3.md).
+
 ## Reproducibility and maintenance
 
 OpenSpec 1.13.2 and Node 24.15.0 are evaluated pins, not floating latest. Review future security/compatibility releases through the toolchain workflow. Update the tooling lock in place and qualify CLI/schema/integration behavior before regenerating client files. OpenSpec update can read user-global profile settings; inspect generated differences and preserve the project's selected clients/workflows. Kit standards, copied project-owned profile/helper files and generated OpenSpec integrations have distinct ownership: the kit installer does not silently overwrite active project tooling.
