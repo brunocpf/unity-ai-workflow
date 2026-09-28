@@ -7,6 +7,15 @@ import sys
 import tempfile
 
 
+def emit(message, end='\n', flush=True, file=None):
+    stream = file if file is not None else sys.stdout
+    encoding = getattr(stream, 'encoding', None) or 'utf-8'
+    # Legacy Windows consoles cannot render all UTF-8 diagnostics. Escape only
+    # the presentation; logs retain the original subprocess bytes.
+    safe = message.encode(encoding, errors='backslashreplace').decode(encoding)
+    print(safe, end=end, flush=flush, file=stream)
+
+
 def execute(command, root, log, label, quiet=False):
     """Retain complete combined output; quiet mode affects presentation only."""
     decoder = codecs.getincrementaldecoder('utf-8')(errors='replace')
@@ -15,18 +24,18 @@ def execute(command, root, log, label, quiet=False):
             process = subprocess.Popen(command, cwd=root, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         except OSError as error:
             output.write(str(error).encode('utf-8'))
-            print(f'FAIL {label}: could not start; log: {log}', flush=True)
+            emit(f'FAIL {label}: could not start; log: {log}', flush=True)
             raise
         with process:
             for chunk in iter(lambda: process.stdout.read1(8192), b''):
                 output.write(chunk)
                 output.flush()
                 if not quiet:
-                    print(decoder.decode(chunk), end='', flush=True)
+                    emit(decoder.decode(chunk), end='', flush=True)
             if not quiet:
-                print(decoder.decode(b'', final=True), end='', flush=True)
+                emit(decoder.decode(b'', final=True), end='', flush=True)
             code = process.wait()
-    print(f'{"PASS" if code == 0 else "FAIL"} {label}: exit {code}; log: {log}', flush=True)
+    emit(f'{"PASS" if code == 0 else "FAIL"} {label}: exit {code}; log: {log}', flush=True)
     if code:
         if quiet:
             # Bound bytes as well as lines: a compiler can emit a huge single line.
@@ -34,7 +43,7 @@ def execute(command, root, log, label, quiet=False):
                 output.seek(0, 2)
                 output.seek(max(0, output.tell() - 8192))
                 tail = output.read().decode('utf-8', errors='replace').splitlines()[-30:]
-            print('\n'.join(tail), flush=True)
+            emit('\n'.join(tail), flush=True)
         raise subprocess.CalledProcessError(code, command)
 
 
@@ -49,7 +58,7 @@ def verify(root, change, quiet=False):
     commands.append(('delivery', [sys.executable, 'tooling/specs/check.py', 'check', '--change', change, '--accept']))
     for number, (label, command) in enumerate(commands, 1):
         execute(command, root, logs / f'{number:03}.log', label, quiet)
-    print('Spec gates passed; independent tests and required manual verdicts remain separate.', flush=True)
+    emit('Spec gates passed; independent tests and required manual verdicts remain separate.', flush=True)
 
 
 def main():
@@ -63,7 +72,7 @@ def main():
         # Preserve ordinary exit codes; map POSIX signals to conventional shell codes.
         return error.returncode if error.returncode > 0 else 128 - error.returncode
     except OSError as error:
-        print(f'Verification infrastructure failure: {error}', file=sys.stderr)
+        emit(f'Verification infrastructure failure: {error}', file=sys.stderr)
         return 1
     return 0
 

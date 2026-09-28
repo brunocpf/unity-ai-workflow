@@ -84,7 +84,7 @@ def run():
             if iteration == 1:
                 runner_command.append('--quiet')
             pending = subprocess.run(runner_command, cwd=game, env=env, capture_output=True, text=True, timeout=60)
-            assert pending.returncode != 0 and 'Unaccepted' in pending.stdout
+            assert pending.returncode != 0 and 'Unaccepted' in pending.stdout, pending.stdout + pending.stderr
             data['requirements'][0]['status'] = 'pass'
             verification.write_text(json.dumps(data), encoding='utf-8')
             gate.check(game, name, True)

@@ -46,6 +46,23 @@ class VerificationOutputTests(unittest.TestCase):
         self.assertIn(b'X' * 20000, log)
         self.assertGreater(len(log.splitlines()), 500)
 
+    def test_ascii_console_preserves_unicode_logs_in_both_modes(self):
+        for quiet in (False, True):
+            with self.subTest(quiet=quiet), tempfile.TemporaryDirectory() as folder:
+                root = Path(folder)
+                log = root / 'unicode.log'
+                buffer = io.BytesIO()
+                console = io.TextIOWrapper(buffer, encoding='ascii')
+                with contextlib.redirect_stdout(console):
+                    with self.assertRaises(subprocess.CalledProcessError) as error:
+                        runner.execute([sys.executable, '-c', 'import os; os.write(1, bytes([226,156,147,10])); raise SystemExit(9)'],
+                                       root, log, 'unicode', quiet)
+                console.flush()
+                self.assertEqual(9, error.exception.returncode)
+                self.assertEqual(bytes([226,156,147,10]), log.read_bytes())
+                self.assertIn(b'\\u2713', buffer.getvalue())
+                console.detach()
+
     def test_verbose_output_is_not_truncated(self):
         code, output, log = self.execute('print("line\\n" * 100)', False)
         self.assertEqual(0, code)
