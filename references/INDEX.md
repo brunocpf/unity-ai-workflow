@@ -1,5 +1,7 @@
 # Read by task
 
+CLI automation migration: [beta.12 / kit 0.3.5](../verification/cli-beta12.md#existing-project-migration); load only for affected tooling.
+
 Current version migration: [Unity 6000.7.0b3](upgrades/unity-6000.7.0b3.md). Load it for a b3 bootstrap/upgrade, not every gameplay task.
 
 Do not read this entire directory. References below are authoritative by subject; project-specific decisions belong in the game's docs.

@@ -1,0 +1,25 @@
+# Unity CLI beta.12 adoption — kit 0.3.5
+
+5 October 2026, macOS arm64. CLI remains a project-owned pin. This release updates automation guidance; OpenSpec lifecycle, artifacts/scenarios, generated integrations, evidence requirements and existing validation gates are unchanged. [Toolchain](../references/toolchain.md#beta12-capable-automation) owns command behavior; [scenario evidence](../references/test-scenarios.md#editor-readiness-and-capture-source) owns progress and capture provenance.
+
+## Evidence
+
+- The local executable already reported 1.0.0-beta.12. `self-update --channel beta --yes --non-interactive --format json` confirmed current/latest beta.12; this task did not perform a beta.11 → beta.12 binary replacement.
+- Read the running version's network-fetched `unity changelog --format json` and checked `command`, `status`, `projects create` and `recompile` help. The documented tags/detail, bounded readiness, project selection and optional Pipeline bootstrap flags are present. [Official release notes](https://docs.unity.com/en-us/unity-cli/release-notes).
+- Installed-editor NDJSON contained the b3 row followed by a successful result envelope with count 1; independently parsed and checked the terminal envelope/count.
+- `status --project-path /tmp/unity-b3-editor-smoke --until-ready --timeout 1 --format json` against the closed disposable project returned exit 6 with `STATUS_NO_INSTANCES`, rather than passing readiness. The diagnostic reports the last unavailable state, not a distinct timeout code.
+- All 55 installer/spec/output tests passed, as did 528 link checks, 25 JSON files, 18 XML files and eight skill schemas. The real OpenSpec 1.13.2 integration on pinned Node 24.15.0 passed both client integrations, schema/scenario checks, pending-evidence rejection, quiet/verbose behavior and two archive cycles. These are synthetic kit probes; consult the release commit's CI results for Linux/macOS/Windows execution.
+
+No game, project pin or Pipeline package was changed. Live tag discovery with Pipeline 0.8.0-exp.1, load-pending recovery, ticking/stalled Play Mode, successful/failing recompile, interrupted builds, signed exports, package-add failure and screenshot fallback behavior are release-note contracts, not locally exercised integration results. The prior [beta.11 record](cli-beta11.md) and [b3 installation record](unity-b3.md) retain their original provenance.
+
+## Existing-project migration
+
+1. Assess the installed kit/CLI/Pipeline versions and existing custom wrappers. Inspect command-catalog consumers, readiness/retries, JSON/NDJSON parsing, CI installer pins and capture manifests/adapters. Classify each behavior as apply, defer or already adopted based on implementation, not a document's version label.
+2. Use the existing workflow installer assess/dry-run/update/check path for managed standards. Merge only compatible changes into project-owned scripts and docs; do not overwrite customized runners, templates or generated integrations. Do not rerun OpenSpec init, create a second runner, or refresh historical acceptance receipts.
+3. Prefer targeted discovery where Pipeline supports it; keep explicit compact/full discovery for catalog consumers and older supported clients. Qualify a CLI/Pipeline upgrade separately before changing their pins. Add bounded readiness and distinguish manifest-present/load-pending from absent Pipeline; do not make focus/reinstall polling an unbounded loop.
+4. Update affected parsers and wrapper tests: accept successful complete/empty listings; reject missing/failed terminal results and count mismatches; preserve nonzero command/timeout/interruption results. Keep full logs and the existing concise-output policy. Resolve unknown mutation outcomes before retrying. Pin exact CLI/Editor inputs in local/CI tooling; changing the shared CLI does not update CI automatically.
+5. Extend the existing capture producer/validator with actual source/view identity. Reject desktop fallbacks, unknown sources and wrong views. Prove expected live progress, distinguish intentional pause/manual clocks and treat missing telemetry as unsupported. Test stalled live execution and misleading fresh desktop images as negative fixtures. Historical manifests remain historical; do not relabel them to satisfy the new contract.
+6. Run affected wrapper/provenance tests plus the project's required validation and OpenSpec delivery checks. Record actual pass/fail/not-run and deferred capabilities. A help check, successful launch or CLI status cannot substitute for game behavior or rendered acceptance.
+7. Roll back the migration commit/patch and dependent wrapper/config/pin changes together, preserving unrelated authored work. Restore the prior qualified CLI/Pipeline when necessary; revalidate affected behavior. Keep historical evidence intact and apply final-tree evidence rules to the current delivery only.
+
+No engine, architecture or gameplay rewrite is required. Improvements to session token consumption remain unmeasured until exercised in real project work.

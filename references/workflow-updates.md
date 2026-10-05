@@ -16,6 +16,8 @@ For 0.3.2 context optimizations, follow [the incremental migration](upgrades/con
 
 For adoption of the 0.3 OpenSpec process, follow openspec-setup.md. Updating managed standards does not activate project-owned tooling or migrate behavioral authority. Inspect existing issue/decision workflows and qualify the process migration separately; preserve historical evidence and unrelated version pins.
 
+For 0.3.5, follow the [CLI automation migration](../verification/cli-beta12.md#existing-project-migration); assess project wrappers, Pipeline capabilities and capture provenance before promoting a CLI pin.
+
 For 0.3.4, assess the [b3 evaluation update](upgrades/unity-6000.7.0b3.md); installing kit documentation does not migrate the game's Editor, packages, content or CI pins.
 
 For 0.3.3 output/template improvements, follow [the customization-preserving migration](upgrades/verification-output-0.3.3.md).
