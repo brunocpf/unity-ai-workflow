@@ -1,6 +1,6 @@
 # Read by task
 
-Current version migration: [Unity 6000.7.0b2](upgrades/unity-6000.7.0b2.md). Load it for a b2 bootstrap/upgrade, not every gameplay task.
+Current version migration: [Unity 6000.7.0b3](upgrades/unity-6000.7.0b3.md). Load it for a b3 bootstrap/upgrade, not every gameplay task.
 
 Do not read this entire directory. References below are authoritative by subject; project-specific decisions belong in the game's docs.
 

@@ -1,6 +1,6 @@
 # Unity 6000.7.0b2 evaluation update
 
-Updated 25 September 2026. Current kit evaluation target: **6000.7.0b2 arm64**, CLI **1.0.0-beta.10**. This updates the standards/examples target; it does not migrate existing games or certify a shipping template. [Toolchain](../toolchain.md) owns general version policy.
+Updated 25 September 2026. Historical evaluation target: **6000.7.0b2 arm64**, CLI **1.0.0-beta.10**. This updates the standards/examples target; it does not migrate existing games or certify a shipping template. [Toolchain](../toolchain.md) owns general version policy.
 
 ## Release delta
 

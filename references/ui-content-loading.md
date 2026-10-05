@@ -1,6 +1,6 @@
 # Content Directory bootstrap
 
-Use with [control construction](ui-construction.md). Current evaluation target: 6000.7.0b2. The earlier 6000.7.0b1 Pocket Arena trial found that a valid Editor LoadableObjectId reference did not survive ordinary player-scene serialization. This has not been retested in a b2 player. Retain the bounded root-loader default and avoid normal-scene ID fields until the selected build proves ID round-trip and cold-player loading. A successful API compile or Editor lookup is insufficient. See [b2 acceptance](upgrades/unity-6000.7.0b2.md#acceptance-after-installation).
+Use with [control construction](ui-construction.md). Current evaluation target: 6000.7.0b3. The earlier 6000.7.0b1 Pocket Arena trial found that a valid Editor LoadableObjectId reference did not survive ordinary player-scene serialization. This has not been retested in a b3 player. Retain the bounded root-loader default and avoid normal-scene ID fields until the selected build proves ID round-trip and cold-player loading. A successful API compile or Editor lookup is insufficient. See [b3 acceptance](upgrades/unity-6000.7.0b3.md#acceptance-after-installation).
 
 ## Default: bounded catalog-root preload
 

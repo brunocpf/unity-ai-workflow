@@ -1,6 +1,6 @@
 # UITK capability gates
 
-Evaluation target **6000.7.0b2**: the Editor is beta. Use PanelRenderer for this modern UI profile; isolate older UIDocument support. The [upgrade record](upgrades/unity-6000.7.0b2.md) owns version-specific fixes, known issues and evidence. API compilation does not establish Builder or player compatibility.
+Evaluation target **6000.7.0b3**: the Editor is beta. Use PanelRenderer for this modern UI profile; isolate older UIDocument support. The [upgrade record](upgrades/unity-6000.7.0b3.md) owns version-specific fixes, known issues and evidence. API compilation does not establish Builder or player compatibility.
 
 ## Modern feature routing
 
@@ -25,4 +25,4 @@ Grid, UI Components, and Shader Graph filter authoring are experimental in the r
 
 Use components for reusable visual concerns such as tooltip metadata or a pulse-on-change behavior, not a component that secretly purchases items or loads a singleton inventory.
 
-Retain component-reference, grid-size and content-unload/material regressions from the earlier b1 evaluation. Add the [b2 template, font and teardown cases](upgrades/unity-6000.7.0b2.md#acceptance-after-installation); their release-note fixes are not test results. Use the [UI acceptance matrix](validation.md#ui-acceptance).
+Retain component-reference, grid-size and content-unload/material regressions from b1 and the [b2 template, font and teardown cases](upgrades/unity-6000.7.0b2.md#acceptance-after-installation). Add the [b3 localization, filter, template and input cases](upgrades/unity-6000.7.0b3.md#acceptance-after-installation); their release-note fixes are not test results. Use the [UI acceptance matrix](validation.md#ui-acceptance).

@@ -4,7 +4,7 @@ C# 9 is a **temporary compatibility profile**, not the long-term coding standard
 
 | Profile | Use | Compiler/style |
 |---|---|---|
-| Compatibility | 6000.7.0b2 evaluation target; examples API-compile against available b2 assemblies, Editor/player acceptance pending | C# 9, netstandard2.1 pure compile, block namespaces |
+| Compatibility | 6000.7.0b3 evaluation target; [b3 API compilation](../verification/unity-b3.md) passes, project Editor/player acceptance remains required | C# 9, netstandard2.1 pure compile, block namespaces |
 | Modern evaluation | Selected alpha/preview that proves C#14 support | C# 14, verified API targets/backends, modern style overlay |
 | Modern production | Promoted supported build after project release gates | Same modern conventions with the validated shipping matrix |
 
