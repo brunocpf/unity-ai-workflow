@@ -53,6 +53,6 @@ One-way presentation plus commands is the default for inventory, combat, purchas
 | Drag/drop | Manipulator owns pointer capture and cancel; application validates the final move |
 | Multiplayer data | UI reflects authoritative/predicted states explicitly; no visual callback owns authority |
 
-Keyboard/gamepad intent should enter the same command path as pointer intent. Do not make a control work only through one callback attached to a visual child.
+Use [native focus and screen navigation](ui-navigation.md): UITK owns Move/Submit; screen navigation intents do not duplicate focus traversal. Keyboard/gamepad intent should enter the same command path as pointer intent. Do not make a control work only through one callback attached to a visual child.
 
 Screen/ViewModel/binding ownership follows [reactive](reactive.md). UI acceptance follows [validation](validation.md); appearance and modern capability gates follow [styling](ui-styling.md).

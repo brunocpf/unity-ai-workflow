@@ -1,0 +1,4 @@
+.navigation-host { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+.menu { position: absolute; left: 0; right: 0; top: 0; bottom: 0; padding: 32px; background-color: rgb(24, 27, 38); }
+.menu Button { height: 50px; width: 240px; margin-bottom: 12px; }
+.menu Button:focus { border-width: 3px; border-color: rgb(100, 210, 255); }

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="10" result="Passed" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-06 20:48:55Z" end-time="2026-10-06 20:48:58Z" duration="2.8276024">
+  <test-suite type="TestSuite" id="1015" name="project" fullname="project" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-10-06 20:48:55Z" end-time="2026-10-06 20:48:58Z" duration="2.827602" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1012" name="Navigation.Tests.dll" fullname="/private/tmp/unity-navigation-reviewed-run/project/Library/ScriptAssemblies/Navigation.Tests.dll" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-10-06 20:48:55Z" end-time="2026-10-06 20:48:58Z" duration="2.817093" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="52153" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1001" name="NavigationTests" fullname="NavigationTests" classname="NavigationTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-10-06 20:48:55Z" end-time="2026-10-06 20:48:58Z" duration="2.812828" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1008" name="ChildCancelConsumptionAndPersistentRootAreRespected" fullname="NavigationTests.ChildCancelConsumptionAndPersistentRootAreRespected" methodname="ChildCancelConsumptionAndPersistentRootAreRespected" classname="NavigationTests" runstate="Runnable" seed="1251308941" result="Passed" start-time="2026-10-06 20:48:55Z" end-time="2026-10-06 20:48:56Z" duration="0.626380" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1006" name="CoveredScreensAndNestedModalsCannotReceiveFocus" fullname="NavigationTests.CoveredScreensAndNestedModalsCannotReceiveFocus" methodname="CoveredScreensAndNestedModalsCannotReceiveFocus" classname="NavigationTests" runstate="Runnable" seed="281397097" result="Passed" start-time="2026-10-06 20:48:56Z" end-time="2026-10-06 20:48:56Z" duration="0.130007" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Trying to set sort index for element `VisualElement#menu, id=9797`
+]]></output>
+        </test-case>
+        <test-case id="1011" name="DuplicateRouterMutationIsDetected" fullname="NavigationTests.DuplicateRouterMutationIsDetected" methodname="DuplicateRouterMutationIsDetected" classname="NavigationTests" runstate="Runnable" seed="1635906077" result="Passed" start-time="2026-10-06 20:48:56Z" end-time="2026-10-06 20:48:56Z" duration="0.144864" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1005" name="GameplaySubmitDoesNotLeakThroughClosingMenu" fullname="NavigationTests.GameplaySubmitDoesNotLeakThroughClosingMenu" methodname="GameplaySubmitDoesNotLeakThroughClosingMenu" classname="NavigationTests" runstate="Runnable" seed="932371656" result="Passed" start-time="2026-10-06 20:48:56Z" end-time="2026-10-06 20:48:56Z" duration="0.098628" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1002" name="KeyboardAndControllerUseNativeMoveSubmitAndCancel" fullname="NavigationTests.KeyboardAndControllerUseNativeMoveSubmitAndCancel" methodname="KeyboardAndControllerUseNativeMoveSubmitAndCancel" classname="NavigationTests" runstate="Runnable" seed="649410042" result="Passed" start-time="2026-10-06 20:48:56Z" end-time="2026-10-06 20:48:56Z" duration="0.176401" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1003" name="ModalRestoresFocusAndPendingHandoffsCannotStealIt" fullname="NavigationTests.ModalRestoresFocusAndPendingHandoffsCannotStealIt" methodname="ModalRestoresFocusAndPendingHandoffsCannotStealIt" classname="NavigationTests" runstate="Runnable" seed="1981332022" result="Passed" start-time="2026-10-06 20:48:56Z" end-time="2026-10-06 20:48:57Z" duration="0.252592" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Trying to set sort index for element `VisualElement#menu, id=9849`
+]]></output>
+        </test-case>
+        <test-case id="1010" name="NativeRepeatStillMovesWhileHeld" fullname="NavigationTests.NativeRepeatStillMovesWhileHeld" methodname="NativeRepeatStillMovesWhileHeld" classname="NavigationTests" runstate="Runnable" seed="570104058" result="Passed" start-time="2026-10-06 20:48:57Z" end-time="2026-10-06 20:48:58Z" duration="0.962015" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1007" name="PointerActivationAndHiddenControlSkippingAreNative" fullname="NavigationTests.PointerActivationAndHiddenControlSkippingAreNative" methodname="PointerActivationAndHiddenControlSkippingAreNative" classname="NavigationTests" runstate="Runnable" seed="866626567" result="Passed" start-time="2026-10-06 20:48:58Z" end-time="2026-10-06 20:48:58Z" duration="0.120459" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1004" name="ReopenAndReplaceDisposeEachLifetimeOnce" fullname="NavigationTests.ReopenAndReplaceDisposeEachLifetimeOnce" methodname="ReopenAndReplaceDisposeEachLifetimeOnce" classname="NavigationTests" runstate="Runnable" seed="1839483370" result="Passed" start-time="2026-10-06 20:48:58Z" end-time="2026-10-06 20:48:58Z" duration="0.241655" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1009" name="TeardownFailureStillReleasesAllEntriesAndGate" fullname="NavigationTests.TeardownFailureStillReleasesAllEntriesAndGate" methodname="TeardownFailureStillReleasesAllEntriesAndGate" classname="NavigationTests" runstate="Runnable" seed="649463115" result="Passed" start-time="2026-10-06 20:48:58Z" end-time="2026-10-06 20:48:58Z" duration="0.041973" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[Saving results to: /private/tmp/unity-navigation-reviewed-run/results.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

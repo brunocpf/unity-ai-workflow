@@ -112,3 +112,7 @@ This fixture supplies declarations and layout only. It contains no authored tabl
 The example public reset/install methods exist for the Editor bridge. In a project, restrict their call sites to Composition/Editor (or use assembly friend access); they are not gameplay APIs. LatestRequest guards result publication but does not cancel work or undo server side effects; combine it with cancellation and dispose rejected assets.
 
 Standalone examples explicitly enable nullable references. After adoption, verify assembly-wide nullable across all compiler hosts and remove redundant local directives (IDE0240); see [code quality](../references/code-quality.md). The independent SDK projects demonstrate layer compilation; they are verification harnesses, not a substitute for project asmdefs, full architecture checks, container registration, editor import or player acceptance.
+
+## Screen and modal navigation
+
+[UiNavigationStack](Unity/UI/Navigation/UiNavigationStack.cs) and [UiStackEntry](Unity/UI/Navigation/UiStackEntry.cs) implement synchronous screen/modal ownership and focus handoff while leaving Move/Submit native. See the [navigation contract](../references/ui-navigation.md) before adapting; the [isolated Play Mode runner](Verification/NavigationPlayMode/README.md) exercises the native device-input path and duplicate-router rejection.

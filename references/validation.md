@@ -84,3 +84,5 @@ A clean slice is initial evidence, not proof that large inventories, scenes, con
 UI performance acceptance includes [small view-state projections](ui-binding.md#snapshot-size-and-render-scope): verify unrelated model changes do not refresh another region, and measure before/after on representative screens.
 
 Acceptance is requirement-based: follow [spec traceability](spec-evidence.md), including invalidating affected evidence after a behavioral change. Test success alone cannot close unmapped or manually unverified requirements.
+
+For menus/input changes, run the [native navigation acceptance](ui-navigation.md#acceptance), including real-panel device input and a duplicate-router negative probe. Synthetic event-only checks are insufficient.

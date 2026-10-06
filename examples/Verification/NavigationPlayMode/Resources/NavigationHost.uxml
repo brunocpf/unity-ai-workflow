@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="Navigation.uss" />
+    <ui:VisualElement name="navigation-host" class="navigation-host" />
+</ui:UXML>

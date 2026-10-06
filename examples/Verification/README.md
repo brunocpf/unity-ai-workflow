@@ -47,3 +47,7 @@ The root review also records compiler/analyzer and hook-orchestration probes run
 ## Native localization fixture
 
 LocalizationPreview UXML/USS demonstrates the documented native 6.7 localized binding declaration. Packaging checks XML structure and sibling stylesheet resolution. No localized tables/settings are supplied; this fixture has not been imported or exercised in UI Builder or a target player. Follow its setup and localization acceptance before reporting integration as verified. No new runtime C# helper is supplied by the localization contract.
+
+## Native navigation
+
+The [isolated navigation fixture](NavigationPlayMode/README.md) runs the screen/modal reference in a real PanelRenderer panel through native queued keyboard/gamepad/mouse input. It is separate from API compilation and the earlier coroutine-only helpers. See its [runtime evidence](../../verification/ui-navigation-036.md) for exact coverage and limits.

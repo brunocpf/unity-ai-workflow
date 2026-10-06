@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="Navigation.uss" />
+    <ui:VisualElement name="menu" class="menu">
+        <ui:Button name="first" text="Resume" />
+        <ui:Button name="disabled" text="Unavailable" enabled="false" />
+        <ui:Button name="second" text="Reset" />
+        <ui:Button name="third" text="Options" />
+    </ui:VisualElement>
+</ui:UXML>

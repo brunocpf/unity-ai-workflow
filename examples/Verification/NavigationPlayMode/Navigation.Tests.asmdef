@@ -1,0 +1,5 @@
+{
+    "name": "Navigation.Tests",
+    "references": ["Navigation.Reference", "Unity.InputSystem"],
+    "optionalUnityReferences": ["TestAssemblies"]
+}

@@ -40,7 +40,7 @@ A parent owns layout of its children; a component owns its internals and sensibl
 
 Screen size classes are applied by a root layout controller based on the panel/viewport, with explicit compact/regular/wide policies. Avoid one GeometryChanged handler per child and feedback loops that alter the size being measured. Do not presume media-query support.
 
-A root overlay service owns modal stacks, menus, toasts, drag previews, and tooltips. Keep focus/input blocking coordinated with visual ordering; z-index alone does not implement modality. Avoid unbounded arbitrary z-index numbers and cross-panel assumptions.
+A root layer coordinator orders menus/modals and independent toasts, drag previews and tooltips. Use the [navigation stack policy](ui-navigation.md) for hierarchical interactive screens; passive overlays do not enter its focus stack. Keep focus/input blocking coordinated with visual ordering; z-index alone does not implement modality. Avoid unbounded arbitrary z-index numbers and cross-panel assumptions.
 
 Use explicit text wrap/ellipsis policy. Apply the [locale/font/layout contract](localization.md): design for longer localized strings, fallback fonts, RTL, and content-driven height. Fixed-size pixel-art controls are an intentional profile, not an excuse to hard-code every screen size.
 
