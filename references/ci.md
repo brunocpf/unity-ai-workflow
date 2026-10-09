@@ -35,7 +35,7 @@ Before calling this CI complete, intentionally break a Core rule, a Unity compil
 
 ## Generator review
 
-The beta.10 preview selected Ubuntu for StandaloneOSX, kept the source project's alpha pin, used a floating CLI installer and weak report handling. Correct target runner/modules, exact versions, explicit test modes, LFS and missing-report failures. Beta.12 removes the beta-channel variable from generated installers but still does not pin the CLI; retain exact acquisition/version verification. Follow [machine-result and interruption handling](toolchain.md#beta12-capable-automation) when updating wrappers. No generated workflow was executed during research.
+The beta.10 preview selected Ubuntu for StandaloneOSX, kept the source project's alpha pin, used a floating CLI installer and weak report handling. Correct target runner/modules, exact versions, explicit test modes, LFS and missing-report failures. Beta.12 removes the beta-channel variable from generated installers but still does not pin the CLI; retain exact acquisition/version verification. Follow [machine-result and interruption handling](toolchain.md#cli) when updating wrappers. No generated workflow was executed during research.
 
 Cache Library by editor, target, packages and relevant settings; keep a periodic clean import. Build rendering tests on a graphics-capable runner, not no-graphics batch mode. License authentication is distinct from CLI/service-account authentication. Follow [validation](validation.md) for player/visual evidence and [toolchain](toolchain.md) for version policy.
 

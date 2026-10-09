@@ -12,6 +12,8 @@ Record candidate/installed commit or hash, changed requirements, applicability, 
 
 To update global entrypoints, run a reviewed candidate's `install.py install-global`; it creates a new pinned cache and changes only the selected global adapters. Existing games remain unchanged. `check-global` verifies the current global installation. Old caches are retained for reference; never overwrite them in place or point active skills at an unversioned working directory.
 
+For 0.4.1, apply the [skill ownership migration](upgrades/skill-ownership-0.4.1.md) to project-owned instructions as well as managed standards.
+
 For upgrades from 0.3.x, apply the [0.4 lean migration](upgrades/lean-0.4.0.md), including project-owned tooling and documentation consolidation. Standards installation alone is not full adoption. Earlier 0.3.x guides describe historical migrations; do not sequentially reapply their superseded fingerprint/status-document rules.
 
 For first OpenSpec adoption, use [setup](openspec-setup.md). Engine/CLI capability changes remain separate: consult the [b3 evaluation](upgrades/unity-6000.7.0b3.md) or [CLI automation](../verification/cli-beta12.md#existing-project-migration) only when those tools are being changed. Preserve the project's existing issue/decision workflow and unrelated version pins.

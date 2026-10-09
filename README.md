@@ -35,6 +35,8 @@ In an adopted game, say:
 
 > Use unity-workflow-update to check upstream for kit updates, evaluate their applicability to this project, and apply compatible workflow changes. Report deferred migrations. Also update my global kit.
 
+For **0.4.1**, adopt [skill ownership](references/upgrades/skill-ownership-0.4.1.md): upstream skills own tool/OpenSpec procedures; the kit owns project policy and acceptance. Unity plugins remain optional. See [review and validation](verification/skill-ownership-041.md).
+
 For **0.4.0**, follow the [full lean-workflow migration](references/upgrades/lean-0.4.0.md): three default project documents, concise task skills, shared executable verification, no whole-tree acceptance fingerprints, and optional examples. OpenSpec's lifecycle and required artifacts remain intact. See the [measured changes and validation](verification/lean-040.md). Existing projects must migrate their own helpers/configuration and consolidate redundant docs; updating the installed standards alone is insufficient.
 
 For assessment only, say “review” instead of “apply.” The agent reviews changed requirements against the project's implementation, version pins and decisions. The installer reports file differences and protects local edits; semantic applicability requires that review. Updating global entrypoints never automatically updates games.

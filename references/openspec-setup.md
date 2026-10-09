@@ -29,19 +29,17 @@ Setup staging preflights collisions and refuses different existing files. It doe
 
 ## Normal use
 
-The Unity skills select the process automatically. The agent uses the pinned launcher for OpenSpec operations, including `new change NAME`, `status --change NAME --json`, and `instructions ARTIFACT --change NAME --json`. New changes inherit the unity-game schema. Follow the installed instruction content and [development loop](spec-driven-development.md), preserving authorized scope.
+Use the generated skill for the selected OpenSpec operation and substitute the pinned launcher for bare CLI examples. New changes inherit unity-game. [Unity policy](spec-driven-development.md) adds acceptance requirements; [skill ownership](context-efficiency.md#skill-ownership) preserves upstream boundaries. Do not maintain a parallel lifecycle procedure.
 
 Create schema-2 verification.json from the template: map requirements to shared executable checks and applicable pending manual reviews. Use actual project commands. After implementation, inspect required manual outputs and record their verdicts with [record-review](spec-evidence.md), then:
 
 ```sh
 python3 tooling/specs/ci.py --change NAME --quiet
-python3 tooling/specs/run.py archive NAME --yes
-python3 tooling/specs/run.py validate --all --strict --no-interactive
 ```
 
 The delivery runner executes the mapped automated checks. Do not separately run the same checks again solely to produce receipts. After archive, select archive/date-name in the PR/CI delivery command; CI tests its checkout. Moving the completed artifacts alone does not require local game-test reruns or evidence resealing.
 
-Archive is authorized as part of completing an authorized change only after its checks and required product verdicts pass. Cancellation/abandonment must be labeled separately; never sync abandoned behavior into current specs. Do not use direct archive to evade the evidence gate. Stock OpenSpec does not enforce this kit's acceptance policy; PR CI/review must enforce it independently.
+After the delivery gate passes, use the generated archive skill for reconciliation/archive/final structural validation within its authorization boundary. Cancellation/abandonment must be labeled separately; never sync abandoned behavior into current specs. Do not use direct archive to evade the evidence gate. Stock OpenSpec does not enforce this kit's acceptance policy; PR CI/review must enforce it independently.
 
 ## Existing-project upgrade
 

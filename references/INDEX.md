@@ -1,11 +1,12 @@
 # Read by task
 
-Current kit migration: [0.4 lean workflow](upgrades/lean-0.4.0.md). Load it for adoption, not ordinary feature work. Editor migration remains separate.
+Current kit migration: [0.4.1 skill ownership](upgrades/skill-ownership-0.4.1.md); [0.4 lean workflow](upgrades/lean-0.4.0.md) remains required for older projects. Load it for adoption, not ordinary feature work. Editor migration remains separate.
 
 Do not read this entire directory. References below are authoritative by subject; project-specific decisions belong in the game's docs.
 
 | Task | Required reference | Conditional reference |
 |---|---|---|
+| Skill delegation / provider conflicts | [Skill ownership](context-efficiency.md#skill-ownership) | Available client skill inventory |
 | Session start / resumption / context cost | [Context discipline](context-efficiency.md) | Current issue/change; optional unfinished-work note |
 | Evidence mapping / delivery / archive | [Evidence checks](spec-evidence.md) | [Validation](validation.md), project CI |
 | OpenSpec setup / workflow migration | [Setup and upgrades](openspec-setup.md) | [Spec-driven development](spec-driven-development.md) |

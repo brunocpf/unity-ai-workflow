@@ -7,6 +7,8 @@ Use project rules and the active OpenSpec change. Reference names below resolve 
 
 Bootstrap is foundation setup; a playable-game request also includes the first slice. Read `adoption.md` for the two completion gates. Ask only unresolved product choices, including platforms and languages; apply established technical defaults.
 
+Use `context-efficiency.md#skill-ownership`: this skill owns project setup; available Unity CLI/package skills own tool mechanics. Do not run a second bootstrap questionnaire. Generated OpenSpec operations retain their own boundaries.
+
 1. Inspect the workspace and chosen toolchain. Install/verify local rules, then establish source/assembly boundaries and selected dependencies (`architecture.md`, `repository.md`, `composition.md`, `dependencies.md`). Do not install every optional package.
 2. Apply the shipped compiler/IDE/quality configuration and reusable tooling (`code-quality.md`, `ide.md`, `code-organization.md`, `developer-tooling.md`). Use real project commands and prove the configured gates reject faults.
 3. Create only README.md, docs/project.md and docs/architecture.md by default; use `docs/standards/starter/DOCUMENT-TEMPLATES.md`. Native locks own versions. Establish OpenSpec using `openspec-setup.md`; generated client integrations remain upstream-owned.

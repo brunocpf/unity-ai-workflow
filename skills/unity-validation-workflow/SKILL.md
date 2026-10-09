@@ -5,7 +5,7 @@ description: Run or implement Unity tests, CI/build checks, visual acceptance an
 
 Use project rules and the active OpenSpec change. Reference names below resolve under `docs/standards/references/` (or `references/` in the kit); load only the concern being changed.
 
-Use existing project check entrypoints and the active change's shared verification map. Read `spec-evidence.md` when planning/delivering checks; acceptance runs declared automated checks and records full machine logs.
+Use available Unity CLI skills for Editor operations (`context-efficiency.md#skill-ownership`); this skill owns acceptance, not command syntax. Use existing project check entrypoints and the active change's shared verification map. Read `spec-evidence.md` when planning/delivering checks; acceptance runs declared automated checks and records full machine logs.
 
 1. Select affected cases from `validation.md`. Use `ci.md` for runner/build work, `code-organization.md`/`ide.md` for quality coverage, `test-scenarios.md` for clock/capture provenance, and `lifecycle.md` for reload/resource regressions.
 2. Execute meaningful checks and inspect failures. Gate rejection probes are required for setup, changed gates or doubtful enforcement—not every ordinary feature. Distinguish infrastructure failures from behavior failures.

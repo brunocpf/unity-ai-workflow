@@ -1,6 +1,6 @@
 {
   "id": "unity-ai-workflow",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "skills": [
     "unity-project-bootstrap",
     "unity-feature-workflow",
@@ -13,5 +13,5 @@
     "unity-workflow-start",
     "unity-workflow-update"
   ],
-  "release_ref": "v0.4.0"
+  "release_ref": "v0.4.1"
 }

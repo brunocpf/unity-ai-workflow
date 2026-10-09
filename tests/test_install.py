@@ -40,7 +40,8 @@ class InstallationTests(unittest.TestCase):
             for skill in result['skills']:
                 self.assertTrue((self.target / client / skill / 'SKILL.md').is_file())
         self.assertFalse((self.target / 'docs/standards/examples').exists())
-        self.assertIn('blob/v0.4.0/examples/', (self.target / 'docs/standards/references/ui-navigation.md').read_text())
+        release_ref = json.loads((self.source / 'kit.json').read_text())['release_ref']
+        self.assertIn(f'blob/{release_ref}/examples/', (self.target / 'docs/standards/references/ui-navigation.md').read_text())
         self.assertIn('@AGENTS.md', (self.target / 'CLAUDE.md').read_text())
         self.assertFalse((self.target / 'Assets').exists())
         self.assertFalse((self.target / 'ProjectSettings').exists())

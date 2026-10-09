@@ -1,6 +1,6 @@
 # Unity CLI beta.12 adoption — kit 0.3.5
 
-5 October 2026, macOS arm64. CLI remains a project-owned pin. This release updates automation guidance; OpenSpec lifecycle, artifacts/scenarios, generated integrations, evidence requirements and existing validation gates are unchanged. [Toolchain](../references/toolchain.md#beta12-capable-automation) owns command behavior; [scenario evidence](../references/test-scenarios.md#editor-readiness-and-capture-source) owns progress and capture provenance.
+5 October 2026, macOS arm64. CLI remains a project-owned pin. This release updates automation guidance; OpenSpec lifecycle, artifacts/scenarios, generated integrations, evidence requirements and existing validation gates are unchanged. [Toolchain](../references/toolchain.md#cli) owns project automation invariants; [scenario evidence](../references/test-scenarios.md#editor-readiness-and-capture-source) owns progress and capture provenance.
 
 ## Evidence
 
