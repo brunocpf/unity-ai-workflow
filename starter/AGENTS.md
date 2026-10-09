@@ -1,6 +1,6 @@
 # Project rules
 
-Apply the kit to ordinary requests without asking the user to restate architecture. Read docs/index.md, the active issue/change and applicable project decisions. Use references under docs/standards/references; `context-efficiency.md` governs focused loading and handoffs, `INDEX.md` routes unfamiliar work. Real check commands live in the project README.
+Apply the kit to ordinary requests without asking the user to restate architecture. Start with the active issue/OpenSpec change and affected source; consult README.md for commands/navigation and docs/project.md or docs/architecture.md for relevant decisions. Use references under docs/standards/references; Create no routine reports or duplicate status docs; `context-efficiency.md` governs minimal records, `INDEX.md` routes unfamiliar work. Real check commands live in the project README.
 
 - Use the pinned OpenSpec launcher `python tooling/specs/run.py`, including instead of bare CLI examples. Follow spec-driven-development.md; define behavior before dependent implementation, preserve requirement IDs/scenarios and verify before reconciliation/archive. No extra phase approval for authorized work.
 - Bootstrap alone means Foundation ready; gameplay/First slice accepted is separate (adoption.md). Do not create a project merely because the kit is installed. Resume existing work; ordinary features do not repeat bootstrap.

@@ -43,7 +43,7 @@ artifacts:
     instruction: |
       Use numbered checkbox tasks: - [ ] 1.1 Description and completion check.
       Link requirement IDs and the owning issue. Keep tasks change-local implementation steps.
-      Each slice includes implementation, relevant tests and documentation; finish a representative visual result early.
+      Each slice includes implementation and relevant tests; update only changed owning documentation; finish a representative visual result early.
       Mark tasks complete from evidence. Pending playtest/user verdicts remain pending.
     requires: [design, specs]
   - id: verification
@@ -54,10 +54,12 @@ artifacts:
       Follow references/spec-driven-development.md in the installed standards.
       List every added/modified/removed requirement ID in requirements; unchanged IDs may add regression coverage.
       For no-spec changes use CHANGE-001 to map the scoped checks instead.
-      Each row records applicable check kinds, status and evidence with path, SHA-256, kind and reviewer for manual evidence.
-      Begin with pending rows and an empty fingerprint. Do not invent passing results or user approval.
-      After actual validation obtain the fingerprint with tooling/specs/check.py fingerprint --change NAME.
-      Run its acceptance check before archive; file existence is not proof of a passed test.
+      Schema 2 maps requirement IDs to shared checks; define each command or manual review once.
+      Automated checks contain executable argument arrays and targets, not claimed pass statuses.
+      Declare applicable visual/authoring/playtest/device reviews as pending with procedures and targets.
+      Record actual manual verdicts with check.py record-review; it collects artifact hashes and time.
+      Delivery check --accept runs the shared automated checks and rejects pending/failed manual reviews.
+      Retain logs through existing CI artifact retention. No whole-tree fingerprint or parallel acceptance report.
     requires: [tasks]
 apply:
   requires: [tasks]

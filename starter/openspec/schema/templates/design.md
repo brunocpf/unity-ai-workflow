@@ -1,12 +1,10 @@
 ## Approach
 
-<!-- Link existing architecture/ADRs; identify affected owners, boundaries and authored assets. -->
+<!-- Link the existing pattern. Describe only changed boundaries/ownership and meaningful tradeoffs.
+     A few sentences suffice for a routine change; do not repeat the architecture. -->
 
 ## Validation
 
-<!-- Requirements → pure/Editor/player/visual/authoring/device checks, targets and commands.
-     Explain omitted check kinds. Reference visual targets, supported locales and budgets. -->
+<!-- Link shared checks in verification.json and state any scenario-specific coverage needs. -->
 
-## Risks and decisions
-
-<!-- Compatibility, rollback and consequential unknowns; no duplicate architecture manifesto. -->
+<!-- Add risks/decisions only when unresolved or material. -->

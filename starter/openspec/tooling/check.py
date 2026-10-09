@@ -1,12 +1,15 @@
-"""Structural evidence gate; actual test jobs and human/agent review remain independent gates."""
+"""Shared checks for a delivered OpenSpec change; no whole-tree acceptance fingerprint."""
 import argparse
-import codecs
+from datetime import datetime, timezone
 import hashlib
+import importlib.util
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
 import sys
+import tempfile
 
 ID = re.compile(r'^[A-Z][A-Z0-9]*-[0-9]{3,}$')
 KINDS = {'automated', 'visual', 'authoring', 'playtest', 'device'}
@@ -16,35 +19,9 @@ def sha(data):
     return hashlib.sha256(data).hexdigest()
 
 
-def source_hash(path):
-    # Stream large textures/meshes; normalize CRLF only for valid UTF-8 without NULs.
-    raw, normalized = hashlib.sha256(), hashlib.sha256()
-    decoder = codecs.getincrementaldecoder('utf-8')()
-    text, tail = True, b''
-    with path.open('rb') as stream:
-        for chunk in iter(lambda: stream.read(65536), b''):
-            raw.update(chunk)
-            if text:
-                try:
-                    decoder.decode(chunk)
-                    text = b'\0' not in chunk
-                except UnicodeDecodeError:
-                    text = False
-            combined = tail + chunk
-            tail = b'\r' if combined.endswith(b'\r') else b''
-            if tail:
-                combined = combined[:-1]
-            normalized.update(combined.replace(b'\r\n', b'\n'))
-    normalized.update(tail)
-    if text:
-        try:
-            decoder.decode(b'', final=True)
-        except UnicodeDecodeError:
-            text = False
-    return normalized.hexdigest() if text else raw.hexdigest()
-
-
 def safe_file(root, relative):
+    if not isinstance(relative, str) or not relative:
+        raise ValueError('Expected a nonempty relative file path')
     path = Path(relative)
     if path.is_absolute() or '..' in path.parts or '\\' in relative or ':' in relative:
         raise ValueError(f'Unsafe path: {relative}')
@@ -62,30 +39,8 @@ def safe_file(root, relative):
 def change_dir(root, name):
     if not re.fullmatch(r'(?:archive/)?[a-z0-9]+(?:-[a-z0-9]+)*', name):
         raise ValueError('Use a kebab-case change name or archive/date-name')
-    folder = root / 'openspec/changes' / name
     safe_file(root, f'openspec/changes/{name}/.openspec.yaml')
-    return folder
-
-
-def fingerprint(root, name):
-    change_dir(root, name)
-    # Git ignores govern generated output. Evidence/task bookkeeping is deliberately excluded.
-    files = subprocess.check_output(['git', 'ls-files', '-z', '--cached', '--others', '--exclude-standard'], cwd=root)
-    entries = {}
-    for raw in sorted(set(files.split(b'\0')) - {b''}):
-        relative = raw.decode('utf-8')
-        p = Path(relative)
-        if relative.startswith(('artifacts/', 'docs/evidence/', '.unity-workflow/')):
-            continue
-        if relative.startswith('openspec/changes/') and p.name in ('verification.json', 'tasks.md'):
-            continue
-        path = root / relative
-        if not path.exists() and not path.is_symlink():
-            # Hash the working tree, independent of whether a deletion is staged.
-            # Removing the former path/hash still invalidates its old fingerprint.
-            continue
-        entries[relative] = source_hash(safe_file(root, relative))
-    return sha(json.dumps(entries, sort_keys=True).encode())
+    return root / 'openspec/changes' / name
 
 
 def requirement_ids(folder):
@@ -93,7 +48,7 @@ def requirement_ids(folder):
     for file in sorted((folder / 'specs').rglob('*.md')):
         text = safe_file(folder, file.relative_to(folder).as_posix()).read_text(encoding='utf-8')
         if '## RENAMED Requirements' in text:
-            raise ValueError('Unity profile keeps titles/IDs stable; use MODIFIED or an explicit remove/add migration')
+            raise ValueError('Keep requirement IDs stable; use MODIFIED or explicit remove/add migration')
         for title in re.findall(r'^### Requirement:\s*(.+)$', text, re.M):
             identifier = title.split(' ', 1)[0]
             if not ID.fullmatch(identifier) or identifier in ids:
@@ -107,67 +62,171 @@ def requirement_ids(folder):
     return ids
 
 
-def check(root, name, accept=False):
+def load(root, name, refreshing=None, supplied=None):
     folder = change_dir(root, name)
-    required = requirement_ids(folder)
-    data = json.loads(safe_file(root, f'openspec/changes/{name}/verification.json').read_text(encoding='utf-8'))
-    if data.get('schema') != 1 or not isinstance(data.get('requirements'), list):
-        raise ValueError('Invalid verification schema')
-    rows = data['requirements']
-    listed = [r['id'] for r in rows]
-    if len(listed) != len(set(listed)) or not required.issubset(listed):
-        raise ValueError(f'Missing/duplicate acceptance mapping: {sorted(required - set(listed))}')
+    data = supplied if supplied is not None else json.loads(
+        safe_file(root, f'openspec/changes/{name}/verification.json').read_text(encoding='utf-8'))
+    if data.get('schema') != 2:
+        raise ValueError('Expected verification schema 2; migrate active delivery explicitly; leave historical archives unchanged')
+    rows, checks = data.get('requirements'), data.get('checks')
+    if not isinstance(rows, list) or not rows or not isinstance(checks, dict) or not checks:
+        raise ValueError('Requirements and shared checks must be nonempty')
+    required, listed, used = requirement_ids(folder), set(), set()
     for row in rows:
-        if not ID.fullmatch(row['id']) or row.get('status') not in ('pending', 'pass', 'fail'):
-            raise ValueError('Invalid requirement/status')
-        kinds = row.get('required_kinds', [])
-        if not kinds or len(kinds) != len(set(kinds)) or not set(kinds) <= KINDS:
-            raise ValueError(f'Invalid required check kinds: {row["id"]}')
-        evidence = row.get('evidence', [])
-        if not isinstance(evidence, list):
-            raise ValueError('Evidence must be a list')
-        seen = set()
-        for item in evidence:
-            if item.get('kind') not in KINDS:
-                raise ValueError('Unknown evidence kind')
-            path = item['path']
-            if not path.startswith(('artifacts/', 'docs/evidence/')):
-                raise ValueError('Evidence must live in artifacts/ or docs/evidence/')
-            contents = safe_file(root, path).read_bytes()
-            if not contents.strip() or sha(contents) != item.get('sha256'):
-                raise ValueError(f'Empty/modified evidence: {path}')
-            if not item.get('command_or_procedure') or not item.get('target') or not item.get('run_id'):
-                raise ValueError('Evidence requires procedure/command, target and run ID')
-            if item['kind'] != 'automated' and not item.get('reviewer'):
-                raise ValueError('Manual evidence requires its actual reviewer; never invent user approval')
-            seen.add(item['kind'])
-        if accept and (row['status'] != 'pass' or not set(kinds) <= seen):
-            raise ValueError(f'Unaccepted or missing required evidence: {row["id"]}')
-    if accept:
-        tasks = safe_file(root, f'openspec/changes/{name}/tasks.md').read_text(encoding='utf-8')
-        markers = re.findall(r'^\s*-\s+\[([^]]*)\]', tasks, re.M)
-        if not markers or any(m.strip().lower() != 'x' for m in markers):
-            raise ValueError('Incomplete/empty tasks')
-        if data.get('fingerprint') != fingerprint(root, name):
-            raise ValueError('Stale source/spec fingerprint; rerun affected checks and reconcile evidence')
-    return {'status': 'pass', 'mode': 'acceptance-evidence' if accept else 'mapping',
-            'requirements': len(rows), 'note': 'Integrity/mapping only. Independent test jobs, semantic review and actual manual verdicts are required.'}
+        if not isinstance(row, dict):
+            raise ValueError('Requirement rows must be objects')
+        identifier, names = row.get('id'), row.get('checks')
+        if not isinstance(identifier, str) or not ID.fullmatch(identifier) or identifier in listed:
+            raise ValueError('Invalid/duplicate requirement mapping')
+        if not isinstance(names, list) or not names or any(not isinstance(n, str) for n in names):
+            raise ValueError(f'Missing check mapping: {identifier}')
+        if len(names) != len(set(names)) or not set(names) <= checks.keys():
+            raise ValueError(f'Unknown/duplicate check mapping: {identifier}')
+        listed.add(identifier)
+        used.update(names)
+    if not required <= listed or used != checks.keys():
+        raise ValueError('Missing requirement mapping or unused checks')
+    for key, item in checks.items():
+        if not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', key) or not isinstance(item, dict):
+            raise ValueError('Invalid shared check')
+        if item.get('kind') not in KINDS or not item.get('target'):
+            raise ValueError(f'Invalid kind/target: {key}')
+        if item['kind'] == 'automated':
+            command = item.get('command')
+            if not isinstance(command, list) or not command or any(not isinstance(s, str) or not s for s in command):
+                raise ValueError(f'Expected command argument array: {key}')
+            if 'status' in item or 'artifacts' in item:
+                raise ValueError('Automated outcomes are produced by execution, not declared in verification.json')
+            timeout = item.get('timeout_seconds', 600)
+            if type(timeout) is not int or not 1 <= timeout <= 7200:
+                raise ValueError('timeout_seconds must be 1..7200')
+        else:
+            if item.get('status') not in ('pending', 'pass', 'fail') or not item.get('procedure'):
+                raise ValueError(f'Invalid manual verdict/procedure: {key}')
+            artifacts = item.get('artifacts', [])
+            if not isinstance(artifacts, list):
+                raise ValueError('Manual artifacts must be a list')
+            for artifact in ([] if key == refreshing else artifacts):
+                path = artifact['path']
+                if not path.startswith(('artifacts/', 'docs/evidence/')):
+                    raise ValueError('Review artifacts must live in artifacts/ or docs/evidence/')
+                content = safe_file(root, path).read_bytes()
+                if not content.strip() or sha(content) != artifact.get('sha256'):
+                    raise ValueError(f'Empty/modified manual artifact: {path}')
+            if item['status'] == 'pass' and (not item.get('reviewer') or not item.get('reviewed_at') or not artifacts):
+                raise ValueError('Passing manual review requires reviewer, time and artifacts; use record-review')
+    return folder, data
+
+
+def write_json_atomic(path, data):
+    mode = path.stat().st_mode & 0o777
+    fd, temporary = tempfile.mkstemp(prefix='.verification-', dir=path.parent)
+    try:
+        with os.fdopen(fd, 'w', encoding='utf-8') as output:
+            json.dump(data, output, indent=2)
+            output.write('\n')
+        os.chmod(temporary, mode)
+        os.replace(temporary, path)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
+
+
+def record_review(root, name, key, status, reviewer, paths):
+    folder, data = load(root, name, refreshing=key)
+    item = data['checks'].get(key)
+    if item is None or item['kind'] == 'automated' or status not in ('pass', 'fail'):
+        raise ValueError('Select a declared manual check and actual pass/fail verdict')
+    if not reviewer.strip() or not paths:
+        raise ValueError('Actual reviewer and inspected artifacts are required')
+    artifacts = []
+    for path in dict.fromkeys(paths):
+        if not path.startswith(('artifacts/', 'docs/evidence/')):
+            raise ValueError('Review artifacts must live in artifacts/ or docs/evidence/')
+        content = safe_file(root, path).read_bytes()
+        if not content.strip():
+            raise ValueError('Empty review artifact')
+        artifacts.append({'path': path, 'sha256': sha(content)})
+    item.update(status=status, reviewer=reviewer, artifacts=artifacts,
+                reviewed_at=datetime.now(timezone.utc).isoformat())
+    write_json_atomic(folder / 'verification.json', data)
+    return {'status': 'recorded', 'check': key, 'verdict': status}
+
+
+def check(root, name, accept=False):
+    folder, data = load(root, name)
+    if not accept:
+        return {'status': 'pass', 'mode': 'mapping', 'requirements': len(data['requirements'])}
+    markers = re.findall(r'^\s*-\s+\[([^]]*)\]', safe_file(folder, 'tasks.md').read_text(encoding='utf-8'), re.M)
+    if not markers or any(m.strip().lower() != 'x' for m in markers):
+        raise ValueError('Incomplete/empty tasks')
+    for key, item in data['checks'].items():
+        if item['kind'] != 'automated' and item['status'] != 'pass':
+            raise ValueError(f'Unaccepted manual check: {key}')
+    output = root / 'artifacts/verification'
+    output.mkdir(parents=True, exist_ok=True)
+    run = Path(tempfile.mkdtemp(prefix='run-', dir=output))
+    try:
+        revision = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, stderr=subprocess.DEVNULL, text=True).strip()
+        dirty = bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=root, stderr=subprocess.DEVNULL, text=True).strip())
+    except (OSError, subprocess.CalledProcessError):
+        revision, dirty = None, None
+    report = {'revision': revision, 'dirty': dirty, 'python': sys.version.split()[0], 'change': name, 'started_at': datetime.now(timezone.utc).isoformat(), 'status': 'running', 'checks': {}}
+    # Reuse the bounded-output/full-log runner. No shell, cached pass or author-written command result.
+    spec = importlib.util.spec_from_file_location('workflow_output', Path(__file__).with_name('ci.py'))
+    runner = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(runner)
+    try:
+        for key, item in data['checks'].items():
+            if item['kind'] != 'automated':
+                report['checks'][key] = item
+                continue
+            command = [sys.executable if arg == '{python}' else arg for arg in item['command']]
+            report['checks'][key] = {'command': command, 'target': item['target'], 'status': 'running', 'log': key + '.log'}
+            runner.execute(command, root, run / (key + '.log'), key, quiet=True,
+                           timeout=item.get('timeout_seconds', 600))
+            report['checks'][key]['status'] = 'pass'
+        if load(root, name)[1] != data:
+            raise ValueError("Verification definition changed during execution")
+        report['status'] = 'pass'
+    except (ValueError, OSError, subprocess.SubprocessError) as error:
+        report['status'] = 'fail'
+        report['failure'] = str(error)
+        if 'key' in locals():
+            report['checks'][key]['status'] = 'fail'
+        raise
+    finally:
+        report['finished_at'] = datetime.now(timezone.utc).isoformat()
+        (run / 'results.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
+    return {'status': 'pass', 'mode': 'delivery', 'requirements': len(data['requirements']),
+            'report': str(run / 'results.json'), 'note': 'Current command results; manual verdicts still need semantic freshness review.'}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('operation', choices=['fingerprint', 'check'])
+    parser.add_argument('operation', choices=['check', 'record-review'])
     parser.add_argument('--change', required=True)
     parser.add_argument('--accept', action='store_true')
+    parser.add_argument('--check-id')
+    parser.add_argument('--status', choices=['pass', 'fail'])
+    parser.add_argument('--reviewer')
+    parser.add_argument('--artifact', action='append', default=[])
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
-    result = {'fingerprint': fingerprint(root, args.change)} if args.operation == 'fingerprint' else check(root, args.change, args.accept)
+    if args.operation == 'record-review':
+        if args.accept or not args.check_id or not args.status or not args.reviewer:
+            parser.error('record-review requires --check-id, --status, --reviewer and --artifact')
+        result = record_review(root, args.change, args.check_id, args.status, args.reviewer, args.artifact)
+    else:
+        if args.check_id or args.status or args.reviewer or args.artifact:
+            parser.error('Review arguments apply only to record-review')
+        result = check(root, args.change, args.accept)
     print(json.dumps(result, indent=2))
 
 
 if __name__ == '__main__':
     try:
         main()
-    except (ValueError, OSError, KeyError, TypeError, subprocess.CalledProcessError) as error:
+    except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as error:
         print(f'Spec gate failed: {error}', file=sys.stderr)
-        sys.exit(1)
+        sys.exit(error.returncode if isinstance(error, subprocess.CalledProcessError) and error.returncode > 0 else 1)

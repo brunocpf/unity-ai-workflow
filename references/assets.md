@@ -7,7 +7,7 @@ Brief → reference → candidate → technical cleanup → Unity import
 
 A generated asset is a candidate until it meets its brief in the game. Keep raw outputs and authoring files under SourceAssets. Promote only accepted exports into Assets/Game/Content. Keep large binary sources/exports in LFS or a versioned artifact store; preserve Unity .meta files and use stable asset IDs.
 
-Every asset brief specifies role, style references, physical size, camera distance, silhouette, polygon/texture/material budgets, pivot, collider needs, skeleton/animation requirements, target platforms, and acceptance views. Include rights/provenance records needed for the intended distribution. Set a generation budget and reroll limit before a batch; resume known provider jobs instead of submitting duplicates after timeouts.
+Use one brief per meaningful asset/batch. Record applicable role/style/size/budget/pivot/collider/rig/platform/acceptance constraints; omit irrelevant fields. Generation/import scripts collect machine provenance beside accepted sources. Include rights/provenance records needed for the intended distribution. Set a generation budget and reroll limit before a batch; resume known provider jobs instead of submitting duplicates after timeouts.
 
 ### Tool routing
 
@@ -23,7 +23,7 @@ Every asset brief specifies role, style references, physical size, camera distan
 | Motion exploration | Veo through Gemini API | Motion specification, animation authoring or separate mocap |
 | UI icons requiring crisp scaling | Vector authoring | UI import and style integration |
 
-For particle effects, use the [VFX Graph preference and setup contract](vfx.md). Read only the chosen pipeline: [3D](assets-3d.md), [images/pixel art](assets-2d.md), [motion reference](assets-motion.md). Use the asset/motion forms in [document templates](../starter/DOCUMENT-TEMPLATES.md). [Validation](validation.md) owns inspection and iteration.
+For particle effects, use the [VFX Graph preference and setup contract](vfx.md). Read only the chosen pipeline: [3D](assets-3d.md), [images/pixel art](assets-2d.md), [motion reference](assets-motion.md). Use the conditional record guidance in [document templates](../starter/DOCUMENT-TEMPLATES.md#conditional-records). [Validation](validation.md) owns inspection and iteration.
 
 For game UI and its surrounding art, [ui-art-direction.md](ui-art-direction.md) establishes the visual target and tool-selection criteria. Original/licensed assets still need to meet that target at gameplay scale; provenance is not a quality verdict.
 

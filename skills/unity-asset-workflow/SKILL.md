@@ -3,14 +3,12 @@ name: unity-asset-workflow
 description: Generate, prepare or import 3D, texture, sprite, pixel-art, particle-effect or motion-reference assets for this Unity workflow.
 ---
 
-References resolve under `docs/standards/references/` (or `references/` at the kit root). Follow project rules, the active change and `context-efficiency.md`; load only sections triggered by this task. Apply `clarification.md` when intent or consequential constraints are unresolved; inspect/recommend before asking, preserve approved defaults, and continue independent work.
+Use project rules and the active OpenSpec change. Reference names below resolve under `docs/standards/references/` (or `references/` in the kit); load only the concern being changed.
 
-Read `assets.md` and exactly the needed pipeline: `assets-3d.md`, `assets-2d.md`, or `assets-motion.md`. For particle effects read `vfx.md`: prefer VFX Graph, qualify the package/target and document Shuriken exceptions. Use the asset/motion brief and project art direction.
+Author assets for the current game/visual target; generate only needed content and respect the agreed budget. Read `assets.md` for ownership/provenance, then one applicable pipeline: `assets-2d.md`, `assets-3d.md`, `assets-motion.md` or `vfx.md`.
 
-For UI or a new game's visual direction, follow `ui-art-direction.md`. Choose generation/vector/procedural work to match the visual target; tool convenience alone does not justify a simpler appearance.
-
-Use available provider skills/tools within the task's generation budget. Preserve job identity and accepted source/export lineage. For recurring cleanup/export operations use project-owned Blender/import presets rather than repeated ad hoc edits.
-
-Promote a candidate only after technical import checks and in-game inspection from `validation.md`. Video reference does not itself supply a skeleton or animation clip. Update the asset registry and evidence, not a new generic art manual.
-
-Apply `spec-driven-development.md`; use `spec-evidence.md` when defining verification or delivering the increment.
+1. Clarify unresolved appearance, dimensions, animation behavior or paid-generation choices. Use the existing art direction and a compact asset/batch brief; don't create a document per incidental asset.
+2. Use the selected image/PixelLab/Tripo/Blender tools and their relevant skills. Request real transparency/alpha explicitly where needed—never a painted checkerboard. Save accepted source outputs and generation metadata; do not depend on expiring URLs or regenerating identical hosted output.
+3. Import through the selected Unity profile, preserve GUIDs and authored edits, and verify scale/pivots/alpha/materials/rigs/clips/budgets as applicable. Factories consume editable authored assets.
+4. Inspect in-game results under actual lighting, motion, framing and target scale. Iterate against the visual target; technical validity alone is insufficient.
+5. Keep machine provenance beside source assets and link it from the current change's checks. Update only the owning brief/registry when decisions change; no duplicate asset completion report.

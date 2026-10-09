@@ -1,6 +1,6 @@
 # Localization from the first slice
 
-**Localization is baseline infrastructure for player-facing text, even when the first release has one language.** Keep Core rules, saves and network data language-independent. Ask for source language, supported locale codes/regions and launch versus later coverage using [clarification](clarification.md); do not invent a translation scope. Record the contract in `docs/localization.md`. Build infrastructure while answers are pending; unapproved language support remains pending.
+**Localization is baseline infrastructure for player-facing text, even when the first release has one language.** Keep Core rules, saves and network data language-independent. Ask for source language, supported locale codes/regions and launch versus later coverage using [clarification](clarification.md); do not invent a translation scope. Record the contract in `docs/project.md (language scope) and docs/architecture.md (localization ownership)`. Build infrastructure while answers are pending; unapproved language support remains pending.
 
 ## Select the installed API generation
 

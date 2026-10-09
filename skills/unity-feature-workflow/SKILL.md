@@ -3,12 +3,13 @@ name: unity-feature-workflow
 description: Implement a bounded gameplay or application feature in a project using this kit; route UI and asset work to their focused references.
 ---
 
-References resolve under `docs/standards/references/` (or `references/` at the kit root). Follow project rules, the active change and `context-efficiency.md`; load only sections triggered by this task.
+Use project rules and the active OpenSpec change. Reference names below resolve under `docs/standards/references/` (or `references/` in the kit); load only the concern being changed.
 
-Apply `clarification.md` when behavior, scope or consequential choices are unclear; preserve previous answers and continue independent work. Read `localization.md` when adding/changing player-facing text, language settings or localized content.
+Implement the authorized feature in the existing project; do not repeat bootstrap or redesign established infrastructure.
 
-Use the project architecture/source map; read `architecture.md` for a new boundary or an unclear invariant. Add `modules.md` for public/cross-module changes and `reliability.md` for storage/network/failure contracts; read `reactive.md` when changing state streams or async behavior. Read `authoring.md` when changing scenes, prefab spawning, tuning definitions or generators; runtime factories consume authored assets by default. Read `dependencies.md` only when choosing/changing packages and `utilities.md` when adding shared infrastructure.
+1. Read affected capability specs, the active change and source. Use the OpenSpec propose/apply/archive operation for the phase; `spec-driven-development.md` defines the loop. Clarify only unresolved behavior or consequential choices.
+2. Keep design to affected boundaries, ownership, tradeoffs and risks. Reuse architecture and verified helpers; no parallel feature brief, routine ADR or module document.
+3. Implement dependency-ordered slices with affected tests. Update the owning contract only when it changes. Preserve authored content and accepted visual direction.
+4. Deliver through the shared checks in verification.json (`spec-evidence.md`). Inspect/refine visual output when relevant. Report remaining manual/device verdicts honestly; no separate completion report.
 
-Implement the feature's next playable acceptance slice without weakening project standards. Keep existing approved profile exceptions. For UI work use the UI skill and the project's visual target; new/substantial visual work follows `ui-art-direction.md`. For art use the asset skill/reference. Apply existing code-organization conventions/checks; read `code-organization.md` when adding types or changing organization/quality coverage. Run changed-boundary checks from `validation.md`, record behavior/evidence and update the affected feature contract. Do not turn a local feature into a template/toolchain overhaul.
-
-Apply `spec-driven-development.md`; use `spec-evidence.md` when defining verification or delivering the increment.
+Conditional references: `architecture.md` for new/unclear boundaries; `modules.md` for substantial public contracts; `reactive.md` for streams/async lifetimes; `reliability.md` for persistence/network failures; `authoring.md` for scenes/prefabs/data/generators; `dependencies.md` for package choices; `utilities.md` before adding shared infrastructure. Use the UI or asset skill only for those subtasks. Read `localization.md` when adding/changing player-facing content.

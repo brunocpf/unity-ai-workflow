@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import os
+import posixpath
 from pathlib import Path, PurePosixPath
 import re
 import subprocess
@@ -102,7 +103,7 @@ def read_state(root):
     return state
 
 
-def payload(source, agents):
+def payload(source, agents, examples="none"):
     metadata = json.loads((source / 'kit.json').read_text())
     if metadata.get('id') != 'unity-ai-workflow' or not re.fullmatch(r'\d+\.\d+\.\d+(?:[-+][a-zA-Z0-9.-]+)?', metadata.get('version', '')):
         raise InstallError('Invalid kit metadata')
@@ -124,8 +125,31 @@ def payload(source, agents):
             if p.is_file():
                 files[f'{destination}/{relative.as_posix()}'] = p.read_bytes()
 
-    for folder in ('references', 'starter', 'examples'):
+    for folder in ('references', 'starter'):
         copy_tree(folder, f'docs/standards/{folder}')
+    if examples == 'all':
+        copy_tree('examples', 'docs/standards/examples')
+    elif examples != 'none':
+        raise InstallError('Unknown example pack')
+    # Uninstalled examples and maintenance records resolve to this release, never moving main.
+    release = metadata.get('release_ref')
+    if not isinstance(release, str) or not re.fullmatch(r'v[0-9]+\.[0-9]+\.[0-9]+', release):
+        raise InstallError('Kit requires a pinned release_ref for optional resources')
+    base = f'https://github.com/brunocpf/unity-ai-workflow/blob/{release}/'
+    for name, content in list(files.items()):
+        if not name.endswith('.md'):
+            continue
+        relative = name.removeprefix('docs/standards/')
+        def link(match):
+            target = match.group(1)
+            if ':' in target or target.startswith('#'):
+                return match.group(0)
+            resolved = posixpath.normpath(posixpath.join(posixpath.dirname(relative), target))
+            local = resolved.split('#', 1)[0]
+            external = resolved.startswith('verification/') or (
+                f'docs/standards/{local}' not in files and (source / local).is_file())
+            return '](' + base + resolved + ')' if external else match.group(0)
+        files[name] = re.sub(r'\]\(([^\s)]+)\)', link, content.decode('utf-8')).encode('utf-8')
     for name in skills:
         entry = source / 'skills' / name / 'SKILL.md'
         if not entry.is_file():
@@ -178,7 +202,7 @@ def atomic_write(path, data):
             os.unlink(temporary)
 
 
-def install(source, root, command, agent=None, dry_run=False):
+def install(source, root, command, agent=None, dry_run=False, examples=None):
     if root == source or source in root.parents:
         raise InstallError('Install into a game workspace outside the kit checkout')
     old = read_state(root)
@@ -186,7 +210,8 @@ def install(source, root, command, agent=None, dry_run=False):
         raise InstallError('No installation manifest; use install first')
     selected = list(CLIENTS) if agent == 'both' else [agent] if agent else old['agents'] if old else list(CLIENTS)
     agents = sorted(set(selected) | set(old['agents'] if old else []))
-    metadata, files, blocks = payload(source, agents)
+    examples = examples or (old.get('examples', 'all') if old else 'none')
+    metadata, files, blocks = payload(source, agents, examples)
     snapshots, changes, conflicts = {}, {}, []
     for category, desired in (('files', files), ('blocks', blocks)):
         previous = old[category] if old else {}
@@ -219,7 +244,7 @@ def install(source, root, command, agent=None, dry_run=False):
         pass
     state = {
         'schema': 1, 'kit': metadata['id'], 'version': metadata['version'],
-        'source_revision': revision, 'source_dirty': dirty, 'agents': agents, 'skills': metadata['skills'],
+        'source_revision': revision, 'source_dirty': dirty, 'agents': agents, 'skills': metadata['skills'], 'examples': examples,
         'files': {p: digest(d) for p, d in sorted(files.items())},
         'blocks': {p: digest(d) for p, d in sorted(blocks.items())},
     }
@@ -268,12 +293,12 @@ def apply_changes(root, changes, snapshots, lock_relative):
         lock.unlink()
 
 
-def assess(source, root):
+def assess(source, root, examples=None):
     """Report candidate differences without claiming semantic applicability or writing files."""
     old = read_state(root)
     if old is None:
         raise InstallError('No project installation manifest to assess')
-    metadata, files, blocks = payload(source, old['agents'])
+    metadata, files, blocks = payload(source, old['agents'], examples or old.get('examples', 'all'))
     changes = []
     for category, desired in (('files', files), ('blocks', blocks)):
         for path in sorted(set(old[category]) | set(desired)):
@@ -298,11 +323,12 @@ def main():
     parser.add_argument('--target', type=Path, help='Game workspace (not the kit checkout)')
     parser.add_argument('--home', type=Path, help='Global install home override (for isolated tests)')
     parser.add_argument('--agent', choices=['codex', 'claude', 'both'], help='Default: both on install, existing clients on update; selections only add clients')
+    parser.add_argument('--examples', choices=['none', 'all'], help='New installs default to none; updates preserve the installed choice')
     parser.add_argument('--dry-run', action='store_true', help='Show the plan without writing files')
     args = parser.parse_args()
     try:
         if args.command in ('install-global', 'check-global'):
-            if args.target or (args.command == 'check-global' and (args.agent or args.dry_run)):
+            if args.examples or args.target or (args.command == 'check-global' and (args.agent or args.dry_run)):
                 parser.error('Global commands do not accept --target; check-global accepts only --home')
             import global_install
             result = global_install.run(SOURCE, (args.home or Path.home()).expanduser().resolve(), args.command, args.agent, args.dry_run, sys.modules[__name__])
@@ -314,13 +340,13 @@ def main():
         if args.command == 'assess':
             if args.agent or args.dry_run:
                 parser.error('assess accepts only --target and never writes files')
-            result = assess(SOURCE, root)
+            result = assess(SOURCE, root, args.examples)
         elif args.command == 'check':
-            if args.agent or args.dry_run:
+            if args.examples or args.agent or args.dry_run:
                 parser.error('check does not accept --agent or --dry-run')
             result = verify(root)
         else:
-            result = install(SOURCE, root, args.command, args.agent, args.dry_run)
+            result = install(SOURCE, root, args.command, args.agent, args.dry_run, args.examples)
         print(json.dumps(result, indent=2))
         return 0
     except (InstallError, OSError, ValueError, KeyError, TypeError) as error:

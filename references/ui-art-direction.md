@@ -4,7 +4,7 @@ Required for new game UI, substantial screen design and visual evaluation. For a
 
 ## Establish a visible target
 
-Before building out multiple screens, establish these in `docs/art-direction.md` using the [visual design brief](../starter/DOCUMENT-TEMPLATES.md#visual-design-brief). Use the game brief and established choices; [ask early](clarification.md) when visual intent or constraints are ambiguous. Continue independent exploration while awaiting answers. Ordinary design work needs no extra approval gate.
+Before building out multiple screens, establish these in docs/project.md (visual direction), extracting an art-direction document only when substantial; use the [project form](../starter/DOCUMENT-TEMPLATES.md#docsprojectmd). Use the game brief and established choices; [ask early](clarification.md) when visual intent or constraints are ambiguous. Continue independent exploration while awaiting answers. Ordinary design work needs no extra approval gate.
 
 1. Identify the player's main decision, the screen's focal area and the information needed at that moment. Separate persistent, contextual and secondary controls. Choose a composition around play; a header/sidebar/card layout is a considered option, not an automatic scaffold.
 2. Inspect a small set of relevant visual references or existing accepted project screens. Save/link the exact images and identify what each contributes: composition, shape language, material treatment, information hierarchy or motion. Palette names and a font pair alone are not an art direction. References set ambition; create original output.
@@ -41,7 +41,7 @@ The kit's minimal source controls and styling galleries demonstrate implementati
 
 ## Acceptance is comparison-based
 
-Review actual player captures and relevant motion windows against the target and game brief. Record the following dimensions as **meets target / needs revision / unverified**, with specific evidence, in the [visual iteration record](../starter/DOCUMENT-TEMPLATES.md#visual-iteration-record):
+Review actual player captures and relevant motion windows against the target and game brief. Record the following dimensions as **meets target / needs revision / unverified**, with specific evidence, in the active change's shared visual review (link inspected artifacts and concise observations; no separate iteration report):
 
 - Composition and gameplay focus: primary decision and action read clearly; screen regions have deliberate proportions.
 - Identity and asset finish: imagery, shapes, surfaces and typography form a cohesive game-specific interface at playing distance.

@@ -44,7 +44,7 @@ Targets below are design constraints to verify, not measured results:
 | Content | Bounded shared-library residency; large art loaded separately; report peak memory during module overlap and unload |
 | Shutdown | Owner/lease counts return to baseline; native memory may not return immediately, so inspect retained references and provider state too |
 
-Record cold startup, warm screen opening, row scrolling/rebinding, theme switching and repeated module open/close under representative loads. Capture CPU time, allocation bytes, retained memory, GPU/layout costs and loading latency. Define device-specific budgets in docs/performance-budgets.md; do not invent universal millisecond targets. Compare before/after on the same target build and configuration. Distinguish authoring, Editor runtime and target-player numbers.
+Record cold startup, warm screen opening, row scrolling/rebinding, theme switching and repeated module open/close under representative loads. Capture CPU time, allocation bytes, retained memory, GPU/layout costs and loading latency. Define device-specific budgets in docs/project.md (performance budgets); do not invent universal millisecond targets. Compare before/after on the same target build and configuration. Distinguish authoring, Editor runtime and target-player numbers.
 
 Optimize in order: avoid unnecessary work; reduce invalidation/reconstruction; bound loaded content; virtualize large data sets; then consider pooling/data structures. Avoid unsafe code, custom schedulers or aggressive cache persistence to save an unmeasured dictionary lookup. A global cache that survives sessions can conceal leaks and invalid content even if its warm timing looks good.
 

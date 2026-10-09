@@ -16,25 +16,14 @@ Game/                                # Git + Unity project root
   .husky/                            # Verify-only hooks; LFS integration preserved
   .github/workflows/                  # Or chosen provider, not several unused ones
   docs/
-    index.md
-    project.md
-    architecture.md
-    authoring.md                     # Scenes, prefabs, tuning, previews, safe generation
-    toolchain.md
-    dependencies.md                  # Selected packages, pins, owners, evidence
-    compatibility.md
-    art-direction.md
-    localization.md                  # Agreed locales, tables/providers, fonts and review status
-    performance-budgets.md
+    project.md                       # Product/platform/locale/visual decisions and budgets
+    architecture.md                  # Source/ownership map, authoring locations, exceptions
     standards/
-      references/                    # Single-source policy, task index
-      starter/                       # Retained copyable files/forms
-      examples/                      # On-demand source reference; not imported wholesale
-    modules/                         # Public contracts, dependencies and ownership
-    decisions/                       # Numbered architectural decisions
-    features/                        # Navigation/history; link canonical OpenSpec behavior
-    assets/                          # Briefs and provenance references
-    handoffs/                        # Concise active task state
+      references/                    # Task-specific policy; do not preload the directory
+      starter/                       # Configuration/tooling sources, not extra project docs
+      examples/                      # Optional offline reference pack (--examples all)
+    evidence/                        # Retained manual evidence when not stored in CI
+    # Split ADRs, module contracts or art/asset briefs only when independently maintained.
   openspec/
     config.yaml
     schemas/unity-game/              # Versioned Unity lifecycle/templates

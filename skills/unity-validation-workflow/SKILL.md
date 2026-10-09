@@ -3,18 +3,13 @@ name: unity-validation-workflow
 description: Run or implement Unity tests, CI/build checks, visual acceptance and regression evidence for this workflow.
 ---
 
-References resolve under `docs/standards/references/` (or `references/` at the kit root). Follow project rules, the active change and `context-efficiency.md`; load only sections triggered by this task.
+Use project rules and the active OpenSpec change. Reference names below resolve under `docs/standards/references/` (or `references/` in the kit); load only the concern being changed.
 
-Use `clarification.md` if acceptance behavior is ambiguous rather than inventing a passing interpretation. Read `localization.md` for text/content/locale validation and the supported-language matrix.
+Use existing project check entrypoints and the active change's shared verification map. Read `spec-evidence.md` when planning/delivering checks; acceptance runs declared automated checks and records full machine logs.
 
-Use established project check commands; read affected cases in `validation.md`. Include `engineering-baseline.md` for template/release acceptance and `code-quality.md` for compiler/analyzer gates. For IDE/regeneration or formatting/organization coverage add `ide.md` and `code-organization.md`. For runner/build changes add `ci.md`; for acceleration/capture evidence add `test-scenarios.md`; for version/API issues add `toolchain.md`; for Play/session leaks add `lifecycle.md`.
+1. Select affected cases from `validation.md`. Use `ci.md` for runner/build work, `code-organization.md`/`ide.md` for quality coverage, `test-scenarios.md` for clock/capture provenance, and `lifecycle.md` for reload/resource regressions.
+2. Execute meaningful checks and inspect failures. Gate rejection probes are required for setup, changed gates or doubtful enforcement—not every ordinary feature. Distinguish infrastructure failures from behavior failures.
+3. For visual work, inspect actual output against the accepted target (`ui-art-direction.md`) and refine defects. For authored content/generators, test Editor edit preservation. For localization, test the affected locale/font/provider contract.
+4. Record actual manual verdicts with record-review; automation cannot grant user acceptance. Keep command output in artifacts and summarize results/gaps in the existing change/PR. Don't write a parallel acceptance matrix or completion handoff.
 
-Use documented project entrypoints, or implement the missing check within scope. Separate discovery/infrastructure failures from failing behavior. Run capture scenarios and actually inspect outputs; refine observed defects and rerun affected checks. Retain durable reports and before/after evidence.
-
-For visual acceptance/evaluations, apply `ui-art-direction.md` to the actual screen and its target/reference images. Judge composition, identity, hierarchy, feedback and completeness separately from functional passes. User rejection reopens visual acceptance; do not defend it with test counts or successful captures.
-
-Runtime success does not establish authoring usability. For authored content or generation changes run the authoring-edit and preservation checks in validation.md.
-
-For a first template/CI implementation prove required gates reject deliberate faults, then pass from a clean checkout. For an ordinary change select affected boundaries rather than rebuilding every platform.
-
-Apply `spec-driven-development.md`; use `spec-evidence.md` when defining verification or delivering the increment.
+Use `engineering-baseline.md` for template/release qualification; ordinary changes need affected-boundary checks rather than every supported platform. Archive does not waive required acceptance.

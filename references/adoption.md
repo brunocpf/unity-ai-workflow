@@ -2,7 +2,7 @@
 
 ## Install before bootstrap
 
-Installing the workflow is separate from both Unity milestones. From the kit checkout run `python3 install.py install --target /path/to/game --agent codex|claude|both` (choose one value, not the literal alternatives), then `python3 install.py check --target /path/to/game`. The installer copies the shared standards/examples, adds client discovery paths and preserves existing instruction content. It does not create the game, apply compiler settings or provision tools. Bootstrap can install the workflow as its first step when not yet adopted; the user's bootstrap request already authorizes that prerequisite.
+Installing the workflow is separate from both Unity milestones. From the kit checkout run `python3 install.py install --target /path/to/game --agent codex|claude|both` (choose one value, not the literal alternatives), then `python3 install.py check --target /path/to/game`. The installer copies shared standards and optionally examples, adds client discovery paths and preserves existing instruction content. It does not create the game, apply compiler settings or provision tools. Bootstrap can install the workflow as its first step when not yet adopted; the user's bootstrap request already authorizes that prerequisite.
 
 ## Milestones and request scope
 
@@ -13,7 +13,7 @@ Installing the workflow is separate from both Unity milestones. From the kit che
 - Establish the project, native version/package locks, source/assembly boundaries, selected composition/dependency setup, Git conventions, local rules/skills and navigable project docs. Record targets, locale scope and the proposed first slice.
 - Wire nullable/compiler parity, IDE regeneration, owned-code quality/coverage gates, test/build entrypoints, hooks and CI configuration. Verify actual Editor import/compile, pure compilation, IDE capabilities and meaningful setup/architecture and deliberate-fault probes for installed gates. Empty suites or copied configuration are not passing evidence.
 - Create only the saved startup/smoke assets and fixtures needed to verify setup. Confirm they open/run and retain authored changes. Gameplay systems, polished screens, generated production assets and end-to-end localization/content integration belong to milestone 2; do not build speculative frameworks to fill those slots.
-- Record results in docs/engineering-status.md and a resumable next step. Required setup checks blocked by provisioning remain **foundation incomplete**. Planned slice checks are **deferred to first slice**, never passed or not applicable. Foundation ready verifies setup, not gameplay integration or a reusable template release.
+- Link setup results and remaining gaps from README.md; put unfinished work in the active tasks. Required setup checks blocked by provisioning remain **foundation incomplete**. Planned slice checks are **deferred to first slice**, never passed or not applicable. Foundation ready verifies setup, not gameplay integration or a reusable template release.
 
 ### First slice accepted
 
@@ -35,44 +35,27 @@ The user supplies a game brief and this kit's entrypoint, not a restatement of a
 
 ## Continuous development
 
-Bootstrap once; evolve the same project through features, fixes, balancing, content and polish. A brief can describe a long-term game without specifying every future detail. Record the product scope and current milestone in docs/project.md; keep behavioral specs and acceptance in openspec/specs and openspec/changes; existing docs/features entries link there after reconciliation. Apply [spec-driven development](spec-driven-development.md) to each increment; foundation establishes its documentation/traceability gate while gameplay requirements remain deferred to the authorized slice.
+Bootstrap once; evolve the same project through features, fixes, balancing, content and polish. A brief can describe a long-term game without specifying every future detail. Record the product scope and current milestone in docs/project.md; keep behavioral specs and acceptance in openspec/specs and openspec/changes; consolidate redundant feature briefs during migration. Apply [spec-driven development](spec-driven-development.md) to each increment; foundation establishes its documentation/traceability gate while gameplay requirements remain deferred to the authorized slice.
 
-- On resumption, read root rules, docs/index.md, the relevant feature and latest applicable handoff; inspect actual source, authored assets and working-tree changes before editing. Reconcile stale notes with implementation and evidence. Prior chat history is optional context, not required project memory.
+- On resumption, read root rules and the active change, then relevant project decisions/source maps; inspect actual source, authored assets and working-tree changes before editing. Reconcile stale notes with implementation and evidence. Prior chat history is optional context, not required project memory.
 - Complete the authorized increment through implementation, affected tests and visual refinement. Intermediate slices are checkpoints, not permission to leave requested scope unfinished; a future backlog is not authorization to implement unrelated features.
 - Preserve existing contracts, accepted art, Inspector edits and resolved decisions. Evolve them deliberately; record material architectural changes as ADRs. Do not regenerate the project or upgrade its toolchain as a side effect of an ordinary feature request.
-- Keep docs/index.md pointing to current work. When work spans sessions, maintain a compact handoff under docs/handoffs/: objective, implemented/verified/pending state, evidence and rerun commands, blockers and next action. Replace stale status rather than accumulating transcripts or duplicating standards.
+- Keep current work in the issue/change. Add a short tasks.md continuation note only when unfinished work has context not already recorded. Completed work needs no handoff.
 - Ask only about newly unresolved intent. Subsequent prompts describe the desired change; the repository supplies architecture, conventions and prior answers. Existing projects adopt kit updates through reviewed changes, not automatic overwrites.
 
 ## Adoption steps
 
 1. Confirm target platforms and the primary acceptance target using the clarification policy; select project name/path, render pipeline and production/evaluation profile accordingly. Inspect the destination. Generate Unity-owned settings/assets using the selected Editor/CLI. If its help exposes `projects create --with-pipeline`, use it for agent-driven setup; it can exit 0 even when Pipeline installation fails. Verify the resolved package/lock and actual connection using [CLI readiness](toolchain.md#beta12-capable-automation); otherwise install the selected Pipeline separately. Preserve project-owned pins and do not reinstall it on every session.
-2. Install or verify the workflow using the installer above. It preserves the references/starter/examples layout under docs/standards and tracks the baseline in .unity-workflow/installation.json. Record that version/hash in docs/toolchain.md; historical reports are not project authority.
+2. Install or verify the workflow using the installer above. It preserves references/starter and any selected example pack under docs/standards and tracks the baseline in .unity-workflow/installation.json. Use the installation manifest as the version/hash authority; historical reports are not project authority.
 3. Establish the [Editor authoring defaults](authoring.md), authoring map and scoped generation ownership. Save the startup/smoke assets needed for foundation checks; add gameplay scenes, prefabs and tuning definitions with their slice consumers. Ordinary setup/build must preserve authored edits.
 4. Keep the installer-managed instruction routing intact; do not replace root AGENTS.md/CLAUDE.md with starter files. Merge starter .editorconfig, .gitignore and .gitattributes into the project root; copy Directory.Build.props to tooling/dotnet/ and set the language profile and SDK pin. Follow code-quality.md and developer-tooling.md for nullable enforcement, analyzer installation and local hook setup. Place the Core asmdef beside Core sources and merge the selected csc.rsp beside every owned asmdef; retain explicit analyzer configuration and prove its effect in the Editor compiler; never assume inheritance from Assets/Game. Adopt ide.md and code-organization.md: track VS Code configuration, install the owned-project generation hook, keep the Unity and pure SDK solutions separate, and install the shared full-coverage quality entrypoint. Import chosen UI fixtures through Unity so it creates metadata.
 5. Verify all six skills in the selected client: .agents/skills for Codex, .claude/skills for Claude Code, both when selected. Skills read docs/standards/references; the shared rules are docs/standards/PROJECT-RULES.md. File-integrity checks and live client discovery are separate. No global installation is required.
-6. Create project-specific docs below, including spec/active-change navigation. Activate the pinned profile through [OpenSpec setup](openspec-setup.md) and qualify its evidence gate; standards installation alone does not activate it. Implement scripts and put real commands in the project README; starter prose is not executable automation.
+6. Create project-specific docs below, with links to specs and active work. Activate the pinned profile through [OpenSpec setup](openspec-setup.md) and qualify its evidence gate; standards installation alone does not activate it. Implement scripts and put real commands in the project README; starter prose is not executable automation.
 7. Run the Foundation ready checks above and record the milestone status. Stop here for setup-only scope.
 8. When authorized, implement and validate milestone 2 from the existing foundation. Record First slice accepted only after its gates pass; qualify a template release separately against its supported target matrix.
 
-| Project document | Owns |
-|---|---|
-| docs/index.md | Compact navigation: active issue/change/handoff, source/authoring entrypoints, applicable decisions and check-command locations; see [context discipline](context-efficiency.md) |
-| docs/project.md | Scope, targets, inputs, save/network requirements, selected profiles; accepted answers, pending questions and what they block |
-| docs/engineering-status.md | Foundation and first-slice status separately; requirement → milestone/owner/command/evidence/gap |
-| docs/modules/ | Module public contracts, state/lifetimes/dependencies and compatibility |
-| docs/authoring.md | Where to edit/preview scenes, prefabs, definitions and procedural content; generator ownership and preservation checks |
-| docs/architecture.md | Actual source map, boundaries, lifetimes and implemented helpers |
-| docs/toolchain.md | Template baseline, SDK/Editor/CLI/modules/packages; native lockfile authorities |
-| docs/dependencies.md | Selected libraries, owners, version/license/compatibility evidence |
-| docs/compatibility.md | Capability → exact version/flag/platform → test evidence/fallback |
-| docs/art-direction.md | Player focus, inspected reference images, selected composition/control language, concrete visual target, asset/motion decisions and visual acceptance evidence |
-| docs/localization.md | Source/supported locales, table/provider ownership, selection/fallback, font/layout policy and translation/visual evidence |
-| docs/performance-budgets.md | Device/scenario budgets and measured results |
-| docs/decisions/ | Exceptions and material decisions |
-| openspec/specs/, openspec/changes/ | Canonical behavior, proposed deltas, tasks and acceptance evidence |
-| docs/features/, docs/assets/ | Feature navigation/history and asset briefs |
-| docs/handoffs/ | Resumable state, evidence and next action |
+Default to the three [project documents](../starter/DOCUMENT-TEMPLATES.md): README.md, docs/project.md and docs/architecture.md. Keep authoring, localization, dependency rationale, compatibility and budgets as appropriate sections; native lockfiles own exact versions. Split a document only for substantial independently maintained content. OpenSpec owns behavior, tasks and verification; GitHub owns priority/delivery. Do not generate a parallel engineering-status matrix, feature brief, routine handoff or completion report.
 
-Use [document forms](../starter/DOCUMENT-TEMPLATES.md) as needed. Avoid transcripts and duplicated policy. Mark proposed/implemented/verified separately. Promote required captures/reports from ignored artifacts to retained CI or a versioned evidence store and link durable locations/hashes.
+Retain required captures/reports through CI or versioned evidence storage. Asset provenance is machine-readable alongside accepted assets; don't duplicate it in prose. A workflow trial may record actual kit defects in the existing issue/change; it does not require a separate evaluation report.
 
 Environment/build reproducibility requires pinned tools and accepted files. Hosted generation is not reproducible merely because prompts/seeds are saved: archive accepted outputs. Bitwise-identical builds are a separate requirement.

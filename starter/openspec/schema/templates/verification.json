@@ -1,12 +1,11 @@
 {
-  "schema": 1,
-  "fingerprint": "",
-  "requirements": [
-    {
-      "id": "FEATURE-001",
-      "status": "pending",
-      "required_kinds": ["automated"],
-      "evidence": []
+  "schema": 2,
+  "requirements": [{"id": "FEATURE-001", "checks": ["tests"]}],
+  "checks": {
+    "tests": {
+      "kind": "automated",
+      "command": ["{python}", "tooling/verify.py"],
+      "target": "Replace with the actual test target"
     }
-  ]
+  }
 }

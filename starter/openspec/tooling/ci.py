@@ -1,6 +1,9 @@
-"""Run spec gates; independent game/tooling tests and manual verdicts remain required."""
+"""Validate OpenSpec and execute the delivered change's shared checks."""
 import argparse
 import codecs
+import os
+import signal
+import threading
 from pathlib import Path
 import subprocess
 import sys
@@ -16,16 +19,35 @@ def emit(message, end='\n', flush=True, file=None):
     print(safe, end=end, flush=flush, file=stream)
 
 
-def execute(command, root, log, label, quiet=False):
+def execute(command, root, log, label, quiet=False, timeout=None):
     """Retain complete combined output; quiet mode affects presentation only."""
     decoder = codecs.getincrementaldecoder('utf-8')(errors='replace')
     with log.open('wb') as output:
         try:
-            process = subprocess.Popen(command, cwd=root, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            process = subprocess.Popen(command, cwd=root, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                                       start_new_session=os.name != "nt")
         except OSError as error:
             output.write(str(error).encode('utf-8'))
             emit(f'FAIL {label}: could not start; log: {log}', flush=True)
             raise
+        expired = threading.Event()
+
+        def expire():
+            if process.poll() is None:
+                expired.set()
+                if os.name == 'nt':
+                    subprocess.run(['taskkill', '/F', '/T', '/PID', str(process.pid)],
+                                   capture_output=True, timeout=10)
+                else:
+                    try:
+                        os.killpg(process.pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+
+        timer = threading.Timer(timeout, expire) if timeout is not None else None
+        if timer:
+            timer.daemon = True
+            timer.start()
         with process:
             for chunk in iter(lambda: process.stdout.read1(8192), b''):
                 output.write(chunk)
@@ -35,6 +57,11 @@ def execute(command, root, log, label, quiet=False):
             if not quiet:
                 emit(decoder.decode(b'', final=True), end='', flush=True)
             code = process.wait()
+        if timer:
+            timer.cancel()
+        if expired.is_set():
+            emit(f'FAIL {label}: timeout; log: {log}')
+            raise subprocess.TimeoutExpired(command, timeout)
     emit(f'{"PASS" if code == 0 else "FAIL"} {label}: exit {code}; log: {log}', flush=True)
     if code:
         if quiet:
@@ -58,7 +85,7 @@ def verify(root, change, quiet=False):
     commands.append(('delivery', [sys.executable, 'tooling/specs/check.py', 'check', '--change', change, '--accept']))
     for number, (label, command) in enumerate(commands, 1):
         execute(command, root, logs / f'{number:03}.log', label, quiet)
-    emit('Spec gates passed; independent tests and required manual verdicts remain separate.', flush=True)
+    emit('Delivery checks passed; required manual verdicts remain subject to semantic review.', flush=True)
 
 
 def main():
@@ -71,6 +98,9 @@ def main():
     except subprocess.CalledProcessError as error:
         # Preserve ordinary exit codes; map POSIX signals to conventional shell codes.
         return error.returncode if error.returncode > 0 else 128 - error.returncode
+    except subprocess.TimeoutExpired as error:
+        emit(f'Verification timed out: {error}', file=sys.stderr)
+        return 124
     except OSError as error:
         emit(f'Verification infrastructure failure: {error}', file=sys.stderr)
         return 1

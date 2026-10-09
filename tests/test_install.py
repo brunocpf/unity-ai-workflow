@@ -39,7 +39,8 @@ class InstallationTests(unittest.TestCase):
         for client in installer.CLIENTS.values():
             for skill in result['skills']:
                 self.assertTrue((self.target / client / skill / 'SKILL.md').is_file())
-        self.assertTrue((self.target / 'docs/standards/examples/README.md').is_file())
+        self.assertFalse((self.target / 'docs/standards/examples').exists())
+        self.assertIn('blob/v0.4.0/examples/', (self.target / 'docs/standards/references/ui-navigation.md').read_text())
         self.assertIn('@AGENTS.md', (self.target / 'CLAUDE.md').read_text())
         self.assertFalse((self.target / 'Assets').exists())
         self.assertFalse((self.target / 'ProjectSettings').exists())
@@ -119,7 +120,7 @@ class InstallationTests(unittest.TestCase):
         installer.verify(self.target)
 
     def test_upstream_removal_preserves_unmanaged_neighbors(self):
-        self.run_install()
+        installer.install(self.source, self.target, 'install', examples='all')
         (self.source / 'examples/ui-recipes.md').unlink()
         neighbor = self.target / 'docs/standards/examples/my-notes.md'
         neighbor.write_text('Project notes')
@@ -128,7 +129,7 @@ class InstallationTests(unittest.TestCase):
         self.assertEqual(neighbor.read_text(), 'Project notes')
 
     def test_removal_of_locally_modified_upstream_file_conflicts(self):
-        self.run_install()
+        installer.install(self.source, self.target, 'install', examples='all')
         (self.source / 'examples/ui-recipes.md').unlink()
         (self.target / 'docs/standards/examples/ui-recipes.md').write_text('Edited locally')
         before = self.snapshot()
@@ -221,6 +222,41 @@ class InstallationTests(unittest.TestCase):
     def test_update_requires_install(self):
         with self.assertRaises(installer.InstallError):
             self.run_install('update')
+
+    def test_optional_examples_add_remove_and_local_edit_protection(self):
+        self.run_install()
+        installer.install(self.source, self.target, 'update', examples='all')
+        file = self.target / 'docs/standards/examples/README.md'
+        self.assertTrue(file.is_file())
+        self.run_install('update')
+        self.assertTrue(file.is_file())
+        before = file.read_bytes()
+        file.write_bytes(before + b'\ncustom change')
+        with self.assertRaises(installer.InstallError):
+            installer.install(self.source, self.target, 'update', examples='none')
+        file.write_bytes(before)
+        plan = installer.assess(self.source, self.target, examples='none')
+        self.assertTrue(any(c['candidate_change'] == 'remove' for c in plan['changes']))
+        installer.install(self.source, self.target, 'update', examples='none')
+        self.assertFalse(file.exists())
+        installer.verify(self.target)
+
+    def test_legacy_pack_choice_and_installed_link_closure(self):
+        import subprocess
+        import sys
+        installer.install(self.source, self.target, 'install', examples='all')
+        state_path = self.target / installer.STATE
+        state = json.loads(state_path.read_text())
+        del state['examples']  # 0.3.x manifests installed the full library without a selector.
+        state_path.write_text(json.dumps(state))
+        self.run_install('update')
+        self.assertTrue((self.target / 'docs/standards/examples/README.md').is_file())
+        for choice in ('all', 'none'):
+            installer.install(self.source, self.target, 'update', examples=choice)
+            result = subprocess.run([sys.executable, str(ROOT / 'tools/check_kit.py'), str(self.target)],
+                                    capture_output=True, text=True)
+            self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+            installer.verify(self.target)
 
 
 if __name__ == '__main__':

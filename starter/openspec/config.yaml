@@ -1,7 +1,7 @@
 schema: unity-game
 context: |
   Apply AGENTS.md and docs/standards/PROJECT-RULES.md.
-  Read docs/index.md for current decisions, contracts and milestone scope.
+  Use README.md for commands; docs/project.md and docs/architecture.md own project decisions.
   Follow docs/standards/references/spec-driven-development.md.
   Keep architecture/library defaults in the kit; do not duplicate them here.
 rules:
@@ -10,7 +10,7 @@ rules:
     - Requirements describe behavior; implementation choices belong in design.
     - Preserve every unaffected scenario in MODIFIED requirements.
   tasks:
-    - Each slice includes its own tests, authoring checks and documentation.
+    - Each slice includes applicable tests and authoring checks; update only changed owning docs.
     - Link the delivery issue; do not create a duplicate backlog or close issues automatically.
 operations:
   apply:

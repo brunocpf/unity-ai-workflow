@@ -1,6 +1,6 @@
 # OpenSpec setup and upgrades
 
-OpenSpec is a **development dependency**, never a Unity package or player dependency. The kit supplies a pinned npm manifest/lock, local launcher, custom schema/templates and structural evidence gate. Workflow installation still only copies passive standards; requested foundation setup or an explicitly authorized workflow migration activates them.
+OpenSpec is a **development dependency**, never a Unity package or player dependency. The kit supplies a pinned npm manifest/lock, local launcher, custom schema/templates and shared-check delivery runner. Workflow installation still only copies passive standards; requested foundation setup or an explicitly authorized workflow migration activates them.
 
 ## New foundation
 
@@ -31,16 +31,15 @@ Setup staging preflights collisions and refuses different existing files. It doe
 
 The Unity skills select the process automatically. The agent uses the pinned launcher for OpenSpec operations, including `new change NAME`, `status --change NAME --json`, and `instructions ARTIFACT --change NAME --json`. New changes inherit the unity-game schema. Follow the installed instruction content and [development loop](spec-driven-development.md), preserving authorized scope.
 
-Create verification.json from the schema template as pending during planning. After implementation, run real checks, inspect results, populate evidence and the fingerprint, then:
+Create schema-2 verification.json from the template: map requirements to shared executable checks and applicable pending manual reviews. Use actual project commands. After implementation, inspect required manual outputs and record their verdicts with [record-review](spec-evidence.md), then:
 
 ```sh
-python3 tooling/specs/run.py validate --all --strict --no-interactive
-python3 tooling/specs/check.py check --change NAME --accept
+python3 tooling/specs/ci.py --change NAME --quiet
 python3 tooling/specs/run.py archive NAME --yes
 python3 tooling/specs/run.py validate --all --strict --no-interactive
 ```
 
-After archive, select the returned `archive/date-name` for the delivered increment, reconcile final-tree evidence/fingerprint, and run acceptance mode again before delivery. PR CI must select that change explicitly; an empty active-change list is not a bypass.
+The delivery runner executes the mapped automated checks. Do not separately run the same checks again solely to produce receipts. After archive, select archive/date-name in the PR/CI delivery command; CI tests its checkout. Moving the completed artifacts alone does not require local game-test reruns or evidence resealing.
 
 Archive is authorized as part of completing an authorized change only after its checks and required product verdicts pass. Cancellation/abandonment must be labeled separately; never sync abandoned behavior into current specs. Do not use direct archive to evade the evidence gate. Stock OpenSpec does not enforce this kit's acceptance policy; PR CI/review must enforce it independently.
 
@@ -51,9 +50,9 @@ Archive is authorized as part of completing an authorized change only after its 
 3. Stage the profile, provision pinned local tooling and initialize selected-client integrations as above. If OpenSpec already exists, map its authority/config first. Keep one canonical behavior location; preserve existing decisions until deliberately reconciled. Rename or replace neither root AGENTS.md nor installed standards.
 4. Link the current issue to one active change. Move only its relevant accepted requirements into canonical specs, explicitly identifying unverified intent versus observed behavior. Put new/provisional behavior in deltas. Existing feature briefs become links or historical context; keep supersession/provenance. Do not manufacture specs or issue tickets for the entire backlog.
 5. Integrate spec validation in the existing hosted CI job with pinned Node and `npm ci` working-directory tooling/specs. Run mapping checks for active ready/implementing changes. Require acceptance mode for the increment declared delivered by the PR, plus its independent test jobs and manual verdicts. Capture the active change's evidence before archive; archived records retain their tested revision. Never treat no active change after archive as proof of acceptance.
-6. Prove missing mappings, stale inputs, failed executable tests and required-but-pending manual review fail the appropriate gate. Verify generated client discovery, continuation, a follow-up delta and archive reconciliation. Record unmet infrastructure requirements honestly, then commit the migration in its own PR/change. No gameplay rewrite is required.
+6. Prove missing mappings, changed review artifacts, failed/timed-out executable checks and pending manual reviews fail delivery. Confirm commands run on the current checkout instead of trusting old results. Verify generated client discovery, continuation, a follow-up delta and archive reconciliation. Record unmet infrastructure requirements honestly, then commit the migration in its own PR/change. No gameplay rewrite is required.
 
-For the 0.3.2 context-efficiency update, see [existing-project migration](upgrades/context-efficiency-0.3.2.md); generated OpenSpec integrations need no regeneration; project-owned fingerprint helpers receive a reviewed narrow fix.
+For existing 0.3.x projects, use the [0.4 migration](upgrades/lean-0.4.0.md); staging is not an upgrade/merge command.
 
 ## Verification output
 
@@ -63,9 +62,9 @@ Newly staged profiles include an optional runner:
 python3 tooling/specs/ci.py --change NAME --quiet
 ```
 
-Omit `--quiet` for streamed output. Both modes run the same strict OpenSpec validation, mappings for every active change, and acceptance for the explicitly selected delivered change (also accepts archive/date-name). Failures stop the runner; child failure codes propagate. Logs are retained under a fresh artifacts/spec-validation/run-* directory; retain/upload them with CI artifacts. Quiet failures show at most the final 30 lines from the last 8 KiB; open the full log for earlier diagnostics. Success summaries report gate exit status, not game-test counts or owner acceptance. This runner does not execute or replace independent game/tooling test jobs, select delivery automatically, archive changes or refresh receipts.
+Omit `--quiet` for streamed output. Both modes run the same strict OpenSpec validation, mappings for every active change, and acceptance for the explicitly selected delivered change (also accepts archive/date-name). Failures stop the runner; child failure codes propagate. Logs are retained under a fresh artifacts/spec-validation/run-* directory; retain/upload them with CI artifacts. Quiet failures show at most the final 30 lines from the last 8 KiB; open the full log for earlier diagnostics. Success summaries report gate exit status, not game-test counts or owner acceptance. Acceptance executes the shared automated checks declared in verification.json, retaining their own full logs/results. Keep independent platform/security/release jobs where required; do not duplicate equivalent jobs merely to populate evidence. The runner does not choose delivery or archive changes.
 
-Projects with an existing runner should port only compatible output handling while preserving custom commands, delivery selection and report parsing. Do not install a parallel runner just for quiet output. Follow the [0.3.3 migration](upgrades/verification-output-0.3.3.md).
+Projects with an existing runner should port only compatible output handling while preserving custom commands, delivery selection and report parsing. Do not install a parallel runner just for quiet output. Use the [0.4 migration](upgrades/lean-0.4.0.md) to replace the old fingerprint-based helper.
 
 ## Reproducibility and maintenance
 

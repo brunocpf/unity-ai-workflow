@@ -46,7 +46,7 @@ Installing the polished-game preset does not establish polish. Apply the [visual
 
 ## Adoption gate
 
-Maintain `docs/dependencies.md` with one record per direct dependency:
+Native package/tool locks own exact versions. Keep project-specific dependency rationale/license/compatibility exceptions in docs/architecture.md; extract a dependency inventory only when needed for release/licensing. Do not duplicate routine lockfile entries. For such exceptions record:
 
 ```text
 Capability / selected package / exact version or commit

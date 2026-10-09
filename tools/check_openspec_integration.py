@@ -69,10 +69,10 @@ def run():
             report = game / 'docs/evidence' / f'{name}.txt'
             report.parent.mkdir(parents=True, exist_ok=True)
             report.write_text('Synthetic structural fixture, not a passed game test.\n', encoding='utf-8')
-            data = {'schema': 1, 'fingerprint': gate.fingerprint(game, name), 'requirements': [
-                {'id': 'PAUSE-001', 'status': 'pending', 'required_kinds': ['automated'], 'evidence': [
-                    {'kind': 'automated', 'path': report.relative_to(game).as_posix(), 'sha256': gate.sha(report.read_bytes()),
-                     'command_or_procedure': 'synthetic-fixture', 'target': 'CLI only', 'run_id': name}]}]}
+            data = {'schema': 2, 'requirements': [{'id': 'PAUSE-001', 'checks': ['tests', 'review']}],
+                    'checks': {
+                        'tests': {'kind': 'automated', 'command': ['{python}', '-c', 'print("synthetic fixture")'], 'target': 'CLI only'},
+                        'review': {'kind': 'authoring', 'status': 'pending', 'procedure': 'Inspect synthetic fixture', 'target': 'CLI only'}}}
             verification = folder / 'verification.json'
             verification.write_text(json.dumps(data), encoding='utf-8')
             try:
@@ -85,8 +85,7 @@ def run():
                 runner_command.append('--quiet')
             pending = subprocess.run(runner_command, cwd=game, env=env, capture_output=True, text=True, timeout=60)
             assert pending.returncode != 0 and 'Unaccepted' in pending.stdout, pending.stdout + pending.stderr
-            data['requirements'][0]['status'] = 'pass'
-            verification.write_text(json.dumps(data), encoding='utf-8')
+            gate.record_review(game, name, 'review', 'pass', 'synthetic-test', [report.relative_to(game).as_posix()])
             gate.check(game, name, True)
             completed = subprocess.run(runner_command, cwd=game, env=env, capture_output=True, text=True, timeout=60)
             assert completed.returncode == 0, completed.stdout + completed.stderr
@@ -95,20 +94,14 @@ def run():
             assert f'revision {iteration}' in baseline
             archived = next((game / 'openspec/changes/archive').glob('*-' + name))
             archived_name = 'archive/' + archived.name
-            try:
-                gate.check(game, archived_name, True)
-                raise AssertionError('Pre-archive fingerprint was not rejected')
-            except ValueError:
-                pass
-            # Synthetic fixture only: reconcile the changed archive layout, not a gameplay verdict.
-            data['fingerprint'] = gate.fingerprint(game, archived_name)
-            (archived / 'verification.json').write_text(json.dumps(data), encoding='utf-8')
+            original = (archived / 'verification.json').read_bytes()
             gate.check(game, archived_name, True)
+            assert (archived / 'verification.json').read_bytes() == original
         cli('validate', '--all', '--strict', '--no-interactive')
         print(json.dumps({'status': 'pass', 'openspec': '1.13.2', 'node': '24.15.0',
                           'checks': ['both client integrations generated', 'custom schema', 'instructions',
                                      'invalid scenario rejected', 'pending evidence rejected', 'new capability archive',
-                                     'quiet/verbose runner and pending rejection', 'follow-up delta archive', 'archived acceptance reconciliation', 'final strict validation'],
+                                     'quiet/verbose runner and pending rejection', 'follow-up delta archive', 'archived delivery without resealing', 'final strict validation'],
                           'unity_or_model_execution': False}, indent=2))
 
 

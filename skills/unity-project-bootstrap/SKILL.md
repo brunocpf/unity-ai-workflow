@@ -3,18 +3,14 @@ name: unity-project-bootstrap
 description: Bootstrap a Unity project foundation, then implement and validate its first playable slice when requested; track the milestones separately.
 ---
 
-References resolve under `docs/standards/references/` (or `references/` at the kit root). Follow project rules, the active change and `context-efficiency.md`; load only sections triggered by this task.
+Use project rules and the active OpenSpec change. Reference names below resolve under `docs/standards/references/` (or `references/` in the kit); load only the concern being changed.
 
-A game brief plus the kit entrypoint is sufficient. Apply adoption.md's milestone scope: bootstrap alone means Foundation ready; a playable-game or end-to-end trial request includes First slice accepted unless limited to setup. Complete authorized milestones without an extra approval stop. Apply the bootstrap contract; do not ask the user to restate technical defaults. Apply `clarification.md` to unresolved product choices, including target platforms and the primary acceptance target, before dependent work; record answers and pending decisions. Read `localization.md` for first-slice text, supported-language intake and native UITK localization.
+Bootstrap is foundation setup; a playable-game request also includes the first slice. Read `adoption.md` for the two completion gates. Ask only unresolved product choices, including platforms and languages; apply established technical defaults.
 
-Read `adoption.md` for milestone scope. During layout/composition setup apply `engineering-baseline.md`, `architecture.md`, `repository.md`; during toolchain/package setup use `toolchain.md`, `dependencies.md`, `profiles.md`. Load each at its implementation step rather than preloading all phases.
+1. Inspect the workspace and chosen toolchain. Install/verify local rules, then establish source/assembly boundaries and selected dependencies (`architecture.md`, `repository.md`, `composition.md`, `dependencies.md`). Do not install every optional package.
+2. Apply the shipped compiler/IDE/quality configuration and reusable tooling (`code-quality.md`, `ide.md`, `code-organization.md`, `developer-tooling.md`). Use real project commands and prove the configured gates reject faults.
+3. Create only README.md, docs/project.md and docs/architecture.md by default; use `docs/standards/starter/DOCUMENT-TEMPLATES.md`. Native locks own versions. Establish OpenSpec using `openspec-setup.md`; generated client integrations remain upstream-owned.
+4. Save and verify the startup/smoke authoring assets. Record foundation result links/gaps in README.md. Setup-only scope ends here; no gameplay/UI framework or completion handoff.
+5. When requested, build the first playable slice with authored prefabs/data, localization and the helpers it consumes. Use the UI/asset skill for those subtasks. Verify integration, visual quality, authoring preservation and clean target-player launch (`validation.md`). Mark the slice accepted separately from foundation.
 
-Apply `authoring.md`, `composition.md`, `code-quality.md`, `ide.md`, `code-organization.md` and `developer-tooling.md` during setup; record actual baseline evidence/gaps. A small first slice retains the full architectural standard.
-
-Establish the actual project and native version locks. Use the kit installer for the selected client(s), or verify an existing installation; preserve its managed root instruction blocks. Apply the relevant starter configuration and create project docs from adoption.md. Installation alone is not foundation completion. Before ending bootstrap, ensure AGENTS.md, docs/index.md and the local standard/skill routes resolve without the original kit path. Use available Unity CLI/project-creation skills; inspect pinned help rather than assuming commands.
-
-Implement the setup validation entrypoints (`ci.md`, `validation.md`). Run adoption.md's foundation completion checks and record results before claiming Foundation ready. For setup-only scope, stop with a concise handoff and deferred slice checks; do not generate gameplay or polished UI.
-
-When milestone 2 is in scope, implement one playable acceptance slice and the helpers it consumes (`utilities.md`). If it includes UI, apply `ui-art-direction.md` and the rendering/motion defaults in `ui-advanced.md` before expanding screens/levels; the slice includes a representative screen realized against a concrete visual target. Use `ui-construction.md`, `ui-binding.md` and `lifecycle.md` for implementation. Extend those validation entrypoints for gameplay integration and prove clean-checkout build/launch before tagging a template. Report technical and visual acceptance separately. Record unresolved provisioning/runtime gaps; this kit is not already an implemented template.
-
-Apply `spec-driven-development.md`; use `spec-evidence.md` when defining verification or delivering the increment.
+Load toolchain/profiles/API references only while selecting or qualifying that capability. Resume existing projects instead of repeating bootstrap.

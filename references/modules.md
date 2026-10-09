@@ -4,7 +4,7 @@ A feature module owns a coherent game capability: inventory, combat, progression
 
 ## Public contract
 
-Each module records in docs/modules/<name>.md:
+Record meaningful module boundaries in docs/architecture.md; extract docs/modules/<name>.md only for a substantial independently maintained public contract. Document invariants and ownership, link code for signatures rather than reproducing it:
 
 - Responsibility, owning state and invariants; explicit non-owned concerns.
 - Public commands, queries, immutable/read-only snapshots and notification semantics.

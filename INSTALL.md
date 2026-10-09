@@ -27,13 +27,18 @@ These two entrypoints have different names from the six project skills. Restart/
 
 To update the global kit, fetch a reviewed upstream commit into a separate checkout and rerun `install-global` there. Its content hash selects a new cache; old caches remain, existing projects stay pinned. `check-global` checks file integrity, not upstream freshness or client discovery. Do not edit caches; global local edits/collisions block updates. Review the candidate before running its installer. Network access is the agent's explicit update step, not an installer side effect.
 
+## Optional examples
+
+New project installs omit the full example library. References link to the immutable release tag; core policy and starter tooling stay local. Use `install --target /game --examples all` for complete offline examples, or `update --target /game --examples all` to add them later. Adapt only needed implementations into the game. Updates preserve the installed choice; migrate an older full installation with `assess --target /game --examples none`, then `update --target /game --examples none --dry-run` and update. Locally modified managed examples block removal. Global caches remain complete, so the reviewed kit is also available offline there.
+
 ## What is installed
 
 | Destination in the game | Purpose |
 |---|---|
 | `.agents/skills/unity-*/` | Codex skill discovery, when selected |
 | `.claude/skills/unity-*/` | Claude Code skill discovery, when selected |
-| `docs/standards/{references,starter,examples}/` | Complete shared reference/example dependency set |
+| `docs/standards/{references,starter}/` | Local policy and reusable configuration/tooling |
+| `docs/standards/examples/` | Optional complete offline example pack |
 | `docs/standards/PROJECT-RULES.md` | Shared workflow rules |
 | `AGENTS.md` | Small managed routing block; existing content retained |
 | `CLAUDE.md` | Managed imports of AGENTS.md and shared rules, for Claude |
@@ -96,3 +101,5 @@ Installer regression tests run in disposable workspaces and exercise conflicts, 
 Global/project workflow installation still only installs passive instructions. Requested foundation setup or an authorized existing-project workflow migration activates [OpenSpec](references/openspec-setup.md): Node 24.15.0, OpenSpec 1.13.2 with a locked npm graph, the unity-game schema, selected-client integrations and an evidence-mapping gate. Existing projects preserve ongoing work and migrate behavioral authority incrementally. CI must still run real game tests; the structural evidence gate cannot establish correctness or a user's playtest verdict.
 
 Maintainer CLI integration check (requires the pinned Node/npm and network for npm ci): `python3 tools/check_openspec_integration.py`. It uses disposable synthetic fixtures, not a Unity player or a model-generated feature.
+
+Full 0.4 adoption also updates project-owned OpenSpec helpers and consolidates docs; follow the [migration](references/upgrades/lean-0.4.0.md). Installer success alone is not adoption.

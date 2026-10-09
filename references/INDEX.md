@@ -1,17 +1,15 @@
 # Read by task
 
-CLI automation migration: [beta.12 / kit 0.3.5](../verification/cli-beta12.md#existing-project-migration); load only for affected tooling.
-
-Current version migration: [Unity 6000.7.0b3](upgrades/unity-6000.7.0b3.md). Load it for a b3 bootstrap/upgrade, not every gameplay task.
+Current kit migration: [0.4 lean workflow](upgrades/lean-0.4.0.md). Load it for adoption, not ordinary feature work. Editor migration remains separate.
 
 Do not read this entire directory. References below are authoritative by subject; project-specific decisions belong in the game's docs.
 
 | Task | Required reference | Conditional reference |
 |---|---|---|
-| Session start / resumption / context cost | [Context discipline](context-efficiency.md) | Current issue/change and handoff |
+| Session start / resumption / context cost | [Context discipline](context-efficiency.md) | Current issue/change; optional unfinished-work note |
 | Evidence mapping / delivery / archive | [Evidence checks](spec-evidence.md) | [Validation](validation.md), project CI |
 | OpenSpec setup / workflow migration | [Setup and upgrades](openspec-setup.md) | [Spec-driven development](spec-driven-development.md) |
-| Specify / plan / change / accept behavior | [Spec-driven development](spec-driven-development.md) | Affected feature spec, active change and [forms](../starter/DOCUMENT-TEMPLATES.md#feature-spec) |
+| Specify / plan / change / accept behavior | [Spec-driven development](spec-driven-development.md) | Affected feature spec, active change and [forms](../starter/openspec/schema/templates/spec.md) |
 | Foundation / first slice | [Milestones and adoption](adoption.md#milestones-and-request-scope), [architecture](architecture.md), [repository](repository.md), [toolchain](toolchain.md) | [Dependencies](dependencies.md), selected [profile](profiles.md) |
 | Unclear requirements / user choices | [Clarification](clarification.md) | [Dependencies](dependencies.md) for framework tradeoffs |
 | Languages / translated UI / locale testing | [Localization](localization.md) | [Binding](ui-binding.md), [text effects](ui-text-effects.md) |
@@ -24,6 +22,7 @@ Do not read this entire directory. References below are authoritative by subject
 | Pure rules / application | [Architecture](architecture.md) | [R3/async](reactive.md), [utilities](utilities.md) |
 | Custom control / loading | [UI construction](ui-construction.md) | [Lifecycle](lifecycle.md), [binding](ui-binding.md), [content bootstrap](ui-content-loading.md) |
 | New screen / game UI design / visual quality | [Art direction](ui-art-direction.md) | [Advanced UI](ui-advanced.md), [asset pipeline](assets.md), [visual fixtures](visual-fixtures.md) |
+| Menus / focus / screen stacks | [Native navigation](ui-navigation.md) | Actual input-provider tests |
 | Styling / modern UITK | [USS](ui-styling.md) | [Capability gates](ui-capabilities.md) for modern features |
 | Custom drawing / shaders / motion | [Advanced UI](ui-advanced.md) | [Capability gates](ui-capabilities.md), [text effects](ui-text-effects.md) |
 | Text rendering / reveal / counters | [Text effects](ui-text-effects.md) | [Advanced UI](ui-advanced.md) |
