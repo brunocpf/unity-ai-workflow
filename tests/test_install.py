@@ -220,6 +220,33 @@ class InstallationTests(unittest.TestCase):
             self.run_install('update')
         self.assertEqual(before, self.snapshot())
 
+    def test_process_removal_preserves_project_owned_checks_and_history(self):
+        legacy = self.source / 'starter/openspec/tooling/ci.py'
+        legacy.parent.mkdir(parents=True)
+        legacy.write_text('# old process wrapper\n')
+        self.run_install(agent='both')
+        owned = {
+            'tooling/specs/ci.py': '# customized game checks\n',
+            'openspec/specs/game/spec.md': 'Useful requirements\n',
+            '.agents/skills/openspec-apply-change/SKILL.md': 'Independent process\n',
+            '.claude/skills/openspec-apply-change/SKILL.md': 'Independent process\n',
+            '.github/workflows/game.yml': '# existing game CI\n',
+        }
+        for name, content in owned.items():
+            path = self.target / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content)
+        legacy.unlink()
+        before = self.snapshot()
+        self.run_install('update', dry_run=True)
+        self.assertEqual(before, self.snapshot())
+        self.run_install('update')
+        self.assertFalse((self.target / 'docs/standards/starter/openspec/tooling/ci.py').exists())
+        for name, content in owned.items():
+            self.assertEqual(content, (self.target / name).read_text())
+        self.assertTrue((self.target / 'docs/standards/starter/verification/run.py').exists())
+        self.assertEqual({}, self.run_install('update')['changes'])
+
     def test_update_requires_install(self):
         with self.assertRaises(installer.InstallError):
             self.run_install('update')

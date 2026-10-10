@@ -1,5 +1,6 @@
-"""Validate OpenSpec and execute the delivered change's shared checks."""
+"""Run one engineering command with complete logs and optional concise output."""
 import argparse
+import math
 import codecs
 import os
 import signal
@@ -74,32 +75,25 @@ def execute(command, root, log, label, quiet=False, timeout=None):
         raise subprocess.CalledProcessError(code, command)
 
 
-def verify(root, change, quiet=False):
-    output = root / 'artifacts/spec-validation'
-    output.mkdir(parents=True, exist_ok=True)
-    logs = Path(tempfile.mkdtemp(prefix='run-', dir=output))
-    commands = [('structure', [sys.executable, 'tooling/specs/run.py', 'validate', '--all', '--strict', '--no-interactive'])]
-    for metadata in sorted((root / 'openspec/changes').glob('*/.openspec.yaml')):
-        commands.append(('mapping-' + metadata.parent.name,
-                         [sys.executable, 'tooling/specs/check.py', 'check', '--change', metadata.parent.name]))
-    commands.append(('delivery', [sys.executable, 'tooling/specs/check.py', 'check', '--change', change, '--accept']))
-    for number, (label, command) in enumerate(commands, 1):
-        execute(command, root, logs / f'{number:03}.log', label, quiet)
-    emit('Delivery checks passed; required manual verdicts remain subject to semantic review.', flush=True)
-
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--change', required=True, help='Delivered active name or archive/date-name; never inferred from an empty list.')
-    parser.add_argument('--quiet', action='store_true', help='Summarize output; retain full logs and bounded failure tails.')
+    parser.add_argument('--root', type=Path, default=Path.cwd())
+    parser.add_argument('--quiet', action='store_true')
+    parser.add_argument('--timeout', type=float, default=600)
+    parser.add_argument('command', nargs=argparse.REMAINDER)
     args = parser.parse_args()
+    command = args.command[1:] if args.command[:1] == ['--'] else args.command
+    if not command or not math.isfinite(args.timeout) or args.timeout <= 0:
+        parser.error('Provide a command after -- and a positive finite timeout.')
+    root = args.root.resolve()
     try:
-        verify(Path(__file__).resolve().parents[2], args.change, args.quiet)
+        output = root / 'artifacts/verification'
+        output.mkdir(parents=True, exist_ok=True)
+        logs = Path(tempfile.mkdtemp(prefix='run-', dir=output))
+        execute(command, root, logs / 'command.log', 'command', args.quiet, args.timeout)
     except subprocess.CalledProcessError as error:
-        # Preserve ordinary exit codes; map POSIX signals to conventional shell codes.
         return error.returncode if error.returncode > 0 else 128 - error.returncode
-    except subprocess.TimeoutExpired as error:
-        emit(f'Verification timed out: {error}', file=sys.stderr)
+    except subprocess.TimeoutExpired:
         return 124
     except OSError as error:
         emit(f'Verification infrastructure failure: {error}', file=sys.stderr)

@@ -24,14 +24,7 @@ Game/                                # Git + Unity project root
       examples/                      # Optional offline reference pack (--examples all)
     evidence/                        # Retained manual evidence when not stored in CI
     # Split ADRs, module contracts or art/asset briefs only when independently maintained.
-  openspec/
-    config.yaml
-    schemas/unity-game/              # Versioned Unity lifecycle/templates
-    specs/<capability>/spec.md        # Accepted behavior; label unverified imported intent
-    changes/<change-id>/              # Proposal, deltas, design, tasks, verification.json
-    changes/archive/                 # Historical completed increments
   tooling/
-    specs/                           # Pinned OpenSpec/Node, launcher and evidence gate
     bootstrap/                       # Idempotent local setup/provision checks
     ci/                              # Same validation/build entrypoints as local
     hooks/                           # Staged verification, no implicit rewriting

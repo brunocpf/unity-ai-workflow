@@ -1,6 +1,6 @@
 # Read by task
 
-Current kit migration: [0.4.1 skill ownership](upgrades/skill-ownership-0.4.1.md); [0.4 lean workflow](upgrades/lean-0.4.0.md) remains required for older projects. Load it for adoption, not ordinary feature work. Editor migration remains separate.
+Current kit migration: [0.5 decoupling](upgrades/decoupling-0.5.0.md). Load it for adoption, not ordinary feature work.
 
 Do not read this entire directory. References below are authoritative by subject; project-specific decisions belong in the game's docs.
 
@@ -8,9 +8,6 @@ Do not read this entire directory. References below are authoritative by subject
 |---|---|---|
 | Skill delegation / provider conflicts | [Skill ownership](context-efficiency.md#skill-ownership) | Available client skill inventory |
 | Session start / resumption / context cost | [Context discipline](context-efficiency.md) | Current issue/change; optional unfinished-work note |
-| Evidence mapping / delivery / archive | [Evidence checks](spec-evidence.md) | [Validation](validation.md), project CI |
-| OpenSpec setup / workflow migration | [Setup and upgrades](openspec-setup.md) | [Spec-driven development](spec-driven-development.md) |
-| Specify / plan / change / accept behavior | [Spec-driven development](spec-driven-development.md) | Affected feature spec, active change and [forms](../starter/openspec/schema/templates/spec.md) |
 | Foundation / first slice | [Milestones and adoption](adoption.md#milestones-and-request-scope), [architecture](architecture.md), [repository](repository.md), [toolchain](toolchain.md) | [Dependencies](dependencies.md), selected [profile](profiles.md) |
 | Unclear requirements / user choices | [Clarification](clarification.md) | [Dependencies](dependencies.md) for framework tradeoffs |
 | Languages / translated UI / locale testing | [Localization](localization.md) | [Binding](ui-binding.md), [text effects](ui-text-effects.md) |
@@ -32,6 +29,7 @@ Do not read this entire directory. References below are authoritative by subject
 | 3D asset | [Asset contract](assets.md), [3D pipeline](assets-3d.md) | [Motion reference](assets-motion.md) |
 | Textures / sprites / pixel art | [Asset contract](assets.md), [2D pipeline](assets-2d.md) | [Validation](validation.md) |
 | CI / builds | [CI](ci.md) | [Toolchain](toolchain.md), [validation](validation.md) |
+| Standalone check execution | [Engineering checks](engineering-checks.md) | Existing local/CI commands |
 | Tests / visual review | [Validation](validation.md) | [Scenario clocks / fresh captures](test-scenarios.md); [lifecycle](lifecycle.md) for reload/resource issues |
 | Workflow kit update | [Applicability and updates](workflow-updates.md) | Project contracts, ADRs and native version pins |
 | Package decision | [Dependencies](dependencies.md) | [Optional libraries](dependencies-optional.md), [profiles](profiles.md) |

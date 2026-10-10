@@ -5,8 +5,8 @@ Create three entrypoints; omit unused sections. These hold project-specific fact
 ## README.md
 
 - Setup and actual check/build/run commands.
-- Links to project decisions, architecture, specs and GitHub work.
-- Foundation/first-slice milestone once established, with result links and remaining setup gaps. Ongoing change status stays in OpenSpec/GitHub.
+- Links to project decisions, architecture and existing project records.
+- Foundation/first-slice milestone once established, with result links and remaining setup gaps. Use the project’s existing progress tracking.
 
 ## docs/project.md
 
@@ -28,4 +28,4 @@ Create three entrypoints; omit unused sections. These hold project-specific fact
 
 A substantial module API, art bible, asset batch, localization pipeline or compatibility matrix can have its own document. Split when it has an independent owner/change cadence or obscures the entrypoint, not because a template lists it. Asset provenance stays machine-readable beside accepted source assets; generation tools collect IDs, settings and hashes where possible. Keep only relevant fields for that asset type.
 
-OpenSpec templates own proposals, behavior, design, tasks and shared verification. Do not generate a second feature-spec form, engineering-status table, routine completion report or handoff. A short unfinished-work note in tasks.md is sufficient unless unique session context needs another location.
+No required per-feature artifacts, status tables or completion reports. Keep a short continuation note only when unfinished work needs context absent from the code and existing records.

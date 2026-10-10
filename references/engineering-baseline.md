@@ -21,7 +21,7 @@ This kit defines durable project standards independently of team size or game sc
 | Delivery | Local/CI parity, locked inputs, content/player provenance, rollback | Clean build/launch and immutable release manifest |
 | Evolution | Module contracts, ADRs, template version and migrations | Reviewed compatibility changes and upgrade procedure |
 
-Use the active OpenSpec verification map and executable checks for applicable requirements; link setup gaps once from README.md. No parallel project status table. Unavailable licensing/CI/platforms remain explicit gaps. [Validation](validation.md) owns test detail; [CI](ci.md) owns the execution pipeline.
+Run independent executable checks for affected behavior; link setup gaps once from README.md. No parallel project status table. Unavailable licensing/CI/platforms remain explicit gaps. [Validation](validation.md) owns test detail; [CI](ci.md) owns the execution pipeline.
 
 ## Change and release discipline
 

@@ -39,9 +39,9 @@ The beta.10 preview selected Ubuntu for StandaloneOSX, kept the source project's
 
 Cache Library by editor, target, packages and relevant settings; keep a periodic clean import. Build rendering tests on a graphics-capable runner, not no-graphics batch mode. License authentication is distinct from CLI/service-account authentication. Follow [validation](validation.md) for player/visual evidence and [toolchain](toolchain.md) for version policy.
 
-## Spec traceability
+## Independent engineering gates
 
-Follow [spec-driven development](spec-evidence.md): activate the shipped OpenSpec profile/evidence gate using [setup](openspec-setup.md), run spec validation and independent mapped executable checks, and retain explicit manual verdicts. A Markdown link check is not this gate. Verify rejection of missing mappings and failed mapped tests; scope pending evidence to in-progress work and never mark it accepted.
+Run independent [engineering checks](engineering-checks.md) through actual project commands. Fail on test/compile/analyzer errors, missing expected reports and timeouts. Preserve manual visual/device review where applicable; no planning artifact is a prerequisite for executing checks.
 
 ## Delivery governance
 

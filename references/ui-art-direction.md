@@ -41,7 +41,7 @@ The kit's minimal source controls and styling galleries demonstrate implementati
 
 ## Acceptance is comparison-based
 
-Review actual player captures and relevant motion windows against the target and game brief. Record the following dimensions as **meets target / needs revision / unverified**, with specific evidence, in the active change's shared visual review (link inspected artifacts and concise observations; no separate iteration report):
+Review actual player captures and relevant motion windows against the target and game brief. Record the following dimensions as **meets target / needs revision / unverified**, with specific evidence, in the existing review record or final response (link inspected artifacts and concise observations; no separate iteration report):
 
 - Composition and gameplay focus: primary decision and action read clearly; screen regions have deliberate proportions.
 - Identity and asset finish: imagery, shapes, surfaces and typography form a cohesive game-specific interface at playing distance.

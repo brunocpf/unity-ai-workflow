@@ -1,11 +1,7 @@
-## Scope
+## Change
 
-What changes, why, and the owning issue. Use a closing keyword only when merge satisfies every issue criterion.
+Describe the problem and resulting behavior; link existing context where useful.
 
-## Delivery and validation
+## Validation
 
-Identify the delivered OpenSpec change (active or archived) and link canonical evidence. Summarize actual checks and remaining gaps, distinguishing technical, visual/playtest and device results. State any not-applicable category with its reason. Name required owner acceptance still pending; merge/archive does not supply it.
-
-## Decisions and cleanup
-
-Link changed decisions/docs. Identify superseded material removed, retained as linked history, or deferred with a reason/follow-up. Preserve unique decisions and evidence; do not duplicate the full reports here.
+Actual checks/results and relevant visual or authoring evidence. State remaining limitations or pending user/device review.

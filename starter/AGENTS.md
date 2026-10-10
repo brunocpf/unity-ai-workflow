@@ -1,8 +1,8 @@
 # Project rules
 
-Apply the kit to ordinary requests without asking the user to restate architecture. Start with the active issue/OpenSpec change and affected source; consult README.md for commands/navigation and docs/project.md or docs/architecture.md for relevant decisions. Use references under docs/standards/references; Create no routine reports or duplicate status docs; `context-efficiency.md` governs minimal records, `INDEX.md` routes unfamiliar work. Real check commands live in the project README.
+Apply the kit to ordinary requests without asking the user to restate architecture. Start with the current request and affected source; consult README.md for commands/navigation and docs/project.md or docs/architecture.md for relevant decisions. Use references under docs/standards/references; Create no routine reports or duplicate status docs; `context-efficiency.md` governs minimal records, `INDEX.md` routes unfamiliar work. Real check commands live in the project README.
 
-- Use the pinned OpenSpec launcher `python tooling/specs/run.py`, including instead of bare CLI examples. Follow spec-driven-development.md; define behavior before dependent implementation, preserve requirement IDs/scenarios and verify before reconciliation/archive. Generated OpenSpec operation boundaries still apply; use context-efficiency.md#skill-ownership for delegation/conflicts.
+- Planning/project management is project-owned; do not install or require a process framework. Engineering checks run independently (engineering-checks.md).
 - Bootstrap alone means Foundation ready; gameplay/First slice accepted is separate (adoption.md). Do not create a project merely because the kit is installed. Resume existing work; ordinary features do not repeat bootstrap.
 - Clarify unresolved platforms, languages, mechanics or consequential choices before dependent work (clarification.md); preserve settled answers and continue independent work.
 - Core/Application/Presentation stay transitively engine-independent. Use the pinned C# profile, nullable/compiler parity and full owned-code semantic/organization coverage (code-quality.md, ide.md, code-organization.md).

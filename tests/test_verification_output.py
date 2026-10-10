@@ -10,7 +10,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
-spec = importlib.util.spec_from_file_location('verification_runner', ROOT / 'starter/openspec/tooling/ci.py')
+spec = importlib.util.spec_from_file_location('verification_runner', ROOT / 'starter/verification/run.py')
 runner = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(runner)
 
@@ -68,44 +68,34 @@ class VerificationOutputTests(unittest.TestCase):
         self.assertEqual(0, code)
         self.assertIn(log.decode(), output)
 
-    def test_cli_preserves_child_exit_code(self):
+    def cli(self, root, *arguments):
+        return subprocess.run([sys.executable, runner.__file__, '--root', str(root), *arguments],
+                              capture_output=True, text=True)
+
+    def test_cli_failure_code_and_full_logs(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
-            tooling = root / 'tooling/specs'
-            tooling.mkdir(parents=True)
-            (tooling / 'ci.py').write_bytes(Path(runner.__file__).read_bytes())
-            (tooling / 'run.py').write_text('import sys; print("structural failure", file=sys.stderr); sys.exit(9)', encoding='utf-8')
-            result = subprocess.run([sys.executable, str(tooling / 'ci.py'), '--change', 'fixture', '--quiet'],
-                                    cwd=root, capture_output=True, text=True)
+            result = self.cli(root, '--quiet', '--', sys.executable, '-c', 'print("fault"); raise SystemExit(9)')
             self.assertEqual(9, result.returncode)
-            self.assertIn('structural failure', result.stdout)
-            logs = list((root / 'artifacts/spec-validation').glob('run-*/*.log'))
-            self.assertEqual(1, len(logs))  # Later gates must not run after failure.
-            self.assertIn('structural failure', logs[0].read_text())
+            self.assertIn('fault', result.stdout)
+            self.assertEqual('fault', next((root / 'artifacts/verification').glob('run-*/*.log')).read_text().strip())
 
-    def test_quiet_and_verbose_run_same_gates_and_require_delivery(self):
+    def test_success_modes_use_fresh_logs_and_project_cwd(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
-            change = root / 'openspec/changes/active'
-            change.mkdir(parents=True)
-            (change / '.openspec.yaml').write_text('schema: unity-game')
-            commands = []
-            with patch.object(runner, 'execute', side_effect=lambda cmd, *args: commands.append(cmd)):
-                with contextlib.redirect_stdout(io.StringIO()):
-                    runner.verify(root, 'active', False)
-                    count = len(commands)
-                    runner.verify(root, 'active', True)
-            self.assertEqual(commands[:count], commands[count:])
-            self.assertEqual(3, count)
-            self.assertEqual('--accept', commands[-1][-1])
-            self.assertEqual(2, len(list((root / 'artifacts/spec-validation').iterdir())))
+            for options in [[], ['--quiet']]:
+                result = self.cli(root, *options, '--', sys.executable, '-c', 'from pathlib import Path; print(Path.cwd())')
+                self.assertEqual(0, result.returncode, result.stderr)
+            logs = list((root / 'artifacts/verification').glob('run-*/*.log'))
+            self.assertEqual(2, len(logs))
+            self.assertTrue(all(Path(p.read_text().strip()) == root.resolve() for p in logs))
 
-    def test_empty_active_list_still_checks_selected_delivery(self):
+    def test_timeout_missing_executable_and_empty_command_fail(self):
         with tempfile.TemporaryDirectory() as folder:
-            calls = []
-            with patch.object(runner, 'execute', side_effect=lambda cmd, *args: calls.append(cmd)):
-                with contextlib.redirect_stdout(io.StringIO()):
-                    runner.verify(Path(folder), 'archive/2026-09-27-fixture', True)
-            self.assertEqual(2, len(calls))
-            self.assertIn('archive/2026-09-27-fixture', calls[-1])
-            self.assertEqual('--accept', calls[-1][-1])
+            root = Path(folder)
+            result = self.cli(root, '--timeout', '0.2', '--quiet', '--', sys.executable, '-c', 'import time; time.sleep(20)')
+            self.assertEqual(124, result.returncode)
+            self.assertEqual(1, self.cli(root, '--', str(root / 'missing')).returncode)
+            self.assertEqual(2, self.cli(root).returncode)
+            for timeout in ['0', '-1', 'nan', 'inf']:
+                self.assertEqual(2, self.cli(root, '--timeout', timeout, '--', sys.executable).returncode)

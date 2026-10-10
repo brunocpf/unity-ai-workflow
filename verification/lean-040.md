@@ -8,7 +8,7 @@
 - Six shorter task skills, conditional references and one owner for behavior/status/versions/results. Native locks and code remain authoritative for facts already encoded there.
 - Schema-2 verification maps requirement IDs to shared commands/manual checks. Delivery executes current commands, retains full logs and generates results. record-review collects actual manual-review metadata and artifact hashes. No whole-tree acceptance fingerprint or archive resealing; a regression after a previous pass still fails because checks execute again.
 - Fresh project installations omit examples by default, with release-pinned links and optional complete offline packs. Existing installations retain their pack unless explicitly changed. Global caches remain complete.
-- Active-map migration supports preview, apply, already-adopted detection, preflight validation and atomic replacement. Required manual kinds remain pending; historical archives are refused. Customized project tooling/docs require the full reviewed [migration](../references/upgrades/lean-0.4.0.md), not just installer updates.
+- Active-map migration supports preview, apply, already-adopted detection, preflight validation and atomic replacement. Required manual kinds remain pending; historical archives are refused. Customized project tooling/docs require the full reviewed [migration](https://github.com/brunocpf/unity-ai-workflow/blob/v0.4.1/references/upgrades/lean-0.4.0.md), not just installer updates.
 
 ## Measured footprint
 

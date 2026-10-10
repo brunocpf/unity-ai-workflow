@@ -27,7 +27,7 @@ That is enough workflow input. The agent must follow the [bootstrap skill](skill
 
 After installation, project-root AGENTS.md and the selected client adapter route future sessions to the local standards and task skills. You can simply ask for foundation setup or the first slice without supplying the kit path. The originating kit path is no longer required for ordinary work. Global entrypoints are optional; downloading the kit alone does not install them.
 
-**Spec-driven continuous development is the default:** bootstrap once, then evolve the same project across tasks and sessions. The agent uses pinned OpenSpec with a Unity schema to maintain [behavioral specs, scoped change plans and requirement-linked evidence](references/spec-driven-development.md), with lightweight records for small fixes. Prompts can simply request a feature, fix, balance change or visual refinement; the adopted rules supply the architecture. Use [WORKFLOW.md](WORKFLOW.md) and read only the references needed for the current task.
+**Continuous Unity development is the default:** bootstrap once, then evolve the project. Request a feature, fix or visual refinement; the kit supplies architecture and engineering expectations. Planning tools and project management are independent choices, never prerequisites. Use [WORKFLOW.md](WORKFLOW.md) for task routing.
 
 ## Update with project review
 
@@ -35,9 +35,7 @@ In an adopted game, say:
 
 > Use unity-workflow-update to check upstream for kit updates, evaluate their applicability to this project, and apply compatible workflow changes. Report deferred migrations. Also update my global kit.
 
-For **0.4.1**, adopt [skill ownership](references/upgrades/skill-ownership-0.4.1.md): upstream skills own tool/OpenSpec procedures; the kit owns project policy and acceptance. Unity plugins remain optional. See [review and validation](verification/skill-ownership-041.md).
-
-For **0.4.0**, follow the [full lean-workflow migration](references/upgrades/lean-0.4.0.md): three default project documents, concise task skills, shared executable verification, no whole-tree acceptance fingerprints, and optional examples. OpenSpec's lifecycle and required artifacts remain intact. See the [measured changes and validation](verification/lean-040.md). Existing projects must migrate their own helpers/configuration and consolidate redundant docs; updating the installed standards alone is insufficient.
+For **0.5.0**, follow the [decoupling migration](references/upgrades/decoupling-0.5.0.md): remove kit-imposed process machinery after preserving all engineering commands and useful project knowledge. See [validation](verification/decoupling-050.md).
 
 For assessment only, say “review” instead of “apply.” The agent reviews changed requirements against the project's implementation, version pins and decisions. The installer reports file differences and protects local edits; semantic applicability requires that review. Updating global entrypoints never automatically updates games.
 
