@@ -13,7 +13,7 @@ python3 install.py install-global --agent both
 python3 install.py check-global
 ```
 
-Choose `codex`, `claude` or `both`. Restart/open a new client session after installation. A complete versioned copy lives in `~/.local/share/unity-ai-workflow/kits/`; the original checkout is no longer needed to start projects. Existing games keep their project-local versions.
+Choose `codex`, `claude` or `both`. Restart/open a new client session after installation. A complete versioned copy lives in `~/.local/share/unity-ai-workflow/kits/`; the original checkout is no longer needed to start projects. Existing games keep their own pinned versions.
 
 ## Start a new project
 
@@ -34,6 +34,8 @@ After installation, project-root AGENTS.md and the selected client adapter route
 In an adopted game, say:
 
 > Use unity-workflow-update to check upstream for kit updates, evaluate their applicability to this project, and apply compatible workflow changes. Report deferred migrations. Also update my global kit.
+
+For **0.6.0**, shared-cache installation is the default for new projects; existing projects can [migrate explicitly](references/upgrades/shared-cache-0.6.0.md). Commit the pin and restore helper, not machine-local links. Use `--mode vendored` for a self-contained copy.
 
 For **0.5.1**, also adopt [GitHub-hosted Library caching and phase timing](references/ci.md#github-hosted-runner-performance). This adds guidance, not an automatic game-CI change or a guaranteed runtime.
 

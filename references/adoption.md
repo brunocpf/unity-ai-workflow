@@ -2,7 +2,7 @@
 
 ## Install before bootstrap
 
-Installing the workflow is separate from both Unity milestones. From the kit checkout run `python3 install.py install --target /path/to/game --agent codex|claude|both` (choose one value, not the literal alternatives), then `python3 install.py check --target /path/to/game`. The installer copies shared standards and optionally examples, adds client discovery paths and preserves existing instruction content. It does not create the game, apply compiler settings or provision tools. Bootstrap can install the workflow as its first step when not yet adopted; the user's bootstrap request already authorizes that prerequisite.
+Installing the workflow is separate from both Unity milestones. From the kit checkout run `python3 install.py install --target /path/to/game --agent codex|claude|both` (choose one value, not the literal alternatives), then `python3 install.py check --target /path/to/game`. New installs pin a shared immutable cache and generate ignored discovery links; vendoring is optional. Fresh clones/worktrees run `python3 .unity-workflow/restore.py --fetch` before client discovery. Existing instruction content is preserved. It does not create the game, apply compiler settings or provision tools. Bootstrap can install the workflow as its first step when not yet adopted; the user's bootstrap request already authorizes that prerequisite.
 
 ## Milestones and request scope
 

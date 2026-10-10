@@ -1,6 +1,6 @@
 # Read by task
 
-Current kit migration: [0.5 decoupling](upgrades/decoupling-0.5.0.md). Load it for adoption, not ordinary feature work.
+Current kit migration: [0.6 shared cache](upgrades/shared-cache-0.6.0.md), plus [0.5 decoupling](upgrades/decoupling-0.5.0.md) where applicable. Load it for adoption, not ordinary feature work.
 
 Do not read this entire directory. References below are authoritative by subject; project-specific decisions belong in the game's docs.
 

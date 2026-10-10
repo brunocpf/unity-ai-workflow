@@ -319,31 +319,42 @@ def assess(source, root, examples=None):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=['install', 'update', 'assess', 'check', 'install-global', 'check-global'])
+    parser.add_argument('command', choices=['install', 'update', 'assess', 'check', 'restore', 'install-global', 'check-global'])
     parser.add_argument('--target', type=Path, help='Game workspace (not the kit checkout)')
-    parser.add_argument('--home', type=Path, help='Global install home override (for isolated tests)')
+    parser.add_argument('--home', type=Path, help='Cache/global home override (for isolated tests)')
+    parser.add_argument('--mode', choices=['shared', 'vendored'], help='New projects default to shared; updates preserve installed mode')
     parser.add_argument('--agent', choices=['codex', 'claude', 'both'], help='Default: both on install, existing clients on update; selections only add clients')
     parser.add_argument('--examples', choices=['none', 'all'], help='New installs default to none; updates preserve the installed choice')
     parser.add_argument('--dry-run', action='store_true', help='Show the plan without writing files')
     args = parser.parse_args()
     try:
         if args.command in ('install-global', 'check-global'):
-            if args.examples or args.target or (args.command == 'check-global' and (args.agent or args.dry_run)):
+            if args.mode or args.examples or args.target or (args.command == 'check-global' and (args.agent or args.dry_run)):
                 parser.error('Global commands do not accept --target; check-global accepts only --home')
             import global_install
             result = global_install.run(SOURCE, (args.home or Path.home()).expanduser().resolve(), args.command, args.agent, args.dry_run, sys.modules[__name__])
             print(json.dumps(result, indent=2))
             return 0
-        if args.target is None or args.home:
-            parser.error('Project commands require --target and do not accept --home')
+        if args.target is None:
+            parser.error('Project commands require --target')
         root = args.target.expanduser().resolve()
-        if args.command == 'assess':
-            if args.agent or args.dry_run:
-                parser.error('assess accepts only --target and never writes files')
+        raw = read(root, STATE)
+        old = json.loads(raw) if raw else None
+        shared = old and old.get('schema') == 2
+        selected_mode = args.mode or ('shared' if shared or old is None else 'vendored')
+        if args.command == 'check' and (args.mode or args.agent or args.examples or args.dry_run):
+            parser.error('check accepts only --target and --home')
+        if args.command == 'restore' and (args.mode or args.agent or args.examples):
+            parser.error('restore preserves the project pin and clients')
+        if selected_mode == 'shared' and args.examples:
+            parser.error('Shared cache includes all examples; --examples is for vendored mode')
+        if selected_mode == 'shared' or shared or args.command == 'restore':
+            import shared_install
+            result = shared_install.run(SOURCE, root, (args.home or Path.home()).expanduser().resolve(),
+                                        args.command, args.agent, args.dry_run, args.mode, sys.modules[__name__], args.examples)
+        elif args.command == 'assess':
             result = assess(SOURCE, root, args.examples)
         elif args.command == 'check':
-            if args.examples or args.agent or args.dry_run:
-                parser.error('check does not accept --agent or --dry-run')
             result = verify(root)
         else:
             result = install(SOURCE, root, args.command, args.agent, args.dry_run, args.examples)

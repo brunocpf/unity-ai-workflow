@@ -10,7 +10,8 @@ Game/                                # Git + Unity project root
   .gitattributes
   .gitignore
   .vscode/                           # Tracked settings, recommendations and regeneration task
-  .agents/skills/                     # Project-owned task workflows
+  .agents/skills/                     # Kit links ignored in shared mode; own skills tracked
+  .unity-workflow/                    # Committed pin/restore helper; local link state ignored
   global.json                        # Pinned dotnet CLI SDK; not Unity language configuration
   .config/dotnet-tools.json           # Pinned local Husky.NET and tooling
   .husky/                            # Verify-only hooks; LFS integration preserved
@@ -18,7 +19,7 @@ Game/                                # Git + Unity project root
   docs/
     project.md                       # Product/platform/locale/visual decisions and budgets
     architecture.md                  # Source/ownership map, authoring locations, exceptions
-    standards/
+    standards/                       # Ignored shared-kit link, or tracked vendored copy
       references/                    # Task-specific policy; do not preload the directory
       starter/                       # Configuration/tooling sources, not extra project docs
       examples/                      # Optional offline reference pack (--examples all)

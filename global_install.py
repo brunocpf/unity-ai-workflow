@@ -97,7 +97,12 @@ def run(source, home, command, agent, dry_run, core):
         template = source_files[f'global/{name}/SKILL.md'].decode('utf-8')
         for client in agents:
             desired[f'{LOCATIONS[client]}/{name}/SKILL.md'] = template.replace('{{KIT_ROOT}}', (home / cache).as_posix()).replace('{{AGENT}}', client).encode('utf-8')
-    state = {'schema': 1, 'kit': 'unity-ai-workflow-global', 'version': version, 'cache': cache, 'agents': agents,
+    try:
+        import shared_install
+        source_revision = shared_install.revision(source, home)
+    except ValueError:
+        source_revision = None
+    state = {'schema': 1, 'kit': 'unity-ai-workflow-global', 'version': version, 'cache': cache, 'agents': agents, 'source_revision': source_revision,
              'files': {p: core.digest(d) for p, d in sorted(desired.items())}}
     # A preexisting version directory must be complete and unmodified, not partially overlaid.
     if (home / cache).exists() and any(p.is_file() or p.is_symlink() for p in (home / cache).rglob('*')):

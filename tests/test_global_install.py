@@ -53,7 +53,7 @@ class GlobalTests(unittest.TestCase):
         # Cached installer works independently of the source checkout.
         self.source.rename(self.base / 'hidden-source')
         game = self.base / 'game'
-        subprocess.run([sys.executable, str(cache / 'install.py'), 'install', '--target', str(game), '--agent', 'both'], check=True, capture_output=True)
+        subprocess.run([sys.executable, str(cache / 'install.py'), 'install', '--target', str(game), '--agent', 'both', '--mode', 'vendored'], check=True, capture_output=True)
         core.verify(game)
         self.assertFalse((game / 'Assets').exists())
 

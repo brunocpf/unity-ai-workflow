@@ -1,6 +1,6 @@
 # Review and update a project's workflow
 
-Global entrypoints and project-local standards have independent versions. New global versions are candidates for existing games, not automatic migrations. Use the project's installed hash inventory and its contracts/ADRs as the baseline.
+Global entrypoints and project-local standards have independent versions. New global versions are candidates for existing games, not automatic migrations. Use the project's pin/installed hash inventory and its contracts/ADRs as the baseline.
 
 1. For "check for updates", inspect the trusted upstream repository and fetch a candidate into a separate checkout. Record its exact commit and kit.json version. Do not edit the immutable local cache or fetch into the game. A newer commit can change content without changing the version string. Offline comparisons must report that upstream freshness is unknown.
 2. Run `python3 /candidate/install.py assess --target /game`. This is read-only and reports added/changed/removed files plus local drift. Read the actual old/new content and affected project code/docs; the report does not decide applicability.
@@ -12,4 +12,6 @@ Record candidate/installed commit or hash, changed requirements, applicability, 
 
 To update global entrypoints, run a reviewed candidate's `install.py install-global`; it creates a new pinned cache and changes only the selected global adapters. Existing games remain unchanged. `check-global` verifies the current global installation. Old caches are retained for reference; never overwrite them in place or point active skills at an unversioned working directory.
 
-For all earlier versions, use the [0.5 decoupling migration](upgrades/decoupling-0.5.0.md) directly; do not first adopt superseded process machinery. Preserve engine/package pins and existing project management choices.
+For shared-cache adoption, use the [0.6 migration](upgrades/shared-cache-0.6.0.md); mode changes are explicit, ordinary updates preserve the installed mode.
+
+For process decoupling from earlier versions, use the [0.5 decoupling migration](upgrades/decoupling-0.5.0.md) directly; do not first adopt superseded process machinery. Preserve engine/package pins and existing project management choices.

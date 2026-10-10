@@ -1,6 +1,6 @@
 ---
 name: unity-workflow-start
-description: Start a new Unity project using the user's installed Unity AI workflow. Install its pinned project-local skills and standards, then bootstrap the foundation or implement the first slice within the requested scope. Use for a new Unity game/workspace, not ordinary changes in an already adopted project.
+description: Start a new Unity project using the user's installed Unity AI workflow. Pin its shared kit and expose project skills, then bootstrap the foundation or implement the first slice within the requested scope. Use for a new Unity game/workspace, not ordinary changes in an already adopted project.
 ---
 
 The complete, versioned kit for this entrypoint is at `{{KIT_ROOT}}`. Read its `references/adoption.md` and `README.md`; the user need not supply the kit path or repeat architectural defaults.
@@ -12,3 +12,5 @@ For a new workspace, run this cached kit's `install.py install --target <absolut
 Follow the adopted milestone contract: bootstrap/setup alone ends at Foundation ready; a requested playable game or end-to-end trial includes First slice accepted unless scope limits it. The milestone checkpoint adds no approval gate; follow any independently adopted project process. Clarify unresolved product intent, especially target platforms and supported languages, while continuing independent work. Preserve prior answers and established technical defaults.
 
 Installation of this global skill alone authorizes no game creation. Act on the user's project request. Do not initialize a game in the kit cache, silently fetch newer standards, alter existing games, install unrelated providers or assume configured MCP tools. Record project-local version/evidence; leave unfinished work in its existing tasks.
+
+Shared projects commit a portable installation pin and restore helper. On a fresh clone/worktree, run `python3 .unity-workflow/restore.py --fetch` before reading linked standards; never substitute this global candidate for the locked version. New installations default to shared; existing modes are preserved unless migration explicitly selects `--mode shared` or `--mode vendored`. See the candidate’s INSTALL.md and current migration guide.

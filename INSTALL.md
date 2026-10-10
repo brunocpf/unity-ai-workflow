@@ -1,101 +1,80 @@
 # Install the workflow
 
-Requires Python 3.10+; no pip dependencies. Use `python` instead of `python3` if that is your Windows launcher. Install into a game workspace, not this kit checkout. A Git clone or extracted release archive works. Installation is local and makes no network calls.
+Requires Python 3.10+. Shared mode is the default for new projects: one immutable kit snapshot per version/content hash on each machine, a committed project pin and restore helper, and ignored local links. It does not create Unity content or install planning tools. Global entrypoints are optional.
+
+From a clean, committed kit checkout (or the provenance-bearing global cache):
 
 ```sh
-git clone https://github.com/brunocpf/unity-ai-workflow.git
-cd unity-ai-workflow
 python3 install.py install --target /path/to/game --agent both --dry-run
 python3 install.py install --target /path/to/game --agent both
 python3 install.py check --target /path/to/game
 ```
 
-Use `--agent codex`, `--agent claude` or `--agent both`. Both is the initial default. Paths with spaces must be quoted. Commit installed files with the game so other sessions and contributors inherit the same version.
+Select codex, claude or both. Existing projects retain their mode unless `--mode shared` or `--mode vendored` is explicit. Shared installation refuses dirty/unidentified source; commit/review a candidate first. A release archive without provenance can be vendored, or use a clean checkout of the exact commit for shared mode.
 
 ## Global entrypoints
 
-Run `python3 install.py install-global --agent both` from a reviewed kit checkout, then `python3 install.py check-global`. `--dry-run` previews changes. `--home /temporary/home` supports isolated tests; normally omit it.
+```sh
+python3 install.py install-global --agent both
+python3 install.py check-global
+```
 
-| User destination | Content |
-|---|---|
-| `~/.agents/skills/unity-workflow-{start,update}/` | Codex global skills |
-| `~/.claude/skills/unity-workflow-{start,update}/` | Claude Code global skills |
-| `~/.local/share/unity-ai-workflow/kits/<version>-<hash>/` | Complete pinned kit snapshot |
-| `~/.local/share/unity-ai-workflow/global.json` | Global ownership and integrity manifest |
-
-These two entrypoints have different names from the six project skills. Restart/open a session and invoke `unity-workflow-start` in a new workspace, or `unity-workflow-update` in an adopted game. The start skill installs local rules first; continued development uses those local rules. Neither global installation nor an update starts Unity or generates assets.
-
-To update the global kit, fetch a reviewed upstream commit into a separate checkout and rerun `install-global` there. Its content hash selects a new cache; old caches remain, existing projects stay pinned. `check-global` checks file integrity, not upstream freshness or client discovery. Do not edit caches; global local edits/collisions block updates. Review the candidate before running its installer. Network access is the agent's explicit update step, not an installer side effect.
-
-## Optional examples
-
-New project installs omit the full example library. References link to the immutable release tag; core policy and starter tooling stay local. Use `install --target /game --examples all` for complete offline examples, or `update --target /game --examples all` to add them later. Adapt only needed implementations into the game. Updates preserve the installed choice; migrate an older full installation with `assess --target /game --examples none`, then `update --target /game --examples none --dry-run` and update. Locally modified managed examples block removal. Global caches remain complete, so the reviewed kit is also available offline there.
+Global start/update skills live in ~/.agents/skills and ~/.claude/skills. Shared projects and global entrypoints reuse the same content-hashed snapshot in ~/.local/share/unity-ai-workflow/kits/. Global updates never move project pins. `--home /temporary/home` supports isolated tests for global and shared commands. Do not edit immutable caches or automatically delete old versions; another project/worktree may still reference them.
 
 ## What is installed
 
-| Destination in the game | Purpose |
+| Project path | Ownership |
 |---|---|
-| `.agents/skills/unity-*/` | Codex skill discovery, when selected |
-| `.claude/skills/unity-*/` | Claude Code skill discovery, when selected |
-| `docs/standards/{references,starter}/` | Local policy and reusable configuration/tooling |
-| `docs/standards/examples/` | Optional complete offline example pack |
-| `docs/standards/PROJECT-RULES.md` | Shared workflow rules |
-| `AGENTS.md` | Small managed routing block; existing content retained |
-| `CLAUDE.md` | Managed imports of AGENTS.md and shared rules, for Claude |
-| `.unity-workflow/installation.json` | Version, source revision when available, clients and installed hashes |
+| .unity-workflow/installation.json | Committed portable pin: repository, commit, version, content hash, clients and managed routing hashes |
+| .unity-workflow/restore.py | Committed standard-library restore helper |
+| AGENTS.md / CLAUDE.md | Committed managed routing blocks; project text outside blocks preserved |
+| .gitignore | Committed managed ignore block for generated links/local state |
+| .unity-workflow/local.json | Ignored link ownership; contains machine-local paths |
+| docs/standards | Ignored link to complete pinned kit |
+| .agents/skills/unity-* / .claude/skills/unity-* | Ignored links for the six selected-client task skills |
 
-The six skill sources are canonical under this repository's `skills/`; installation copies them into the selected discovery directories without symlinks. Both clients use the same shared standards. A skill folder copied alone is not a complete installation.
+Only the kit-owned six skill paths are ignored, not unrelated project skills. The pin contains no absolute machine paths. Project-specific decisions, overrides and adopted source/tooling stay outside docs/standards. That path is read-only reference material shared by all projects on the pin. Run engineering checks from project-owned scripts; game CI must not depend on this instruction cache.
 
-The installer does **not** create Unity assets, modify Packages/ProjectSettings, apply the starter EditorConfig to game code, provision hooks/CI credentials, install MCP servers or spend generation credits. Those are foundation or feature tasks. Installing instructions does not authorize running bootstrap. Reference and example files are passive source material under docs, not imported Unity content.
+## Fresh checkout and worktrees
 
-## Use after installation
+From the game root, before starting an agent session:
 
-Start the client in the game workspace. For setup only: “Bootstrap the foundation for [game brief].” For both milestones: “Bootstrap the foundation, then implement and validate the first playable slice for [brief].” Subsequent requests can simply describe changes. See [milestone scope](references/adoption.md#milestones-and-request-scope).
+```sh
+python3 .unity-workflow/restore.py --fetch
+```
 
-Codex discovers repo skills in `.agents/skills/`; Claude Code uses `.claude/skills/`. The standard `SKILL.md` sources are shared. Other agents may read the standards, but their discovery/install behavior is not certified here. [Codex skills](https://learn.chatgpt.com/docs/build-skills), [Claude skills](https://code.claude.com/docs/en/skills).
+An existing valid cache is reused offline. `--fetch` permits downloading only the locked Git commit when missing and verifies its content hash before executing the cached installer. Omit it to require offline restore. A corrupted cache is rejected, not silently repaired or upgraded; preserve edits, remove/quarantine that exact cache and restore intentionally. Never substitute the globally newest kit. Repeat restore for fresh worktrees or another machine; do not commit absolute links/local state. Restricted environments may need cache read access or vendored mode.
 
-Claude's `@` imports make shared rules explicit even when automatic AGENTS.md loading is unavailable or an existing CLAUDE.md takes precedence. Project-specific rules stay outside managed markers and deviations belong in ADRs. [Claude instruction imports](https://code.claude.com/docs/en/memory#share-one-file-with-other-coding-tools).
+## Vendored option
 
-## Verify discovery separately
+Use `install --mode vendored` for a self-contained project. It copies standards and six skill folders into the same discovery paths, with no cache dependency. Default vendored examples are omitted, with release-pinned links; `--examples all` includes them. Updates preserve that selection. Shared mode always exposes the complete cache and does not accept `--examples`.
 
-`check` verifies installed hashes, expected paths and core dependency presence. UTF-8 text hashes normalize CRLF/LF for cross-platform Git checkouts; binary hashes remain byte-exact. Unchanged content retains its existing line endings. It does not execute a model, test Unity, or prove skill invocation. Restart the client if newly installed skills do not appear.
-
-- **Codex:** confirm all six `unity-*` skills in the skill picker (or app-server `skills/list` for this workspace), then invoke `$unity-project-bootstrap` with a read-only request to explain the two milestones.
-- **Claude Code:** confirm all six `/unity-*` commands, use `/context` to inspect the instruction imports, then invoke `/unity-project-bootstrap` with the same read-only request.
-- Verify the response uses local standards and does not create a Unity project. Global skills with the same names can shadow or duplicate project skills; remove or rename the conflicting installation after reviewing ownership. Client settings that disable skills/instructions also prevent discovery.
-
-See [client evidence](verification/client-compatibility.md) for what was actually tested. Asset tools and MCP connections remain separate capabilities; the agent must inspect available tools and report missing required providers rather than invent their availability.
+Conversion uses a reviewed `update --mode shared|vendored --dry-run`, then update/check. See [migration](references/upgrades/shared-cache-0.6.0.md) for Git index cleanup and conflict handling. On Windows, shared mode requires permission to create directory symlinks; a failure rolls back project changes. Choose vendored mode explicitly when symlinks are unavailable.
 
 ## Safe updates
 
-Choose a reviewed kit tag or commit in a separate kit checkout; updating the checkout does not update any game automatically. Version is in kit.json; the installed payload hash identifies exact content, including changes made before a release. Source revision is provenance, not a promise that the source checkout was clean.
+Use a reviewed clean candidate checkout:
 
 ```sh
-python3 install.py assess --target /path/to/game
-python3 install.py update --target /path/to/game --dry-run
-python3 install.py update --target /path/to/game
-python3 install.py check --target /path/to/game
+python3 /candidate/install.py assess --target /game
+python3 /candidate/install.py update --target /game --dry-run
+python3 /candidate/install.py update --target /game
+python3 /candidate/install.py check --target /game
 ```
 
-Follow the [applicability review](references/workflow-updates.md) before applying: inspect changed requirements and project code/pins, record apply/defer/not-applicable/migration decisions, then validate affected boundaries. `assess` is read-only; hashes cannot establish semantic compatibility.
+Assessment compares content, not semantic applicability. Shared update changes only this project's pin/links and routing; previous cache versions remain. New clients are additive. Modified managed blocks/helpers, retargeted links, corrupted caches and unmanaged replacement-directory contents block mutation. Review project-specific exceptions using [workflow updates](references/workflow-updates.md). Installer success is not adoption of changed engineering requirements.
 
-Updates retain the existing clients; `--agent both` adds the other client. They do not uninstall adapters. Repeating install/update with identical inputs is a no-op. Review the game's diff before committing the upgrade.
+Rollback a shared update by reverting its committed pin/helper/routing changes and running restore again. To roll back shared adoption itself, use the current installer to convert back to vendored before reverting the migration commit; never copy through a shared link. Preserve unrelated working changes.
 
-The installer preflights every managed path. Unmanaged collisions, missing owned files, edited shared standards/skills or changed routing blocks stop the entire plan without writing content. Text outside the AGENTS.md/CLAUDE.md blocks and unrelated project files is preserved. Unchanged files removed upstream are removed; modified ones conflict. Symlinked managed paths are rejected.
+## Verify discovery separately
 
-For a conflict, retain the local work in Git/backup, compare the incoming kit file, and move project-specific deviations into project rules/ADRs or reconcile the managed file explicitly. Restore the previous installed version or use the exact incoming content, then rerun the dry run. There is no force-overwrite switch. Earlier manual installations may need this reconciliation before the installer can adopt ownership.
+`check` verifies integrity and layout, not model behavior or Unity acceptance. Open a new client session after restore/update; confirm the six project skills and that their guidance follows the project pin. Both clients document symlinked skill-folder discovery: [Codex](https://learn.chatgpt.com/docs/build-skills), [Claude](https://code.claude.com/docs/en/skills). Test actual installed client versions; filesystem checks alone are not client certification. Existing same-name personal skills can conflict with project discovery; keep global start/update names distinct from the six project skills.
 
-Writes use atomic file replacement and rollback on ordinary write exceptions, with the manifest written last. This is not a filesystem-wide transaction: after process termination/power loss, inspect the diff, restore the interrupted changes from Git, then retry. Remove a stale `.unity-workflow/install.lock` only after confirming no installer is running. Do not edit managed files concurrently with installation.
-
-## Maintain the kit
+## Validation
 
 ```sh
 python3 -m unittest discover -s tests -v
 python3 tools/check_kit.py
 ```
 
-Installer regression tests run in disposable workspaces and exercise conflicts, preservation, update/removal, symlinks, dry runs and rollback. CI runs these checks on Linux, macOS and Windows. Client discovery is a separately recorded integration check; a filesystem test is not a client acceptance result.
-
-## Engineering adoption
-
-Global/project installation copies passive engineering guidance. It does not install planning tools or prescribe project management. For existing projects, follow the [0.5 migration](references/upgrades/decoupling-0.5.0.md); the installer cannot migrate project-owned scripts or CI automatically.
+Tests cover vendored behavior, shared cache reuse, exact-pin fetching, migrations, rollback, corruption and collisions. GitHub-hosted CI runs on Linux, macOS and Windows; symlink tests report a skip if the OS disallows links. Live client discovery and game acceptance remain separate.
