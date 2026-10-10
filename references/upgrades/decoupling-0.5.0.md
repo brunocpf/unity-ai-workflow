@@ -11,3 +11,7 @@ Apply directly from any older kit version. Do not first install superseded OpenS
 7. **Rollback.** Revert only migration commits/project-owned edits, restore the previous kit using its reviewed installer, and reinstall previous dependencies from preserved locks if needed. Keep unrelated work and current game assets. Global installation and each consuming project are separate updates.
 
 The installer removes obsolete *unmodified managed* sources but protects local edits. It never automatically deletes project-owned tooling/specs, generated integrations, requirements or history. Migration requires the review above; no destructive document conversion is automated.
+
+## 0.5.1 hosted-CI guidance
+
+The process migration above is unchanged. Adopt [Library caching and phase timing](../ci.md#github-hosted-runner-performance) in the existing GitHub-hosted workflow: inspect current caches/instrumentation first, apply only missing behavior, and preserve custom command/report validation. Keep the full engineering suites and a clean-import path. Validate cold, exact-hit and changed-source compatible-restore behavior, then compare warm timings including cache transfer. Updating managed guidance does not implement these changes in a game. Roll back the cache/timing workflow edits independently if they regress reliability or total time; no engine or runner-provider migration is required.

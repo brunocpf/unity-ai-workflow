@@ -35,6 +35,8 @@ In an adopted game, say:
 
 > Use unity-workflow-update to check upstream for kit updates, evaluate their applicability to this project, and apply compatible workflow changes. Report deferred migrations. Also update my global kit.
 
+For **0.5.1**, also adopt [GitHub-hosted Library caching and phase timing](references/ci.md#github-hosted-runner-performance). This adds guidance, not an automatic game-CI change or a guaranteed runtime.
+
 For **0.5.0**, follow the [decoupling migration](references/upgrades/decoupling-0.5.0.md): remove kit-imposed process machinery after preserving all engineering commands and useful project knowledge. See [validation](verification/decoupling-050.md).
 
 For assessment only, say “review” instead of “apply.” The agent reviews changed requirements against the project's implementation, version pins and decisions. The installer reports file differences and protects local edits; semantic applicability requires that review. Updating global entrypoints never automatically updates games.

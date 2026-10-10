@@ -29,15 +29,47 @@ For live-Editor compile feedback and detached operations, follow the [CLI comple
 
 Configure the job environment with UNITY_NON_INTERACTIVE=1 and HUSKY=0; run CI checks directly. Verify the flags on the pinned CLI. Use the chosen profile's platform-appropriate output path (directory, .app, or executable), rather than assuming one works everywhere.
 
-Use separate jobs/workspaces for parallel Unity executions. Rendering tests need a usable graphics backend. Cache Library only with a sufficiently specific key and retain a clean-import job. Avoid running code from untrusted pull requests on a privileged persistent runner.
+Use separate jobs/workspaces for parallel Unity executions. Rendering tests need a usable graphics backend. Use the Library cache and timing guidance below. Avoid running code from untrusted pull requests on a privileged persistent runner.
 
 Before calling this CI complete, intentionally break a Core rule, a Unity compile, a known analyzer diagnostic, a behavior test, and a required content reference in disposable changes. Each should produce the expected failure and retained evidence. Then prove a clean checkout passes and launches the player.
+
+## GitHub-hosted runner performance
+
+Keep GitHub-hosted runners as the baseline; do not introduce self-hosted infrastructure, custom runner images or paid runner changes as an incidental optimization. Treat under five minutes as a warm-run goal to measure, not a timeout or guaranteed result. Cold imports/tool upgrades can take longer. Optimize setup/import costs before reducing test coverage.
+
+### Library cache
+
+Cache the project's Library separately from Editor/tool downloads. Restore after checkout/LFS and before the first project-opening Unity operation, including IDE generation. Preserve one workspace per concurrent Editor and keep cross-OS archives disabled.
+
+Use a compatibility prefix and revision suffix, for example:
+
+```text
+compat = library-v1-{runner OS}-{runner architecture}-{runner image family}-{Editor version+revision}-{actual build target}-{configuration hash}
+key = {compat}-{checked-out revision}
+restore-keys = {compat}-
+```
+
+The configuration hash covers Packages/manifest.json, Packages/packages-lock.json, ProjectSettings and any external configuration that changes imports, compiler defines, render pipeline or target behavior. Include contents of local/embedded package sources when not covered by those inputs. Require expected key inputs to exist. Use the actual checked-out revision, including a PR merge revision when that is what runs. Never broaden restore prefixes across Editor, platform or configuration boundaries merely to get a hit. Bump the cache epoch (`library-v1`) when cache layout/compatibility assumptions change.
+
+Use SHA-pinned cache restore/save actions. An exact hit, compatible-prefix restore and miss are distinct observations; `cache-hit != true` does not necessarily mean an empty cache. Cache entries are immutable, so the revision suffix permits refreshed snapshots. Save only after successful import/checks and after Unity exits; seed caches from trusted default-branch runs, respecting GitHub's branch/trust restrictions. PRs may restore compatible base caches. Do not elevate token permissions or switch to privileged PR triggers to populate them. Retain failure logs independently of whether the cache is saved.
+
+Restore only Library, not Assets, settings, generated IDE projects, test reports, screenshots, license files or credentials. Always refresh/import, regenerate current analysis projects and execute checks on the current checkout—even for exact hits. Do not accept cached binaries as proof that changed source compiled. Cache misses are normal cold runs. Keep a scheduled/manual clean-import path that bypasses Library restoration and uses a fresh Library; never delete an active Editor's files. Keep its expected reports and checks equivalent.
+
+Library can be large: measure restore **and save/compression** time, archive size and free disk alongside saved import time. Avoid adding cache transfer that costs more than it saves. Monitor eviction/churn; skip saving identical exact hits. Preserve the existing Editor cache rather than merging it into a per-revision Library archive. [GitHub cache matching, immutability and scope](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching).
+
+### Per-phase timing
+
+Expose existing operations as named job steps, or instrument the existing wrapper with a monotonic clock around each subprocess. Record elapsed duration and outcome in a concise job summary; keep raw logs in the existing artifacts. Record failure/timeout durations too, while propagating the original exit status. Do not add a separate timing service or required project document.
+
+Measure checkout/LFS, disk preparation, OS dependencies, Editor/tool cache restore, Library restore, provisioning/activation, first Editor import/compilation/IDE generation, pure checks, EditMode, PlayMode, semantic/formatting/organization checks, applicable content/player build, Library save and artifact upload. Use Editor logs to explain the first-launch total, and test XML to distinguish actual test duration from Editor startup. Label nested measurements; do not sum them twice. Report job wall time separately from queue time and parallel-job totals.
+
+Compare a cold run, an exact hit and compatible restoration after a real source/asset edit. Inspect several warm runs rather than quoting the best one. Verify edited behavior is actually tested, missing/stale reports still fail, and clean imports remain runnable. Preserve full owned-code semantic coverage and required EditMode/PlayMode suites; give duplicated pure checks one execution owner without dropping Unity-dependent tests. Report the measured improvement and remaining bottleneck honestly; retain normal safe timeouts even when the performance goal is five minutes.
 
 ## Generator review
 
 The beta.10 preview selected Ubuntu for StandaloneOSX, kept the source project's alpha pin, used a floating CLI installer and weak report handling. Correct target runner/modules, exact versions, explicit test modes, LFS and missing-report failures. Beta.12 removes the beta-channel variable from generated installers but still does not pin the CLI; retain exact acquisition/version verification. Follow [machine-result and interruption handling](toolchain.md#cli) when updating wrappers. No generated workflow was executed during research.
 
-Cache Library by editor, target, packages and relevant settings; keep a periodic clean import. Build rendering tests on a graphics-capable runner, not no-graphics batch mode. License authentication is distinct from CLI/service-account authentication. Follow [validation](validation.md) for player/visual evidence and [toolchain](toolchain.md) for version policy.
+Build rendering tests on a graphics-capable runner, not no-graphics batch mode. License authentication is distinct from CLI/service-account authentication. Follow [validation](validation.md) for player/visual evidence and [toolchain](toolchain.md) for version policy.
 
 ## Independent engineering gates
 
