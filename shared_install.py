@@ -1,5 +1,6 @@
 """Project pins, shared cache links and explicit vendored/shared migration."""
 import json
+import ntpath
 import os
 from pathlib import Path
 import shutil
@@ -85,6 +86,18 @@ def check_parents(root, relative):
             raise ValueError(f'Unsafe link parent: {current}')
 
 
+def normalized_link(value, windows=None):
+    # Windows readlink adds an extended-path prefix absent from symlink_to input.
+    use_windows = os.name == 'nt' if windows is None else windows
+    if use_windows:
+        if value.startswith('\\\\?\\UNC\\'):
+            value = '\\\\' + value[8:]
+        elif value.startswith('\\\\?\\'):
+            value = value[4:]
+        return ntpath.normcase(ntpath.normpath(value))
+    return value
+
+
 def inspect_links(root, pin, local, allow_missing=False):
     expected_paths = paths(pin)
     if local is not None and set(local.get('links', {})) != set(expected_paths):
@@ -96,7 +109,7 @@ def inspect_links(root, pin, local, allow_missing=False):
             if allow_missing and not path.exists():
                 continue
             raise ValueError(f'Missing/non-link managed path: {relative}; run restore or reconcile local files')
-        if local is None or os.readlink(path) != local['links'][relative]:
+        if local is None or normalized_link(os.readlink(path)) != normalized_link(local['links'][relative]):
             raise ValueError(f'Unowned/retargeted link: {relative}')
 
 
@@ -264,7 +277,7 @@ def _run(source, root, home, command, agent, dry_run, mode, core, examples=None)
     files[core.STATE] = (json.dumps(pin, indent=2, sort_keys=True) + '\n').encode()
     for relative in previous_dirs:
         directories.setdefault(relative, None)
-    directories = {p: d for p, d in directories.items() if not (isinstance(d, Path) and (root/p).is_symlink() and os.readlink(root/p) == str(d))}
+    directories = {p: d for p, d in directories.items() if not (isinstance(d, Path) and (root/p).is_symlink() and normalized_link(os.readlink(root/p)) == normalized_link(str(d)))}
     files = {p: d for p, d in files.items() if core.read(root, p) != d}
     result = {'operation': command, 'mode': mode, 'version': pin['version'], 'dry_run': dry_run or command == 'assess',
               'changes': {**{p: 'link' if isinstance(d, Path) else 'vendor' for p, d in directories.items()}, **{p: 'remove' if d is None else 'write' for p, d in files.items()}}}

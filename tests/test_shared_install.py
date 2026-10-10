@@ -64,6 +64,14 @@ class SharedTests(unittest.TestCase):
         self.assertNotIn(str(self.home), pin)
         self.assertNotIn(str(self.source), pin)
 
+    def test_windows_link_prefix_normalization(self):
+        self.assertEqual(shared.normalized_link(r'\\?\C:\kit\skills', True),
+                         shared.normalized_link(r'C:\kit\skills', True))
+        self.assertEqual(shared.normalized_link(r'\\?\UNC\server\share\kit', True),
+                         shared.normalized_link(r'\\server\share\kit', True))
+        self.assertNotEqual(shared.normalized_link(r'C:\other', True),
+                            shared.normalized_link(r'C:\kit', True))
+
     def test_dry_run_writes_nothing(self):
         self.run_install(dry=True)
         self.assertFalse(self.home.exists())
@@ -87,7 +95,7 @@ class SharedTests(unittest.TestCase):
         self.run_install()
         old={p:(self.game/p).read_bytes() for p in [core.STATE, shared.HELPER, 'AGENTS.md','CLAUDE.md','.gitignore']}
         other=self.base/'other';self.run_install(game=other)
-        p=self.source/'README.md';p.write_text(p.read_text()+'\nNew guidance.\n');self.commit()
+        p=self.source/'README.md';p.write_bytes(p.read_bytes()+b'\nNew guidance.\n');self.commit()
         self.run_install('update')
         self.assertNotEqual((self.game/'docs/standards').resolve(),(other/'docs/standards').resolve())
         for name,data in old.items():(self.game/name).write_bytes(data)
