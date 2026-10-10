@@ -31,6 +31,9 @@ class SharedTests(unittest.TestCase):
             p.write_bytes(data)
         (self.source / '.gitignore').write_text('__pycache__/\n')
         subprocess.run(['git', 'init', '-q', str(self.source)], check=True)
+        # Disposable repositories must not leave background maintenance racing cleanup.
+        subprocess.run(['git', '-C', str(self.source), 'config', 'gc.auto', '0'], check=True)
+        subprocess.run(['git', '-C', str(self.source), 'config', 'maintenance.auto', 'false'], check=True)
         self.commit()
         probe = self.base / 'probe'
         try:
