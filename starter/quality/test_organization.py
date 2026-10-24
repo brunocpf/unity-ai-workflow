@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regression probes for the syntax checker; run after adopting/restoring tooling."""
+"""Tests for the code organization checker."""
 from pathlib import Path
 import json
 import subprocess
@@ -39,7 +39,7 @@ def main():
         ('parameters', 'Widget.cs', 'public class Widget\n{\n    public Widget(string veryLongArgumentNameOne, string veryLongArgumentNameTwo, string veryLongArgumentNameThree, string veryLongArgumentNameFour) {}\n}\n', 'ORG005'),
         ('syntax', 'Widget.cs', 'public class Widget {', 'error CS'),
     ]
-    with tempfile.TemporaryDirectory(prefix='organization-probes-') as directory:
+    with tempfile.TemporaryDirectory(prefix='organization-tests-') as directory:
         scratch = Path(directory)
         file_list = scratch / 'files.json'
         for name, filename, source, diagnostic in cases:
@@ -57,7 +57,7 @@ def main():
                                 capture_output=True, text=True)
         if result.returncode != 2 or 'No source files' not in result.stderr:
             raise RuntimeError('Empty selection must be rejected.')
-    print(f'PASS: {len(cases) + 1} organization probes. Semantic/IDE acceptance remains separate.')
+    print(f'PASS: {len(cases) + 1} organization cases.')
 
 
 if __name__ == '__main__':

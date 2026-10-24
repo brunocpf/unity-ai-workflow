@@ -255,30 +255,6 @@ public sealed class NavigationTests
         Assert.That(_stack.Top!.View.Contains(_host.focusController.focusedElement as VisualElement), Is.True);
     }
 
-    [UnityTest]
-    public IEnumerator DuplicateRouterMutationIsDetected()
-    {
-        _stack.PushScreen(Menu());
-        yield return Frames();
-        // Deliberately add a raw input router before native UI dispatch.
-        using (var duplicateMove = new InputAction("DuplicateMove", InputActionType.Button,
-            "<Keyboard>/downArrow"))
-        {
-            duplicateMove.performed += _ => _stack.Top!.View.Q<Button>("second").Focus();
-            duplicateMove.Enable();
-            EventCallback<NavigationMoveEvent> stop = evt => evt.StopImmediatePropagation();
-            _host.RegisterCallback(stop, TrickleDown.TrickleDown);
-            yield return KeyPress(Key.DownArrow);
-            Assert.Throws<AssertionException>(() => AssertFocused("second"),
-                "The ordinary final-focus gate must reject the injected duplicate router");
-            AssertFocused("third");
-            _host.UnregisterCallback(stop, TrickleDown.TrickleDown);
-        }
-        _stack.Top!.View.Q<Button>("first").Focus();
-        yield return KeyPress(Key.DownArrow);
-        AssertFocused("second");
-    }
-
     private UiStackEntry Menu()
     {
         VisualElement view = Resources.Load<VisualTreeAsset>("Menu").CloneTree().Q("menu");

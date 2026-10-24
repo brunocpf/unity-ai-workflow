@@ -1,12 +1,12 @@
 # Optional libraries
 
-Use only when the feature needs the capability. [Dependency defaults](dependencies.md) own pins, adoption gates and presets.
+Use only when the feature needs the capability. [Dependency defaults](dependencies.md) own pins, adoption rules and presets.
 
 The Default column records the selected decision. The exception column is a threshold to investigate, not an invitation to compare every product on every feature.
 
 | Use case | Default | Escalate only when… |
 |---|---|---|
-| Local UI templates/styles/content | Implement UI/module preloading through Content Directories plus constructor-time read-only template lookup; UXML owns USS | For a minimal or older-editor profile, direct references are the selected fallback. For remote delivery/patching or an existing Addressables dependency, evaluate Addressables behind the content contract. The kit includes a Content Directory loading adapter; project build/registration and player acceptance remain required. Direct references and Addressables require their selected integration. |
+| Local UI templates/styles/content | Implement UI/module preloading through Content Directories plus constructor-time read-only template lookup; UXML owns USS | For a minimal or older-editor profile, direct references are the selected fallback. For remote delivery/patching or an existing Addressables dependency, evaluate Addressables behind the content contract. The kit includes a Content Directory loading adapter; the project still builds and registers its content. Direct references and Addressables need their own integration. |
 | Character clips | Animator + imported clips | **Animancer** is the selected third-party option for code-directed clip playback when controller maintenance becomes a demonstrated cost. |
 | IK and procedural posing | Unity Animation Rigging | A concrete creature/locomotion solver is beyond its constraints; evaluate a specialist solver against a recorded animation scenario. |
 | Scripted cutscenes | Unity Timeline + Cinemachine | A feature needs procedural orchestration; coordinate with UniTask while keeping timeline and camera ownership explicit. |

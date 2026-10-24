@@ -10,7 +10,7 @@ namespace Workflow.Tooling
 {
     internal static class Program
     {
-        // Verification only. File selection/ownership belongs to the invoking coverage gate.
+        // Read-only check. tooling/quality/check.py decides which files are owned.
         private static int Main(string[] args)
         {
             if (args.Length < 1)

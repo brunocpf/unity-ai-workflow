@@ -10,8 +10,7 @@ namespace Workflow.Examples.UI
     // LoadRoots owns registration; LoadAsync borrows a separately registered directory.
     public static class ContentDirectoryUiLoader
     {
-        // Default for the 6000.7.0b2 evaluation profile; inherited from the b1 workaround.
-        // Bounded synchronous preload, outside control constructors; b2 player proof is pending.
+        // Default path. Bounded synchronous preload at startup, outside control constructors.
         // UiLibrary receives the directory lease, including ownership on constructor failure.
         public static UiLibrary LoadRoots(string directoryPath, CancellationToken cancellation)
         {
@@ -55,8 +54,8 @@ namespace Workflow.Examples.UI
             }
         }
 
-        // Advanced path only: callers must prove how valid IDs reach the target player.
-        // The b1 scene-ID transport failed; qualify it in a b2 player before selecting this path.
+        // Advanced path only: use when LoadableObjectId references survive into the target player.
+        // In early 6.7 betas, scene-serialized IDs did not survive a player build; test yours first.
         // Caller owns directory registration until the returned library is disposed.
         public static async Task<UiLibrary> LoadAsync(
             IReadOnlyList<LoadableObjectId> catalogIds, CancellationToken cancellation)

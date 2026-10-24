@@ -82,6 +82,10 @@ def read_state(root):
     if raw is None:
         return None
     state = json.loads(raw)
+    if state.get('schema') == 2 and state.get('mode') == 'shared':
+        raise InstallError('This project uses the linked install layout from kit 0.6. Convert it to copied files first: '
+                           'in the game, run python3 .unity-workflow/restore.py --fetch; then, from a kit clone at tag v0.6.0, '
+                           'run python3 install.py update --target <game> --mode vendored; then rerun this command.')
     if state.get('schema') != 1 or state.get('kit') != 'unity-ai-workflow':
         raise InstallError('Unsupported installation manifest')
     agents = state.get('agents')
@@ -131,7 +135,7 @@ def payload(source, agents, examples="none"):
         copy_tree('examples', 'docs/standards/examples')
     elif examples != 'none':
         raise InstallError('Unknown example pack')
-    # Uninstalled examples and maintenance records resolve to this release, never moving main.
+    # Uninstalled examples resolve to this release, never moving main.
     release = metadata.get('release_ref')
     if not isinstance(release, str) or not re.fullmatch(r'v[0-9]+\.[0-9]+\.[0-9]+', release):
         raise InstallError('Kit requires a pinned release_ref for optional resources')
@@ -146,8 +150,7 @@ def payload(source, agents, examples="none"):
                 return match.group(0)
             resolved = posixpath.normpath(posixpath.join(posixpath.dirname(relative), target))
             local = resolved.split('#', 1)[0]
-            external = resolved.startswith('verification/') or (
-                f'docs/standards/{local}' not in files and (source / local).is_file())
+            external = f'docs/standards/{local}' not in files and (source / local).is_file()
             return '](' + base + resolved + ')' if external else match.group(0)
         files[name] = re.sub(r'\]\(([^\s)]+)\)', link, content.decode('utf-8')).encode('utf-8')
     for name in skills:
@@ -184,8 +187,8 @@ def verify(root):
                 raise InstallError(f'Missing registered skill: {path}')
     for path in ('docs/standards/PROJECT-RULES.md', 'docs/standards/references/adoption.md', 'docs/standards/references/INDEX.md'):
         if path not in state['files']:
-            raise InstallError(f'Missing shared dependency: {path}')
-    return {'status': 'pass', 'version': state['version'], 'agents': state['agents'], 'skills': state['skills'], 'note': 'File integrity and layout only; client discovery and Unity acceptance are separate.'}
+            raise InstallError(f'Missing required file: {path}')
+    return {'status': 'pass', 'version': state['version'], 'agents': state['agents'], 'skills': state['skills']}
 
 
 def atomic_write(path, data):
@@ -260,6 +263,14 @@ def install(source, root, command, agent=None, dry_run=False, examples=None):
     return result
 
 
+def remove_empty_parents(root, path):
+    # Removed managed files must not leave empty kit folders behind.
+    parent = path.parent
+    while parent != root and parent.is_dir() and not any(parent.iterdir()):
+        parent.rmdir()
+        parent = parent.parent
+
+
 def apply_changes(root, changes, snapshots, lock_relative):
     lock = safe_path(root, lock_relative)
     lock.parent.mkdir(parents=True, exist_ok=True)
@@ -278,6 +289,7 @@ def apply_changes(root, changes, snapshots, lock_relative):
                 path = safe_path(root, relative)
                 if data is None:
                     path.unlink()
+                    remove_empty_parents(root, path)
                 else:
                     atomic_write(path, data)
                 applied.append(relative)
@@ -314,22 +326,21 @@ def assess(source, root, examples=None):
                                 'candidate_change': 'remove' if incoming is None else 'add' if previous is None else 'unchanged' if incoming == previous else 'modify'})
     return {'operation': 'assess', 'installed_version': old['version'], 'candidate_version': metadata['version'],
             'changes': changes, 'writes': 0,
-            'applicability': 'Unreviewed. Inspect changed source, project contracts, Unity/package pins and evidence before deciding. This report does not establish runtime compatibility.'}
+            'note': 'Content differences only. Read the changed files and decide what applies to this project.'}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=['install', 'update', 'assess', 'check', 'restore', 'install-global', 'check-global'])
+    parser.add_argument('command', choices=['install', 'update', 'assess', 'check', 'install-global', 'check-global'])
     parser.add_argument('--target', type=Path, help='Game workspace (not the kit checkout)')
-    parser.add_argument('--home', type=Path, help='Cache/global home override (for isolated tests)')
-    parser.add_argument('--mode', choices=['shared', 'vendored'], help='New projects default to shared; updates preserve installed mode')
+    parser.add_argument('--home', type=Path, help='Home directory override for global commands (for isolated tests)')
     parser.add_argument('--agent', choices=['codex', 'claude', 'both'], help='Default: both on install, existing clients on update; selections only add clients')
     parser.add_argument('--examples', choices=['none', 'all'], help='New installs default to none; updates preserve the installed choice')
     parser.add_argument('--dry-run', action='store_true', help='Show the plan without writing files')
     args = parser.parse_args()
     try:
         if args.command in ('install-global', 'check-global'):
-            if args.mode or args.examples or args.target or (args.command == 'check-global' and (args.agent or args.dry_run)):
+            if args.examples or args.target or (args.command == 'check-global' and (args.agent or args.dry_run)):
                 parser.error('Global commands do not accept --target; check-global accepts only --home')
             import global_install
             result = global_install.run(SOURCE, (args.home or Path.home()).expanduser().resolve(), args.command, args.agent, args.dry_run, sys.modules[__name__])
@@ -337,22 +348,12 @@ def main():
             return 0
         if args.target is None:
             parser.error('Project commands require --target')
+        if args.home:
+            parser.error('--home applies only to global commands')
         root = args.target.expanduser().resolve()
-        raw = read(root, STATE)
-        old = json.loads(raw) if raw else None
-        shared = old and old.get('schema') == 2
-        selected_mode = args.mode or ('shared' if shared or old is None else 'vendored')
-        if args.command == 'check' and (args.mode or args.agent or args.examples or args.dry_run):
-            parser.error('check accepts only --target and --home')
-        if args.command == 'restore' and (args.mode or args.agent or args.examples):
-            parser.error('restore preserves the project pin and clients')
-        if selected_mode == 'shared' and args.examples:
-            parser.error('Shared cache includes all examples; --examples is for vendored mode')
-        if selected_mode == 'shared' or shared or args.command == 'restore':
-            import shared_install
-            result = shared_install.run(SOURCE, root, (args.home or Path.home()).expanduser().resolve(),
-                                        args.command, args.agent, args.dry_run, args.mode, sys.modules[__name__], args.examples)
-        elif args.command == 'assess':
+        if args.command == 'check' and (args.agent or args.examples or args.dry_run):
+            parser.error('check accepts only --target')
+        if args.command == 'assess':
             result = assess(SOURCE, root, args.examples)
         elif args.command == 'check':
             result = verify(root)

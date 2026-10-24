@@ -1,13 +1,15 @@
 """Global discovery adapter backed by an immutable, complete local kit snapshot."""
 import json
+from pathlib import Path
 import re
+import subprocess
 
 BASE = '.local/share/unity-ai-workflow'
 STATE = BASE + '/global.json'
 NAMES = ('unity-workflow-start', 'unity-workflow-update')
 LOCATIONS = {'codex': '.agents/skills', 'claude': '.claude/skills'}
 ENTRIES = {f'{folder}/{name}/SKILL.md' for folder in LOCATIONS.values() for name in NAMES}
-FOLDERS = ('references', 'starter', 'examples', 'skills', 'global', 'tools', 'verification', 'tests', '.github')
+FOLDERS = ('references', 'starter', 'examples', 'skills', 'global', 'tools', 'tests', '.github')
 
 
 def snapshot(source, core):
@@ -71,7 +73,7 @@ def verify(home, core, state=None):
             continue
         if path.is_symlink() or (path.is_file() and path.relative_to(home).as_posix() not in state['files']):
             raise core.InstallError(f'Unexpected file in pinned cache: {path}')
-    return {'status': 'pass', 'version': state['version'], 'agents': state['agents'], 'kit_root': str(cache), 'note': 'Integrity only; restart/open a client session to discover the global entrypoint.'}
+    return {'status': 'pass', 'version': state['version'], 'agents': state['agents'], 'kit_root': str(cache), 'note': 'Restart or open a client session to discover the global entrypoint.'}
 
 
 def run(source, home, command, agent, dry_run, core):
@@ -97,11 +99,13 @@ def run(source, home, command, agent, dry_run, core):
         template = source_files[f'global/{name}/SKILL.md'].decode('utf-8')
         for client in agents:
             desired[f'{LOCATIONS[client]}/{name}/SKILL.md'] = template.replace('{{KIT_ROOT}}', (home / cache).as_posix()).replace('{{AGENT}}', client).encode('utf-8')
+    source_revision = None
     try:
-        import shared_install
-        source_revision = shared_install.revision(source, home)
-    except ValueError:
-        source_revision = None
+        top = subprocess.check_output(['git', '-C', str(source), 'rev-parse', '--show-toplevel'], stderr=subprocess.DEVNULL, text=True).strip()
+        if Path(top).resolve() == source.resolve():
+            source_revision = subprocess.check_output(['git', '-C', str(source), 'rev-parse', 'HEAD'], stderr=subprocess.DEVNULL, text=True).strip()
+    except (OSError, subprocess.CalledProcessError):
+        pass
     state = {'schema': 1, 'kit': 'unity-ai-workflow-global', 'version': version, 'cache': cache, 'agents': agents, 'source_revision': source_revision,
              'files': {p: core.digest(d) for p, d in sorted(desired.items())}}
     # A preexisting version directory must be complete and unmodified, not partially overlaid.

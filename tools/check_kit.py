@@ -1,4 +1,4 @@
-"""Offline documentation/configuration/skill checks; not Unity or client acceptance."""
+"""Offline checks for links, JSON/XML/USS syntax, Python syntax and skill metadata."""
 from pathlib import Path
 import json
 import os

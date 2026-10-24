@@ -6,14 +6,14 @@ Create three entrypoints; omit unused sections. These hold project-specific fact
 
 - Setup and actual check/build/run commands.
 - Links to project decisions, architecture and existing project records.
-- Foundation/first-slice milestone once established, with result links and remaining setup gaps. Use the project’s existing progress tracking.
+- Any setup gaps (for example, CI not yet wired). Use the project's existing progress tracking for everything else.
 
 ## docs/project.md
 
-- Premise, intended scope and current acceptance slice.
+- Premise, intended scope and the current slice.
 - Agreed platforms/devices/input, languages and accessibility.
 - Save/network requirements and target performance budgets.
-- Visual direction, inspected references and accepted visual target.
+- Visual direction, references and the approved visual target.
 - Unresolved product decisions and what they block.
 
 ## docs/architecture.md
@@ -26,6 +26,6 @@ Create three entrypoints; omit unused sections. These hold project-specific fact
 
 ## Conditional records
 
-A substantial module API, art bible, asset batch, localization pipeline or compatibility matrix can have its own document. Split when it has an independent owner/change cadence or obscures the entrypoint, not because a template lists it. Asset provenance stays machine-readable beside accepted source assets; generation tools collect IDs, settings and hashes where possible. Keep only relevant fields for that asset type.
+A substantial module API, art bible, asset batch, localization pipeline or compatibility matrix can have its own document. Split when it has an independent owner/change cadence or obscures the entrypoint, not because a template lists it. Generation settings (prompt, seed, model, job ID) stay beside approved source assets. Keep only fields relevant to that asset type.
 
 No required per-feature artifacts, status tables or completion reports. Keep a short continuation note only when unfinished work needs context absent from the code and existing records.

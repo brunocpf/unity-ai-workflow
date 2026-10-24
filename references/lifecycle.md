@@ -18,10 +18,10 @@ Keep the authoring resolver separate from runtime context. Clear runtime context
 
 Construction scopes are main-thread-only and synchronous. Use a session token plus monotonic scope IDs/depth to reject stale, copied/double-disposed or out-of-order scopes without restoring old context. Keep essential checks in players; format diagnostics only on failure. Ref structs alone do not ensure correct disposal. No scopes across awaits or Play transitions.
 
-AutoStaticsCleanup restores annotated members; readonly collections are cleared, not repopulated. Do not annotate a lookup table expecting entries to survive. For future CoreCLR upgrades, audit references that retain old code/assets and use the verified lifecycle APIs; old roadmap dates are not compatibility guarantees.
+AutoStaticsCleanup restores annotated members; readonly collections are cleared, not repopulated. Do not annotate a lookup table expecting entries to survive. For future CoreCLR upgrades, audit references that retain old code/assets and use the documented lifecycle APIs; roadmap dates aren't compatibility guarantees.
 
-## Acceptance
+## Testing
 
-At least three Play/Stop cycles without recompilation, Builder open, no duplicate handlers, cancelled preload completing late, failed construction followed by clean startup, released owner/lease references, and player startup/shutdown. Test no-scene-reload only if supported. Inspect Project Auditor Domain Reload findings. Pair resource counts with retained-memory evidence; native memory need not return immediately.
+At least three Play/Stop cycles without recompilation, with UI Builder open: no duplicate handlers, a cancelled preload completing late, failed construction followed by clean startup, released owner/lease references, and player startup/shutdown. Test no-scene-reload only if you support it. Check Project Auditor's Domain Reload findings. Look at retained memory, not just counts; native memory may not return immediately.
 
 Default scope composition and captive-dependency rules: [composition](composition.md).

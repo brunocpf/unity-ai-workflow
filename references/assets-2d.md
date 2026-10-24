@@ -2,9 +2,9 @@
 
 ### Image generation for textures and sprites
 
-Generate against an art bible: palette, contrast, lighting direction, perspective, detail scale, outline policy, and example accepted assets. Keep prompts and reference images with the result. Prefer editing an accepted reference to starting every related asset from scratch.
+Generate against an art bible: palette, contrast, lighting direction, perspective, detail scale, outline policy, and example approved assets. Keep prompts and reference images with the result. Prefer editing an approved reference to starting every related asset from scratch.
 
-For albedo, request neutral illumination; inspect for unwanted baked highlights and shadows. Generate or derive physically meaningful roughness/metallic/normal maps in a controlled material workflow rather than assuming a colored image is a valid PBR set. Test tiling by repeated preview; prompting “seamless” is not verification. Bake/project textures against the final UV layout when painting a specific mesh.
+For albedo, request neutral illumination; inspect for unwanted baked highlights and shadows. Generate or derive physically meaningful roughness/metallic/normal maps in a controlled material workflow rather than assuming a colored image is a valid PBR set. Test tiling by repeated preview; prompting "seamless" doesn't make it seamless. Bake/project textures against the final UV layout when painting a specific mesh.
 
 Import color textures as color and data maps as linear where required; use the proper normal-map importer. Map channels to the chosen URP/HDRP shader, including smoothness versus roughness conventions. Check alpha fringes, mip bleeding, compression, atlas padding, and target memory. A 4096² RGBA8 texture is 64 MiB uncompressed before mipmaps; generated resolution is not a free quality upgrade.
 
@@ -12,7 +12,7 @@ For cutout sprites, icons, decals and VFX, explicitly prompt: **“Export PNG wi
 
 For non-pixel sprite sequences, verify consistent bounds, pivot, scale, transparency, and frame identity. Image generation is useful for isolated images and references, but independent frame generation does not guarantee coherent animation.
 
-For custom sprite/particle shaders, also run the [renderer tint/alpha fixture](visual-fixtures.md#sprite-and-particle-color-gallery). Correct source transparency and successful import do not prove that the shader uses SpriteRenderer tint or ParticleSystem vertex color.
+For custom sprite/particle shaders, check that the shader actually uses SpriteRenderer tint and ParticleSystem vertex color: put a few tinted instances side by side in a test scene. Correct transparency and a clean import don't tell you that.
 
 ### PixelLab for pixel art
 

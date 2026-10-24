@@ -1,6 +1,6 @@
 # USS conventions
 
-For new/substantial screen styling, start with [art direction](ui-art-direction.md); these USS rules implement the chosen design and do not prescribe a minimal appearance. For version-sensitive grid/components/materials/filters, read [capability gates](ui-capabilities.md).
+For new/substantial screen styling, start with [art direction](ui-art-direction.md); these USS rules implement the chosen design and do not prescribe a minimal appearance. For version-sensitive grid/components/materials/filters, read [UI capabilities](ui-capabilities.md).
 
 ## USS file and cascade convention
 
@@ -26,7 +26,7 @@ USS supports custom properties with `var()`; supported values and parser behavio
 - Element `name`: camelCase query identity, not the primary styling hook.
 - Default to single-class selectors. Use a short parent/state qualifier when necessary; avoid long scene-hierarchy selectors.
 - Scope styles to the component. Avoid project-wide Label/Button selectors except a carefully reviewed baseline.
-- Put inherited typography defaults on the theme root where possible. A baseline `.game-ui Label` outranks a single component class; loading component USS later cannot fix that. Use a lower-specificity baseline or explicit opt-in text roles. Protect margins/type sizes with the [computed-style regression fixture](visual-fixtures.md#computed-uss-regression).
+- Put inherited typography defaults on the theme root where possible. A baseline `.game-ui Label` outranks a single component class; loading component USS later cannot fix that. Use a lower-specificity baseline or explicit opt-in text roles. A Play Mode test that reads `resolvedStyle` on a representative control catches baseline rules overriding component margins and type sizes.
 - Avoid ID selectors for appearance and specificity escalation to overcome an unknown style conflict. Inspect computed styles and remove the conflicting owner.
 - Treat Unity internal class names as a versioned integration surface. Prefer public APIs or scoped supported part styling; add upgrade tests when targeting internal parts.
 
@@ -56,6 +56,6 @@ Dynamic item icons belong to the binding/presentation surface or an asset-aware 
 
 For custom geometry, shaders/filters and LitMotion ownership, use [advanced UI](ui-advanced.md); for typography animation and glyph processing, use [text effects](ui-text-effects.md).
 
-Treat `-unity-material` as an inherited treatment, not a local background: qualify nested text/controls and explicitly excluded children using the [material scope fixture](visual-fixtures.md#ui-material-and-geometry-gallery). Prefer a dedicated decorative element when the content should remain unchanged.
+Treat `-unity-material` as an inherited treatment, not a local background: check how it affects nested text/controls and children you meant to exclude. Prefer a dedicated decorative element when the content should stay unchanged.
 
-[Gallery source](../starter/UI/README.md); [UI acceptance](validation.md#ui-acceptance).
+[Gallery source](../starter/UI/README.md).

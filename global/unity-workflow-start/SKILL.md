@@ -1,16 +1,14 @@
 ---
 name: unity-workflow-start
-description: Start a new Unity project using the user's installed Unity AI workflow. Pin its shared kit and expose project skills, then bootstrap the foundation or implement the first slice within the requested scope. Use for a new Unity game/workspace, not ordinary changes in an already adopted project.
+description: Start a new Unity project using the user's installed Unity AI workflow. Install the kit into the project, then set it up or build the first playable slice within the requested scope. Use for a new Unity game/workspace, not ordinary changes in a project that already uses the kit.
 ---
 
-The complete, versioned kit for this entrypoint is at `{{KIT_ROOT}}`. Read its `references/adoption.md` and `README.md`; the user need not supply the kit path or repeat architectural defaults.
+The versioned kit for this entrypoint is at `{{KIT_ROOT}}`. Read its `references/adoption.md` and `README.md`; the user doesn't need to supply the kit path or repeat architectural defaults.
 
 Use the current game workspace unless the user names another destination. Inspect it before writing; if it contains an unrelated project or is the kit itself, resolve the destination first. Preserve existing work. If `.unity-workflow/installation.json` already exists, use that project's local standards and skills without upgrading it to this global version.
 
-For a new workspace, run this cached kit's `install.py install --target <absolute-project-path> --agent {{AGENT}}`, followed by `install.py check --target <absolute-project-path>`, using an available Python 3.10+ interpreter and properly quoted paths. Then read the installed `docs/standards/PROJECT-RULES.md` and the local `unity-project-bootstrap` SKILL.md. If the current session has not refreshed its skill inventory, read the file directly; later sessions use normal discovery.
+For a new workspace, run this kit's `install.py install --target <absolute-project-path> --agent {{AGENT}}`, then `install.py check --target <absolute-project-path>`, using Python 3.10+ and properly quoted paths. Then read the installed `docs/standards/PROJECT-RULES.md` and the local `unity-project-bootstrap` SKILL.md. If the current session hasn't refreshed its skill list, read the file directly; later sessions find it normally.
 
-Follow the adopted milestone contract: bootstrap/setup alone ends at Foundation ready; a requested playable game or end-to-end trial includes First slice accepted unless scope limits it. The milestone checkpoint adds no approval gate; follow any independently adopted project process. Clarify unresolved product intent, especially target platforms and supported languages, while continuing independent work. Preserve prior answers and established technical defaults.
+A setup request ends after project setup; a request for a playable game includes the first slice unless the user limits it. Clarify unresolved product intent, especially target platforms and supported languages, while continuing independent work. Keep prior answers and established technical defaults.
 
-Installation of this global skill alone authorizes no game creation. Act on the user's project request. Do not initialize a game in the kit cache, silently fetch newer standards, alter existing games, install unrelated providers or assume configured MCP tools. Record project-local version/evidence; leave unfinished work in its existing tasks.
-
-Shared projects commit a portable installation pin and restore helper. On a fresh clone/worktree, run `python3 .unity-workflow/restore.py --fetch` before reading linked standards; never substitute this global candidate for the locked version. New installations default to shared; existing modes are preserved unless migration explicitly selects `--mode shared` or `--mode vendored`. See the candidate’s INSTALL.md and current migration guide.
+Installing this global skill doesn't authorize creating a game; act on the user's project request. Don't initialize a game in the kit cache, silently fetch newer standards, change existing games, install unrelated providers or assume configured MCP tools.

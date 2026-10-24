@@ -11,7 +11,7 @@ Record meaningful module boundaries in docs/architecture.md; extract docs/module
 - Consumed ports, provider adapters and allowed module dependencies.
 - Scope/startup prerequisites, readiness, shutdown and failure behavior.
 - Save/content/network schemas and compatibility policy, where applicable.
-- Acceptance fixtures, performance budgets and change owner/maintainer role.
+- Tests, performance budgets and owner/maintainer.
 
 Publish the smallest API consumers need. Do not expose mutable collections, implementation entities or provider-specific handles across unrelated modules. Put ports beside their consumer; an adapter implements the port and owns translation. Use one authoritative source for shared concepts; isolate a small shared domain vocabulary only when multiple modules actually need it.
 
