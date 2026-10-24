@@ -185,11 +185,11 @@ class InstallationTests(unittest.TestCase):
             self.run_install('update')
 
     def test_build_products_excluded(self):
-        p = self.source / 'examples/Verification/bin/private.txt'
+        p = self.source / 'examples/Build/bin/private.txt'
         p.parent.mkdir(parents=True)
         p.write_text('Do not distribute')
         self.run_install()
-        self.assertFalse((self.target / 'docs/standards/examples/Verification/bin').exists())
+        self.assertFalse((self.target / 'docs/standards/examples/Build/bin').exists())
 
     def test_rollback_on_write_error(self):
         self.run_install()
@@ -220,16 +220,16 @@ class InstallationTests(unittest.TestCase):
             self.run_install('update')
         self.assertEqual(before, self.snapshot())
 
-    def test_process_removal_preserves_project_owned_checks_and_history(self):
-        legacy = self.source / 'starter/openspec/tooling/ci.py'
+    def test_upstream_removal_preserves_project_owned_files(self):
+        legacy = self.source / 'starter/retired/tooling/ci.py'
         legacy.parent.mkdir(parents=True)
-        legacy.write_text('# old process wrapper\n')
+        legacy.write_text('# retired starter script\n')
         self.run_install(agent='both')
         owned = {
             'tooling/specs/ci.py': '# customized game checks\n',
-            'openspec/specs/game/spec.md': 'Useful requirements\n',
-            '.agents/skills/openspec-apply-change/SKILL.md': 'Independent process\n',
-            '.claude/skills/openspec-apply-change/SKILL.md': 'Independent process\n',
+            'docs/design/game.md': 'Useful requirements\n',
+            '.agents/skills/team-planning/SKILL.md': 'Project skill\n',
+            '.claude/skills/team-planning/SKILL.md': 'Project skill\n',
             '.github/workflows/game.yml': '# existing game CI\n',
         }
         for name, content in owned.items():
@@ -241,10 +241,9 @@ class InstallationTests(unittest.TestCase):
         self.run_install('update', dry_run=True)
         self.assertEqual(before, self.snapshot())
         self.run_install('update')
-        self.assertFalse((self.target / 'docs/standards/starter/openspec/tooling/ci.py').exists())
+        self.assertFalse((self.target / 'docs/standards/starter/retired/tooling/ci.py').exists())
         for name, content in owned.items():
             self.assertEqual(content, (self.target / name).read_text())
-        self.assertTrue((self.target / 'docs/standards/starter/verification/run.py').exists())
         self.assertEqual({}, self.run_install('update')['changes'])
 
     def test_update_requires_install(self):

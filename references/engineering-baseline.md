@@ -1,38 +1,36 @@
 # Professional engineering baseline
 
-This kit defines durable project standards independently of team size or game scope. It is a specification with selected verified examples, not a certification or a fully implemented production template. Foundation ready verifies setup; First slice accepted verifies the initial gameplay integration. Follow the separate [milestone criteria](adoption.md#milestones-and-request-scope). A small acceptance slice does not replace the planned game or excuse omitted release gates.
+This kit defines durable project standards independently of team size or game scope. It is a set of conventions and tested examples, not a finished production template. A small first slice does not replace the planned game.
 
 ## Required baseline
 
-| Area | Required capability | Evidence before template release |
-|---|---|---|
-| Architecture | Inward layer/module boundaries, pure Presentation MVVM, explicit scopes | Separate pure compilation; compiled dependency/cycle/API checks reject a planted violation |
-| Editor authoring | Saved scenes/prefabs, validated editable definitions, safe generation | Inspector/layout edits work without C# and survive Play/reimport/build; [authoring contract](authoring.md) |
-| Composition | VContainer roots, readiness and owned shutdown | Real startup + partial failure + repeated session tests |
-| Source quality | Nullable all-owned code, pinned analyzer/style/organization rules, explicit asmdefs | Complete semantic coverage; compiler/analyzer/format/organization gates reject faults |
-| IDE | Tracked setup, generated Unity solution, three-host compiler parity | Completion/navigation/diagnostics after regeneration; vendor settings preserved |
-| Rules and integration | Deterministic rule tests where applicable; use-case and provider contract tests | Nonempty suites, failure paths, actual composed slice |
-| UI | Testable ViewModels, mechanical binding, authoring support, selected content path | Pure VM tests; Builder, recycling and cold-player evidence |
-| Localization | Agreed language scope, table-backed player text, one locale authority and provider/font ownership | [Localization acceptance](localization.md#acceptance-and-ci): nonempty coverage, rejected missing/invalid entries, Builder and cold-player locale evidence |
-| Visual design | Distinctive game UI, a concrete visual target and consistent screen/control language | [Art-direction acceptance](ui-art-direction.md) against actual player output; composition, identity, hierarchy, feedback and completeness judged separately from technical tests |
-| Persistence | Versioning, recovery and migration if persistent data exists | Old-save fixtures, corrupt/interrupted-write recovery |
-| Operations | Structured failures, bounded resources, exclusive simulation driver and target budgets | Fault injection, clock-handoff tests, fresh capture evidence and representative profiling |
-| Assets | Reimportable accepted content, lineage, budgets and stable identifiers | Provider output archived; import/rig/alpha/visual checks |
-| Delivery | Local/CI parity, locked inputs, content/player provenance, rollback | Clean build/launch and immutable release manifest |
-| Evolution | Module contracts, ADRs, template version and migrations | Reviewed compatibility changes and upgrade procedure |
+| Area | Required capability |
+|---|---|
+| Architecture | Inward layer/module boundaries, pure Presentation MVVM, explicit scopes; a compiled dependency check keeps layers honest |
+| Editor authoring | Saved scenes/prefabs, editable definitions validated at startup, generation that preserves edits ([authoring](authoring.md)) |
+| Composition | VContainer roots, readiness and owned shutdown |
+| Source quality | Nullable in all owned code, pinned analyzer/style/organization rules, explicit asmdefs |
+| IDE | Tracked setup, generated Unity solution, matching compiler settings across Unity, SDK and IDE projects |
+| Rules and integration | Unit tests for game rules and use cases; contract tests for providers |
+| UI | Testable ViewModels, mechanical binding, UI Builder support, selected content path |
+| Localization | Agreed language scope, table-backed player text, one locale authority, provider/font ownership ([localization](localization.md)) |
+| Visual design | Distinctive game UI with a concrete visual target and a consistent screen/control language ([art direction](ui-art-direction.md)) |
+| Persistence | Versioning, recovery and migration if persistent data exists |
+| Operations | Structured failures, bounded resources, one owner for simulation time, target performance budgets |
+| Assets | Reimportable content, stable identifiers, budgets, generation sources kept |
+| Delivery | Same checks locally and in CI, locked inputs, reproducible builds, rollback |
+| Evolution | Module contracts, ADRs, versioned migrations |
 
-Run independent executable checks for affected behavior; link setup gaps once from README.md. No parallel project status table. Unavailable licensing/CI/platforms remain explicit gaps. [Validation](validation.md) owns test detail; [CI](ci.md) owns the execution pipeline.
+[Testing](testing.md) covers what to test; [CI](ci.md) covers the pipeline.
 
-## Change and release discipline
+## Change discipline
 
-A feature contract defines observable behavior, affected module APIs, migrations, failure paths and acceptance before substantial implementation. AI inspects the existing implementation and local instructions, [clarifies unresolved intent](clarification.md), chooses the owning module, then works within the contract. Do not invent a parallel framework or reopen established dependencies for each feature. Update changed contracts and test evidence in the same change; ADRs cover genuine deviations, not routine code decisions.
+Before substantial work, be clear about observable behavior, affected module APIs, migrations and failure paths. Inspect the existing implementation and local instructions, [clarify unresolved intent](clarification.md), choose the owning module, then work within it. Don't invent a parallel framework or reopen established dependencies for each feature. Update changed contracts and tests in the same change; ADRs cover genuine deviations, not routine code decisions.
 
-Main stays buildable. Keep changes reviewable, with risk/compatibility notes for public APIs, save schemas, content IDs and package upgrades. Assign module/asset ownership as roles even for one developer; shared repositories can enforce these through CODEOWNERS and protected-branch checks. Review generated asset replacements and visual-baseline updates as deliberate product changes.
+Main stays buildable. Keep changes reviewable, with risk/compatibility notes for public APIs, save schemas, content IDs and package upgrades. Shared repositories can use CODEOWNERS and protected branches. Review generated asset replacements as deliberate product changes.
 
-Every template release has an immutable version/tag, verified target matrix, dependency inventory/licenses, known limitations and migration notes. New games pin that release. Upgrading an existing game uses a reviewed migration branch with save/content/backward-compatibility tests; never overwrite its rules or locks from a moving kit directory. Retain shipped binaries/content, symbols, configuration and provenance needed to diagnose or roll back a release. Secret/signing operations run only in trusted jobs.
-
-CI is tiered: fast pure/architecture checks on normal changes; relevant Editor/player/visual suites on impacted boundaries; full supported-target clean/compatibility/performance checks for release. Flaky tests need a tracked owner and removal/fix criteria; repeated reruns do not make failures disappear.
+Upgrading an existing game uses a reviewed branch with save/content compatibility tests; never overwrite its rules or locks from a moving kit directory. Flaky tests get fixed or removed, not rerun until green.
 
 ## Scope and flexibility
 
-Module count, network topology, simulation style and rendering profile follow the game. Standards for isolation, ownership, reliability and evidence remain. Add interfaces at real substitution boundaries; add packages at actual capability boundaries. Do not add microservices, a universal message bus, event sourcing or generic framework layers merely to look enterprise-grade. Extensibility means explicit contracts and safe change, backed by tests.
+Module count, network topology, simulation style and rendering profile follow the game. Add interfaces at real substitution boundaries and packages at actual capability boundaries. Don't add microservices, a universal message bus, event sourcing or generic framework layers to look enterprise-grade. Extensibility means explicit contracts and safe change, backed by tests.

@@ -1,6 +1,6 @@
 # Editor authoring contract
 
-**The delivered project must be usable by an Editor-based author.** Save authored layouts, reusable visual configurations and tuning as Unity assets. Pure Core/Application/Presentation and runtime spawning remain the architecture; they do not require recreating the authored world in code. Runtime correctness and authoring usability are separate release gates.
+**The delivered project must be usable by an Editor-based author.** Save authored layouts, reusable visual configurations and tuning as Unity assets. Pure Core/Application/Presentation and runtime spawning remain the architecture; they don't require recreating the authored world in code. A game that runs correctly but can't be edited in the Editor isn't done.
 
 ## Defaults by responsibility
 
@@ -40,14 +40,22 @@ Preview visuals must not require a live service container. Prefab Mode and an au
 Treat **generated artifacts** and **authored assets** as different ownership classes, regardless of whether AI originally created them.
 
 - Initial scaffold: create missing assets, save them through Unity Editor APIs, preserve metadata. Repeating setup does not reset existing scenes, definitions or prefabs.
-- Regenerable outputs: own an explicit path such as Assets/Game/Generated/<feature>/, with source inputs, generator version and ownership manifest. Keep human overrides outside the replaceable portion, for example in variants or authored wrapper assets.
+- Regenerable outputs: own an explicit path such as Assets/Game/Generated/<feature>/, with source inputs and generator version recorded beside them. Keep human overrides outside the replaceable portion, for example in variants or authored wrapper assets.
 - Authored assets: normal builds consume them. Explicit edit/migration tools update only intended fields, preserve unrelated values/GUIDs, support Undo where applicable, mark/save the correct assets and report changed files. Recreating a whole scene to change one field is not the default.
 - A rebuild or ordinary Play entry never regenerates authored scenes/prefabs from hard-coded defaults. Explicit regeneration needs a preview/diff and a stated ownership boundary. Refuse an unexpected collision rather than deleting unowned content. Baked output may be regenerated when its authored inputs remain authoritative.
 
-PrefabUtility and scene/asset Editor APIs save procedural authoring results as real assets. Update-in-place still needs reference/override checks; preserving a filename alone is not proof that nested object references survived. [SaveAsPrefabAsset](https://docs.unity3d.com/6000.7/Documentation/ScriptReference/PrefabUtility.SaveAsPrefabAsset.html).
+PrefabUtility and scene/asset Editor APIs save procedural authoring results as real assets. Update-in-place still needs reference/override checks; keeping the filename doesn't mean nested object references survived. [SaveAsPrefabAsset](https://docs.unity3d.com/6000.7/Documentation/ScriptReference/PrefabUtility.SaveAsPrefabAsset.html).
 
-Procedural gameplay, streaming, data-oriented rendering, headless simulation and temporary test fixtures are valid exceptions to particular assets. Record the concrete reason, source of tuning, preview path and tests in the feature contract. Whole-feature runtime hierarchy construction needs this explanation; convenience of writing C# is insufficient. Routine factory-created service/host objects need no exception.
+Procedural gameplay, streaming, data-oriented rendering, headless simulation and temporary test fixtures are valid exceptions to particular assets. Record the concrete reason, source of tuning and preview path in docs/architecture.md. Building a whole feature's hierarchy at runtime needs this explanation; convenience of writing C# isn't enough. Routine factory-created service/host objects need no exception.
 
-## Acceptance
+## Checking it works
 
-Use the [authoring acceptance checks](validation.md#editor-authoring-acceptance). Document scene, prefab, definition and generator locations in docs/architecture.md (authoring section). A successful player build cannot waive this gate. Preservation tests compare against the captured pre-operation values/bytes, not hard-coded seed defaults: a valid designer edit must keep the suite green. Include a valid non-default tuning edit, a referenced replacement definition, and rejection of invalid replacement data; do not accidentally require the original asset count or tuning forever.
+Document scene, prefab, definition and generator locations in docs/architecture.md (authoring section). Then try the editing workflow the way a designer would:
+
+- Open the gameplay scene and move a boundary or spawn marker using its gizmos. Open a character prefab and see its visuals without starting game services.
+- Change an enemy's speed or health in its definition without touching C#, play, and see the change. Stop, and make sure play didn't modify the shared definition.
+- Duplicate a definition, give it a new ID and register it through authored data; it should become available without editing a hard-coded list. Duplicate IDs, missing prefab components and invalid values should produce clear errors naming the asset and field.
+- Save, reimport, run setup again and build; your edits should still be there.
+- Run a generator twice; the second run should change nothing outside its declared output folder.
+
+Edit Mode tests that compare against the pre-operation values (not hard-coded defaults) can automate the preservation part. A valid designer edit must keep the tests green; don't write tests that require the original asset count or tuning forever.

@@ -1,6 +1,6 @@
 # Source examples
 
-Read only the row needed for a task. These use the temporary C#9 compatibility profile with nullable enabled, **not a released Unity project**. [Verification](Verification/README.md) distinguishes API compilation from Unity import/runtime acceptance. The authoritative design remains [construction](../references/ui-construction.md), [binding](../references/ui-binding.md), [lifecycle](../references/lifecycle.md) and [USS](../references/ui-styling.md).
+Read only the row needed for a task. These use the temporary C#9 compatibility profile with nullable enabled; they're source to adapt, not a Unity project. The [build projects](Build/README.md) keep them compiling outside Unity. The authoritative design remains [construction](../references/ui-construction.md), [binding](../references/ui-binding.md), [lifecycle](../references/lifecycle.md) and [USS](../references/ui-styling.md).
 
 | Need | Source |
 |---|---|
@@ -14,16 +14,16 @@ Read only the row needed for a task. These use the temporary C#9 compatibility p
 | Inspector authoring → pure gameplay config | [EnemyDefinition](Unity/Runtime/EnemyDefinition.cs), [EnemyConfig](Core/Combat/EnemyConfig.cs), [authoring contract](../references/authoring.md) |
 | Pure MVVM state and commands | [ViewModel](Presentation/InventorySlotViewModel.cs), [snapshot](Presentation/InventorySlotState.cs), [application port](Application/IInventory.cs), [state](Application/InventoryState.cs), [demo service](Application/DemoInventory.cs) |
 | Default mechanical R3 binding | [binding adapter](Unity/UI/InventoryBinding.cs) |
-| Authored native 6.7 localized UI | [UXML](Unity/UI/Previews/Localization/LocalizationPreview.uxml), [USS](Unity/UI/Previews/Localization/LocalizationPreview.uss), [setup](#localization-fixture-setup) |
+| Authored native 6.7 localized UI | [UXML](Unity/UI/Previews/Localization/LocalizationPreview.uxml), [USS](Unity/UI/Previews/Localization/LocalizationPreview.uss), [setup](#localization-preview-setup) |
 | Optional R3 → native binding | [native adapter](Unity/UI/NativeInventoryBinding.cs), [view state](Unity/UI/InventoryViewState.cs) |
 | Mount/dispose a screen | [screen owner](Unity/Composition/InventoryScreen.cs) |
 | Recycled rows without retained subscriptions | [list controller](Unity/UI/InventoryListController.cs) |
 | Interactive authoring example | [preview window](Editor/InventoryPreviewWindow.cs) |
 | Custom drawing and text effects | [ArcMeter](Unity/UI/Elements/ArcMeter/ArcMeter.cs), [WaveLabel](Unity/UI/Elements/WaveLabel/WaveLabel.cs), [preview](Unity/UI/Previews/Effects/EffectsPreview.uxml), [advanced policy](../references/ui-advanced.md) |
-| Optional LitMotion value transitions | [ArcMeterMotion](Optional/LitMotion/ArcMeterMotion.cs); needs project package qualification |
-| Visible decorative clock and regression fixtures | [VisibleMotionClock](Unity/UI/Motion/VisibleMotionClock.cs), [clock check](Tests/Unity/MotionClockChecks.cs), [cascade UXML](Unity/UI/Previews/Cascade/CascadeProbe.uxml), [cascade check](Tests/Unity/CascadeProbeChecks.cs), [qualification guide](../references/visual-fixtures.md) |
+| Optional LitMotion value transitions | [ArcMeterMotion](Optional/LitMotion/ArcMeterMotion.cs); needs the project's LitMotion package |
+| Visible decorative clock | [VisibleMotionClock](Unity/UI/Motion/VisibleMotionClock.cs), [clock test](Tests/Unity/MotionClockChecks.cs), [visibility policy](../references/ui-advanced.md#visibility-reduced-motion-and-teardown) |
 | Latest-result guard beyond UI | [LatestRequest](Pure/LatestRequest.cs) |
-| Executable checks | [scope/request tests](Tests/PureChecks.cs), [pure ViewModel/boundary tests](Tests/ViewModelChecks.cs), [IDE XML tests](Tests/IdeProjectChecks.cs) |
+| Tests | [scope/request tests](Tests/PureChecks.cs), [pure ViewModel/boundary tests](Tests/ViewModelChecks.cs), [IDE XML tests](Tests/IdeProjectChecks.cs), [navigation Play Mode tests](Tests/Unity/Navigation/README.md) |
 
 ## Adopt the source
 
@@ -40,14 +40,14 @@ Copy selected sources, not this entire directory, into the project:
 | Application | `Assets/Game/Application/Inventory/` → Game.Application; references R3, no Unity |
 | Presentation | `Assets/Game/Presentation/Inventory/` → Game.Presentation; pure R3 + Application/Core |
 | Unity/UI (preserve Elements/<Control>/) | `Assets/Game/Unity/UI/` → Game.UI; Presentation/Core, R3, Unity.Properties/UIElements; no Application use-case access |
-| Optional/LitMotion | `Assets/Game/Unity/UI/Elements/ArcMeter/` for this control-owned motion adapter → Game.UI with the pinned LitMotion assembly; see verification limits |
+| Optional/LitMotion | `Assets/Game/Unity/UI/Elements/ArcMeter/` for this control-owned motion adapter → Game.UI with the pinned LitMotion assembly |
 | Unity/Composition | `Assets/Game/Unity/Composition/UI/` → Game.Composition; constructs screen/ViewModel/binding |
 | Editor/IdeProjectSettings and IdeProjectXml | `Assets/Game/Unity/Editor/Development/` → Game.Editor; Editor-only, tracked profile under tooling/ide |
 | Other Editor sources | `Assets/Game/Unity/Editor/UI/` → Game.Editor; Editor-only, references UI/Presentation/Application/R3 |
-| Verification and console Tests | Keep outside Assets; adapt behavioral tests to the project's test assemblies |
-| Tests/Unity | `Assets/Game/Tests/PlayMode/UI/` → project test assembly referencing Game.UI; coroutine helpers called by UnityTest wrappers with an owned live panel |
+| Build and console Tests | Keep outside Assets; port the test cases into the project's test assemblies |
+| Tests/Unity | `Assets/Game/Tests/PlayMode/UI/` → project test assembly referencing Game.UI; MotionClockChecks is a coroutine called from a UnityTest with a live panel |
 
-Use the project's pinned R3 installation; do not copy NuGet build output into Assets. Set explicit asmdef references per [architecture](../references/architecture.md). Unity supplies engine modules; package assembly names come from installed package manifests. When adopting, remap `Workflow.Examples` namespaces and using directives to the game’s recorded layer/feature namespaces; update UXML xmlns and the regeneration task’s fully qualified method too. Keep the example namespaces only in the standalone verification harness. Let Unity generate `.meta` files, then commit them.
+Use the project's pinned R3 installation; do not copy NuGet build output into Assets. Set explicit asmdef references per [architecture](../references/architecture.md). Unity supplies engine modules; package assembly names come from installed package manifests. When adopting, remap `Workflow.Examples` namespaces and using directives to the game’s recorded layer/feature namespaces; update UXML xmlns and the regeneration task’s fully qualified method too. Keep the example namespaces only in the standalone build projects. Let Unity generate `.meta` files, then commit them.
 
 1. Import `Elements/InventorySlot/` as one control directory, preserving sibling C#/UXML/USS. Create a **Workflow/UI Template Catalog** asset. Add ID `controls/inventory-slot`, assigning the private `InventorySlot.uxml` template. Do not put an InventorySlot tag inside that private template.
 2. Open UI Builder on a separate screen UXML. Drag InventorySlot from the custom-control library; change `preview-title`. Construction resolves through the Editor adapter and the template brings its own USS. No Initialize call, ViewModel or Play Mode is involved.
@@ -58,7 +58,7 @@ Use the project's pinned R3 installation; do not copy NuGet build output into As
 
 ## Definition example setup
 
-Copy EnemyConfig and EnemyDefinition into their mapped assemblies. Create a **Workflow/Combat/Enemy Definition** asset, assign an authored prefab and edit its health/speed. The Unity-side startup/catalog validator calls Compile once per definition to obtain immutable pure configuration; the Unity factory separately uses Prefab. Core never receives the asset. The example validates local values and a required reference; the project adds catalog uniqueness, prefab-asset/component checks and the actual factory/preview scene. It does not create prefabs or silently save Inspector edits. See the authoring contract for the required edit/preservation acceptance.
+Copy EnemyConfig and EnemyDefinition into their mapped assemblies. Create a **Workflow/Combat/Enemy Definition** asset, assign an authored prefab and edit its health/speed. The Unity-side startup/catalog validator calls Compile once per definition to obtain immutable pure configuration; the Unity factory separately uses Prefab. Core never receives the asset. The example validates local values and a required reference; the project adds catalog uniqueness, prefab-asset/component checks and the actual factory/preview scene. It does not create prefabs or silently save Inspector edits. See the authoring contract for how to check that edits survive.
 
 ## Effects example setup
 
@@ -86,17 +86,11 @@ clock.SetPresentation(titleIsVisible, reducedMotion);
 
 Forward every visibility/preference change; hide includes hidden ancestors and screens covered by navigation. Reset is idempotent; the first eligible tick restores amplitude. Dispose the clock before releasing the elements/content. Reuse one clock for multiple decorative parameters in the same region. It uses unscaled display time, restarts local phase on resume, and never advances simulation. See [text effects](../references/ui-text-effects.md) for glyph/localization limits.
 
-## Visual fixture setup
+## Localization preview setup
 
-Copy `Previews/Cascade/` together and register its UXML as `previews/cascade-probe` when testing the Content Directory path. The UXML deliberately references component USS before the low-specificity baseline. In a UnityTest wrapper with an already loaded factory and live panel, clone with `factory.Clone("previews/cascade-probe")`, attach the returned container, then `yield return CascadeProbeChecks.Run(container)` and remove it in finally. Call `yield return MotionClockChecks.Run(panelRoot)` separately. The helpers require a panel updated by the real Unity frame loop; calling MoveNext in a tight loop cannot exercise layout or scheduling. The test harness owns/restores the panel, scene and content lease. It must fail on exceptions and have a suite timeout.
+Copy `Previews/Localization/` together. In native 6.7 Localization settings, author the agreed source/supported locales and a `UI.Common` Resource Table Collection containing nonempty `menu.title` and `menu.continue` strings. Open LocalizationPreview.uxml in Builder and select locale previews; both properties have native bindings and no VM writer. Retain sibling USS. To try it at runtime, register its template ID and build/load it using the existing template path; separately include the localization provider data and fonts. See [localization tests](../references/localization.md#tests-and-ci).
 
-The cascade helper checks accepted computed values, activates an intentionally conflicting baseline, requires rejection, and restores the fixture. The clock helper counts actual callbacks across hidden/reduced/detached/disposed intervals. Extend both to the project's real controls and state transitions. Material/geometry, world color and recording cases are specified in [visual-fixtures.md](../references/visual-fixtures.md); this kit does not include an imported shader gallery, a world test scene or a recording producer.
-
-## Localization fixture setup
-
-Copy `Previews/Localization/` together. In native 6.7 Localization settings, author the agreed source/supported locales and a `UI.Common` Resource Table Collection containing nonempty `menu.title` and `menu.continue` strings. Open LocalizationPreview.uxml in Builder and select locale previews; both properties have native bindings and no VM writer. Retain sibling USS. For runtime content qualification, register its template ID and build/load it using the existing template path; separately include the localization provider data and fonts. Follow [localization acceptance](../references/localization.md#acceptance-and-ci).
-
-This fixture supplies declarations and layout only. It contains no authored tables/settings, gameplay commands, locale preference persistence or imported Unity metadata; create those with the selected Editor during adoption. The inventory demo still illustrates its original minimal English projection; replace demo literals with the localization contract when adopting player-facing code. XML syntax checks are not proof of Builder/native binding/player behavior.
+This preview supplies declarations and layout only. It contains no authored tables/settings, gameplay commands, locale preference persistence or imported Unity metadata; create those with the selected Editor during adoption. The inventory demo still illustrates its original minimal English projection; replace demo literals with the localization contract when adopting player-facing code. Open it in UI Builder and a player build to see it working.
 
 ## Defaults and deliberate extension points
 
@@ -104,15 +98,15 @@ This fixture supplies declarations and layout only. It contains no authored tabl
 - **Default:** pure MVVM. InventorySlotViewModel owns projection, formatting and commands; InventoryBinding only maps state/intents. NativeInventoryBinding mirrors the same VM through a Unity notification wrapper. Select one binding adapter per view. Screen composition owns the VM; bindings borrow it. Source examples use ordinary constructors; the project registers these factories/owners at its VContainer roots as specified in [composition](../references/composition.md).
 - **Default:** one-way game state plus validated commands. Editable settings use a separate draft and BaseField<T> semantics; see [editing recipes](ui-recipes.md). The demo's state mutation is an illustrative Application service, not a prescription to put domain rules in a ViewModel or adapter.
 - **Default:** streams emit on the Unity thread. Adapt external producers at the Unity boundary using the installed R3 scheduler; do not sprinkle dispatch in each setter. Define the project's R3 error handler. Demo state is already main-thread-owned.
-- **Default:** bounded catalog-root preload owns its directory registration through UiLibrary. GetRootAssets is synchronous; yielding before it does not make it asynchronous. The advanced LoadAsync alternative owns fresh Loadable handles and borrows a caller-owned directory; its Task boundary drains native completion before releasing on cancellation. Use it only with proven player ID transport. Neither path can claim immediate abort of native I/O. Never start multiple loads for the same session without single-flight coordination.
+- **Default:** bounded catalog-root preload owns its directory registration through UiLibrary. GetRootAssets is synchronous; yielding before it does not make it asynchronous. The advanced LoadAsync alternative owns fresh Loadable handles and borrows a caller-owned directory; its Task boundary drains native completion before releasing on cancellation. Use it only when ID references survive into the player. Neither path can claim immediate abort of native I/O. Never start multiple loads for the same session without single-flight coordination.
 - **Default:** authoring catalog scan once after invalidation. For large projects, narrow catalog locations or generate an index; preserve asset GUID references. Project changes invalidate future lookups, not existing cloned hierarchy. Recreate preview instances after structural edits; test Builder refresh behavior.
 - **Default:** one main-thread context object per static bridge, allocation-free warm scope entry. Reset allocates a new generation token; templates, controls, binding objects and subscriptions allocate at creation/rebind. No zero-allocation claim for the whole UI. Format quantities only when their value changes.
-- **Default:** this small USS example is standalone for preview. Promote repeated literal colors/spacing into project theme tokens using [USS policy](../references/ui-styling.md); keep component geometry local. The larger [styling fixture](../starter/UI/README.md) demonstrates shared tokens. Enable grid/filter/material/z-index/component features only through the [capability gates](../references/ui-capabilities.md), not through this base control.
+- **Default:** this small USS example is standalone for preview. Promote repeated literal colors/spacing into project theme tokens using [USS policy](../references/ui-styling.md); keep component geometry local. The larger [styling example](../starter/UI/README.md) demonstrates shared tokens. Add grid/filter/material/z-index/component features per [UI capabilities](../references/ui-capabilities.md), not in this base control.
 
 The example public reset/install methods exist for the Editor bridge. In a project, restrict their call sites to Composition/Editor (or use assembly friend access); they are not gameplay APIs. LatestRequest guards result publication but does not cancel work or undo server side effects; combine it with cancellation and dispose rejected assets.
 
-Standalone examples explicitly enable nullable references. After adoption, verify assembly-wide nullable across all compiler hosts and remove redundant local directives (IDE0240); see [code quality](../references/code-quality.md). The independent SDK projects demonstrate layer compilation; they are verification harnesses, not a substitute for project asmdefs, full architecture checks, container registration, editor import or player acceptance.
+Standalone examples explicitly enable nullable references. After adoption, once nullable is on assembly-wide in all compiler contexts, remove redundant local directives (IDE0240); see [code quality](../references/code-quality.md). The independent SDK projects demonstrate layer compilation; they don't replace project asmdefs, architecture tests, container registration, Editor import or trying it in a player.
 
 ## Screen and modal navigation
 
-[UiNavigationStack](Unity/UI/Navigation/UiNavigationStack.cs) and [UiStackEntry](Unity/UI/Navigation/UiStackEntry.cs) implement synchronous screen/modal ownership and focus handoff while leaving Move/Submit native. See the [navigation contract](../references/ui-navigation.md) before adapting; the [isolated Play Mode runner](Verification/NavigationPlayMode/README.md) exercises the native device-input path and duplicate-router rejection.
+[UiNavigationStack](Unity/UI/Navigation/UiNavigationStack.cs) and [UiStackEntry](Unity/UI/Navigation/UiStackEntry.cs) implement synchronous screen/modal ownership and focus handoff while leaving Move/Submit native. See the [navigation reference](../references/ui-navigation.md) before adapting; the [Play Mode tests](Tests/Unity/Navigation/README.md) exercise it with native device input.

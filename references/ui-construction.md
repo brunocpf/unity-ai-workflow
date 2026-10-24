@@ -21,7 +21,7 @@ Clone once per instance, not per attachment/binding/emission; do not attach the 
 
 One reusable control per `Assets/Game/Unity/UI/Elements/<Control>/` directory: `<Control>.cs`, its private `<Control>.uxml`, `<Control>.uss`, and any control-owned shaders/materials/icons. Keep partial C# declarations and dedicated manipulators beside their owner. A leaf such as WaveLabel still gets a folder; create UXML/USS only when it needs those assets. One control does not imply one asmdef or Content Directory build: retain Game.UI and group runtime content by loading lifetime.
 
-Screens use `UI/Screens/<Screen>/` for their visual C#, UXML/USS and mechanical binding adapter. Pure ViewModels remain in Presentation; DI/session hosts remain in Composition. Shared styles live in UI/Theme, shared behaviors in UI/Behaviors and template/catalog/loading code in UI/Content. Shared accepted media belongs in Content/UI. A preview/gallery has its own folder, not a dependency on a live gameplay screen.
+Screens use `UI/Screens/<Screen>/` for their visual C#, UXML/USS and mechanical binding adapter. Pure ViewModels remain in Presentation; DI/session hosts remain in Composition. Shared styles live in UI/Theme, shared behaviors in UI/Behaviors and template/catalog/loading code in UI/Content. Shared approved media belongs in Content/UI. A preview/gallery has its own folder, not a dependency on a live gameplay screen.
 
 ```text
 UI/
@@ -40,7 +40,7 @@ UI/
   Content/
 ```
 
-The control UXML uses a sibling stylesheet reference, for example `src="UpgradeCard.uss"`. Catalog IDs remain stable and asset references remain GUID-based; filesystem folders are not runtime lookup keys. When migrating an existing project, move through Unity or move each asset with its existing .meta in an isolated checkout, update relative UXML/USS imports and Editor/build path strings, regenerate IDE projects, then reimport and validate Builder plus a cold content/player load. Creating fresh metadata during a move breaks this contract.
+The control UXML uses a sibling stylesheet reference, for example `src="UpgradeCard.uss"`. Catalog IDs remain stable and asset references remain GUID-based; filesystem folders are not runtime lookup keys. When migrating an existing project, move through Unity or move each asset with its existing .meta in an isolated checkout, update relative UXML/USS imports and Editor/build path strings, regenerate IDE projects, then reimport and check UI Builder and a player build. Creating fresh metadata during a move breaks this contract.
 
 ## Resolution and factory contract
 
@@ -65,6 +65,6 @@ An unscoped runtime call in the Editor is indistinguishable from authoring at lo
 
 Install authoring resolution before Builder construction, independent of scene bootstrap. Stable IDs/GUID mapping and lazy catalog cache; no FindAssets per control. Refresh relevant catalog/import/move/delete/code changes. The supplied [postprocessor](../examples/Editor/UiCatalogPostprocessor.cs) invalidates after UXML/USS/.asset imports, moves or deletions; the next lookup rebuilds once. Its .asset filter is conservative for deleted catalogs, and does no scanning inside import callbacks. Keep project-change invalidation as an additional path. [Unity import callback](https://docs.unity.com/en-us/engine/6000.0/script-reference/unityeditor/assetpostprocessor/onpostprocessallassets). Keep UnityEditor APIs in Editor assemblies. Builder and runtime can coexist; Application.isPlaying is not a resolver-context test.
 
-Prove fresh Editor drag/drop, attributes/style edits, nested controls, asset moves, assembly reload and Builder during Play. Also prove cold player, missing/cancelled load, recycling and unload/reload. See [validation](validation.md) for evidence and [utilities](utilities.md) for measurement targets.
+Check UI Builder drag/drop, attribute/style edits, nested controls, asset moves, assembly reload and Builder during Play. Also test a player build, missing/cancelled loads, recycling and unload/reload. See [testing](testing.md) and [utilities](utilities.md) for performance targets.
 
-Sources: [custom controls](https://docs.unity3d.com/6000.7/Documentation/Manual/UIE-create-custom-controls.html), [UXML styles](https://docs.unity3d.com/cn/6000.0/Manual/UIE-add-style-to-uxml.html), [Content Directories](https://github.com/Unity-Technologies/UnityDataTools/blob/main/Documentation/contentdirectory-format.md). The supplied resolver/factory source has an API compile check; Unity import/runtime acceptance remains required.
+Sources: [custom controls](https://docs.unity3d.com/6000.7/Documentation/Manual/UIE-create-custom-controls.html), [UXML styles](https://docs.unity3d.com/cn/6000.0/Manual/UIE-add-style-to-uxml.html), [Content Directories](https://github.com/Unity-Technologies/UnityDataTools/blob/main/Documentation/contentdirectory-format.md). The supplied resolver/factory source compiles against the Unity APIs; import it into a project and try it in UI Builder and a player build before relying on it.

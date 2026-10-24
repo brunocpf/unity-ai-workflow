@@ -1,17 +1,16 @@
 {
   "id": "unity-ai-workflow",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "skills": [
     "unity-project-bootstrap",
     "unity-feature-workflow",
     "unity-ui-workflow",
     "unity-asset-workflow",
-    "unity-validation-workflow",
     "unity-toolchain-workflow"
   ],
   "global_skills": [
     "unity-workflow-start",
     "unity-workflow-update"
   ],
-  "release_ref": "v0.6.0"
+  "release_ref": "v0.7.0"
 }

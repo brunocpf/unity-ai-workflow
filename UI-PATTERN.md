@@ -9,6 +9,6 @@ Read only the relevant reference:
 - [Localization, native bindings and R3 ownership](references/localization.md)
 - [Native focus, input ownership and screen/modal stacks](references/ui-navigation.md)
 - [USS conventions](references/ui-styling.md)
-- [Modern feature gates](references/ui-capabilities.md)
+- [Modern UI Toolkit features](references/ui-capabilities.md)
 - [Fast Play Mode and static state](references/lifecycle.md)
-- [Acceptance](references/validation.md#ui-acceptance)
+- [Testing](references/testing.md)

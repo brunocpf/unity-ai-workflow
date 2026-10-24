@@ -13,7 +13,7 @@ R3 uses TimeProvider/FrameProvider and test fakes; OnErrorResume need not termin
 - State replays current values; event streams do not replay historical effects by default.
 - Select/deduplicate inputs before formatting [small, element-scoped view snapshots](ui-binding.md#snapshot-size-and-render-scope); avoid per-frame polling where notifications exist. Keep ordering explicit for saves/spending/network authority.
 - Latest-result policy for replaceable previews/search; serialized writes for saves/spending; reject duplicate nonrepeatable submissions. Cancellation does not undo side effects or guarantee underlying work stopped.
-- One authoritative rules clock; choose scaled/unscaled/real-time providers explicitly. [Accelerated tests](test-scenarios.md) take exclusive ownership before manual stepping and suspend the live driver. Marshal engine-facing updates to the intended PlayerLoop/thread.
+- One authoritative rules clock; choose scaled/unscaled/real-time providers explicitly. Accelerated tests take over the clock before stepping it manually and pause the live driver while they do. Marshal engine-facing updates to the intended PlayerLoop/thread.
 - Use UniTask for finite engine operations and Task/ValueTask for pure async ports. Do not duplicate R3 state in async reactive properties. Do not repeatedly await single-consumption task values without a documented sharing mechanism. [UniTask](https://github.com/Cysharp/UniTask).
 
 | Owner | Subscription lifetime |

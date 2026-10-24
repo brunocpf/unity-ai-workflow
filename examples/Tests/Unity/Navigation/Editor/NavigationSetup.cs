@@ -5,6 +5,7 @@ using UnityEngine.UIElements;
 
 public static class NavigationSetup
 {
+    // Paths assume this folder was copied to Assets/NavigationTests; adjust them to where you put it.
     public static void Configure()
     {
         var settings = new SerializedObject(
