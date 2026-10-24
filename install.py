@@ -83,9 +83,9 @@ def read_state(root):
         return None
     state = json.loads(raw)
     if state.get('schema') == 2 and state.get('mode') == 'shared':
-        raise InstallError('This project uses the linked install layout from kit 0.6. Convert it to copied files first '
-                           'with the 0.6.0 installer (git checkout v0.6.0 in a kit clone): '
-                           'python3 install.py update --target <game> --mode vendored, then rerun this command.')
+        raise InstallError('This project uses the linked install layout from kit 0.6. Convert it to copied files first: '
+                           'in the game, run python3 .unity-workflow/restore.py --fetch; then, from a kit clone at tag v0.6.0, '
+                           'run python3 install.py update --target <game> --mode vendored; then rerun this command.')
     if state.get('schema') != 1 or state.get('kit') != 'unity-ai-workflow':
         raise InstallError('Unsupported installation manifest')
     agents = state.get('agents')
