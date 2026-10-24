@@ -4,6 +4,7 @@ from pathlib import Path
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 
@@ -37,9 +38,13 @@ def main():
             ['git', 'ls-files', '-z', '--cached', '--others', '--exclude-standard', '--', 'Assets/Game', 'tooling'],
             cwd=root).decode().split('\0')
     files = sorted({(root / name).resolve() for name in names if name and owned(root / name)})
+    missing = [str(path.relative_to(root)) for path in files if not path.is_file()]
+    if missing:
+        raise RuntimeError('Files not found: ' + ', '.join(missing))
     if not files:
-        print('No owned C# files to check.')
-        return 0
+        if args.paths:
+            return 0  # The hook passed only non-owned files.
+        raise RuntimeError('No owned C# found under Assets/Game or tooling; check the project layout.')
     selected = set(files)
 
     def compile_items(project, namespace=None):
@@ -80,6 +85,8 @@ def main():
     # Every owned file must be compiled somewhere, or formatting and analyzers silently skip it.
     unity_required = {path for path in files if path.relative_to(root).as_posix().startswith('Assets/Game/')}
     pure_roots = [(root / path).resolve() for path in config['pureSourceRoots']]
+    if not pure_roots or any(not path.is_relative_to(root / 'Assets/Game') for path in pure_roots):
+        raise RuntimeError('Set pureSourceRoots in coverage.json to the pure folders under Assets/Game.')
     pure_required = {path for path in files if any(path.is_relative_to(folder) for folder in pure_roots)}
     sdk_required = (selected - unity_required) | pure_required
     gaps = [f'{path.relative_to(root)} [Unity]' for path in sorted(unity_required - unity_files)]
@@ -97,11 +104,13 @@ def main():
         included = sorted(selected & covered)
         if not included:
             continue
-        output = run(['dotnet', 'format', str(solution), '--verify-no-changes', '--no-restore',
+        output = run(['dotnet', 'format', str(solution), '--verify-no-changes', '--no-restore', '--verbosity', 'diagnostic',
                       '--include', *[str(path.relative_to(root)) for path in included]], f'dotnet format ({solution.name})')
-        # dotnet format can exit 0 when it fails to load the workspace.
-        if 'Warnings were encountered while loading the workspace' in output or 'Unable to load project' in output:
-            raise RuntimeError(f'dotnet format could not load {solution.name}:\n{output}')
+        # dotnet format can exit 0 when it fails to load the workspace or the code doesn't compile.
+        load_failures = ['Warnings were encountered while loading the workspace', 'Unable to load project',
+                         'Failed to load project']
+        if any(message in output for message in load_failures) or re.search(r'\berror (?:CS|MSB|NU)\d+', output):
+            raise RuntimeError(f'dotnet format could not load or compile {solution.name}:\n{output}')
     print(f'Quality check passed: {len(files)} files.')
     return 0
 

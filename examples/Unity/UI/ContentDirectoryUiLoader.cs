@@ -55,7 +55,7 @@ namespace Workflow.Examples.UI
         }
 
         // Advanced path only: use when LoadableObjectId references survive into the target player.
-        // On the 6.7 betas, scene-serialized IDs did not survive a player build.
+        // In early 6.7 betas, scene-serialized IDs did not survive a player build; test yours first.
         // Caller owns directory registration until the returned library is disposed.
         public static async Task<UiLibrary> LoadAsync(
             IReadOnlyList<LoadableObjectId> catalogIds, CancellationToken cancellation)

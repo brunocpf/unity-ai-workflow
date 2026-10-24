@@ -1,6 +1,6 @@
 # Testing
 
-Test at the boundary you changed. Documentation-only edits don't need player builds. Keep flaky tests visible and fix them; rerunning until green hides the problem.
+Test at the boundary you changed. Documentation-only edits don't need player builds. Keep flaky tests visible and fix them; rerunning until green hides the problem. A test run that finds zero tests is a failure, not a pass.
 
 | Layer | What to test |
 |---|---|
@@ -11,6 +11,7 @@ Test at the boundary you changed. Documentation-only edits don't need player bui
 | Architecture | Layer/module dependencies (Core never references Unity), no service lookups from forbidden layers, scope registration |
 | Edit Mode | Authoring assets and references, catalogs, serialization, localization table and format coverage |
 | Play Mode | Input → rules → state → UI, scenes, pooling, cleanup |
+| Player build | Content included, code stripping/AOT (IL2CPP), startup, platform input and graphics |
 
 Run the same pure sources in the fast .NET test project and in Unity. Use fake time/frames instead of sleeps in reactive tests. Test once-only actions after a screen reopens or a pooled object is reused. Include a few whole-slice tests; mocks can't show that composition works.
 

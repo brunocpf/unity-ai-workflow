@@ -246,6 +246,25 @@ class InstallationTests(unittest.TestCase):
             self.assertEqual(content, (self.target / name).read_text())
         self.assertEqual({}, self.run_install('update')['changes'])
 
+    def test_linked_layout_manifest_explains_conversion(self):
+        state = self.target / '.unity-workflow/installation.json'
+        state.parent.mkdir(parents=True)
+        state.write_text(json.dumps({'schema': 2, 'mode': 'shared', 'kit': 'unity-ai-workflow'}))
+        with self.assertRaisesRegex(installer.InstallError, '--mode vendored'):
+            self.run_install('update')
+
+    def test_removed_files_do_not_leave_empty_folders(self):
+        retired = self.source / 'references/retired/old.md'
+        retired.parent.mkdir(parents=True)
+        retired.write_text('Old policy\n')
+        self.run_install()
+        self.assertTrue((self.target / 'docs/standards/references/retired/old.md').exists())
+        retired.unlink()
+        retired.parent.rmdir()
+        self.run_install('update')
+        self.assertFalse((self.target / 'docs/standards/references/retired').exists())
+        self.assertTrue((self.target / 'docs/standards/references').is_dir())
+
     def test_update_requires_install(self):
         with self.assertRaises(installer.InstallError):
             self.run_install('update')

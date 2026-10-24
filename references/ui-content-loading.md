@@ -1,6 +1,6 @@
 # Content Directory bootstrap
 
-Use with [control construction](ui-construction.md). On the 6.7 betas, a LoadableObjectId reference that works in the Editor did not survive ordinary player-scene serialization. Use the root-loader default below and avoid ID fields in normal scenes unless you've confirmed IDs round-trip in a player build on your Editor version.
+Use with [control construction](ui-construction.md). In early 6.7 betas, a LoadableObjectId reference that worked in the Editor did not survive ordinary player-scene serialization. Use the root-loader default below and avoid ID fields in normal scenes unless you've confirmed IDs round-trip in a player build on your Editor version.
 
 ## Default: bounded catalog-root preload
 

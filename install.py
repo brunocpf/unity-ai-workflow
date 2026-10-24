@@ -82,6 +82,10 @@ def read_state(root):
     if raw is None:
         return None
     state = json.loads(raw)
+    if state.get('schema') == 2 and state.get('mode') == 'shared':
+        raise InstallError('This project uses the linked install layout from kit 0.6. Convert it to copied files first '
+                           'with the 0.6.0 installer (git checkout v0.6.0 in a kit clone): '
+                           'python3 install.py update --target <game> --mode vendored, then rerun this command.')
     if state.get('schema') != 1 or state.get('kit') != 'unity-ai-workflow':
         raise InstallError('Unsupported installation manifest')
     agents = state.get('agents')
@@ -259,6 +263,14 @@ def install(source, root, command, agent=None, dry_run=False, examples=None):
     return result
 
 
+def remove_empty_parents(root, path):
+    # Removed managed files must not leave empty kit folders behind.
+    parent = path.parent
+    while parent != root and parent.is_dir() and not any(parent.iterdir()):
+        parent.rmdir()
+        parent = parent.parent
+
+
 def apply_changes(root, changes, snapshots, lock_relative):
     lock = safe_path(root, lock_relative)
     lock.parent.mkdir(parents=True, exist_ok=True)
@@ -277,6 +289,7 @@ def apply_changes(root, changes, snapshots, lock_relative):
                 path = safe_path(root, relative)
                 if data is None:
                     path.unlink()
+                    remove_empty_parents(root, path)
                 else:
                     atomic_write(path, data)
                 applied.append(relative)

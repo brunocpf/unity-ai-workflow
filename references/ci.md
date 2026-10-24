@@ -23,7 +23,7 @@ unity test . --mode PlayMode --output artifacts/playmode.xml --timeout 900
 unity build . --profile "Assets/Game/Settings/Build Profiles/Desktop.asset" --output-path artifacts/player --timeout 1800
 ```
 
-Fail the job when a test command fails or produces no results file. Set `UNITY_NON_INTERACTIVE=1` and `HUSKY=0` in the job environment. Use the profile's platform-appropriate output path (directory, .app or executable).
+Fail the job when a test command fails, produces no results file, or reports zero tests. Set `UNITY_NON_INTERACTIVE=1` and `HUSKY=0` in the job environment. Use the profile's platform-appropriate output path (directory, .app or executable).
 
 Run the fast pure checks on every PR. Editor tests and player builds can run on every PR or only on main, depending on how long they take. Use separate jobs/workspaces for parallel Unity runs. Tests that render need a graphics-capable runner, not no-graphics batch mode. Don't run untrusted pull-request code on a privileged persistent runner.
 
@@ -40,4 +40,4 @@ Don't share caches across Editor versions, platforms or package changes. Save th
 
 ## Releases
 
-Pin action revisions, runner images, CLI/SDK versions and packages. Tag releases and keep the player builds, symbols and configuration needed to diagnose or roll back a release. Keep signing and secrets in trusted jobs only. Hooks give early feedback; CI is the check that counts. See [developer tooling](developer-tooling.md) and [toolchain](toolchain.md#cli).
+Pin action revisions, runner images, CLI/SDK versions and packages. Tag releases and keep the player builds, symbols and configuration needed to diagnose or roll back a release. Keep a list of third-party dependencies and their licenses for each release. Keep signing and secrets in trusted jobs only. Hooks give early feedback; CI is the check that counts. See [developer tooling](developer-tooling.md) and [toolchain](toolchain.md#cli).
