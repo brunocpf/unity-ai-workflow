@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import os
 from pathlib import Path
 import shutil
 import tempfile
@@ -210,6 +211,144 @@ class InstallationTests(unittest.TestCase):
             with self.assertRaises(OSError):
                 self.run_install('update')
         self.assertEqual(before, self.snapshot())
+
+    def test_failed_first_install_leaves_no_folders(self):
+        self.target.mkdir()
+        original = installer.atomic_write
+        count = 0
+
+        def failing(path, data):
+            nonlocal count
+            count += 1
+            if count == 5:
+                raise OSError('Injected write failure')
+            original(path, data)
+
+        with patch.object(installer, 'atomic_write', failing):
+            with self.assertRaises(OSError):
+                self.run_install()
+        self.assertEqual([], list(self.target.iterdir()))
+
+    def test_scaffold_places_starter_files_without_overwriting(self):
+        self.run_install()
+        core = self.target / 'Assets/Game/Core'
+        core.mkdir(parents=True)
+        (core / 'Game.Core.asmdef').write_text('{}')
+        (self.target / '.gitignore').write_text('custom\n')
+        result = installer.scaffold(self.target)
+        self.assertIn('.gitignore', result['merge'])
+        self.assertEqual('custom\n', (self.target / '.gitignore').read_text())
+        for path in ('.editorconfig', 'tooling/dotnet/Directory.Build.props', '.husky/pre-commit',
+                     'tooling/quality/check.py', 'tooling/quality/CodeOrganization/Program.cs',
+                     '.vscode/settings.json', 'tooling/ide/owned-projects.json', 'Assets/Game/Core/csc.rsp'):
+            self.assertTrue((self.target / path).is_file(), path)
+        if os.name != 'nt':  # Windows has no POSIX execute bit; Git records it separately.
+            self.assertTrue((self.target / '.husky/pre-commit').stat().st_mode & 0o100)
+        self.assertIn('-langversion:9.0', (self.target / 'Assets/Game/Core/csc.rsp').read_text())
+        again = installer.scaffold(self.target)
+        self.assertEqual([], again['written'])
+        self.assertEqual(['.gitignore'], again['merge'])
+
+    def test_scaffold_language_profile_and_dry_run(self):
+        self.run_install()
+        (self.target / 'Assets/Game/Core').mkdir(parents=True)
+        (self.target / 'Assets/Game/Core/Game.Core.asmdef').write_text('{}')
+        before = self.snapshot()
+        plan = installer.scaffold(self.target, 'csharp14', dry_run=True)
+        self.assertIn('Assets/Game/Core/csc.rsp', plan['written'])
+        self.assertEqual(before, self.snapshot())
+        installer.scaffold(self.target, 'csharp14')
+        self.assertIn('-langversion:14.0', (self.target / 'Assets/Game/Core/csc.rsp').read_text())
+        self.assertIn('>14.0</LangVersion>', (self.target / 'tooling/dotnet/Directory.Build.props').read_text())
+        self.assertIn('"14.0"', (self.target / 'tooling/ide/owned-projects.json').read_text())
+
+    def test_scaffold_reports_unwritable_files_and_continues(self):
+        self.run_install()
+        original = installer.atomic_write
+
+        def failing(path, data):
+            if '.vscode' in path.parts:
+                raise PermissionError('Operation not permitted')
+            original(path, data)
+
+        with patch.object(installer, 'atomic_write', failing):
+            result = installer.scaffold(self.target)
+        self.assertEqual({'.vscode/settings.json', '.vscode/extensions.json', '.vscode/tasks.json'}, set(result['failed']))
+        self.assertTrue((self.target / 'tooling/quality/check.py').is_file())
+        retry = installer.scaffold(self.target)
+        self.assertEqual(sorted(result['failed']), sorted(retry['written']))
+
+    def test_scaffold_requires_install(self):
+        self.target.mkdir()
+        with self.assertRaises(installer.InstallError):
+            installer.scaffold(self.target)
+
+    def test_scaffold_rerun_keeps_the_project_profile(self):
+        self.run_install()
+        (self.target / 'Assets/Game/Core').mkdir(parents=True)
+        (self.target / 'Assets/Game/Core/Game.Core.asmdef').write_text('{}')
+        installer.scaffold(self.target, 'csharp14')
+        (self.target / 'Assets/Game/Application').mkdir()
+        (self.target / 'Assets/Game/Application/Game.Application.asmdef').write_text('{}')
+        result = installer.scaffold(self.target)
+        self.assertEqual('csharp14', result['profile'])
+        self.assertEqual(['Assets/Game/Application/csc.rsp'], result['written'])
+        self.assertIn('-langversion:14.0', (self.target / 'Assets/Game/Application/csc.rsp').read_text())
+        self.assertTrue(any('csharp14.editorconfig' in step for step in result['next_steps']))
+        with self.assertRaises(installer.InstallError):
+            installer.scaffold(self.target, 'csharp9')
+
+    @unittest.skipIf(os.name == 'nt', 'Windows has no POSIX execute bit')
+    def test_scaffold_repairs_hook_executable_bit(self):
+        self.run_install()
+        installer.scaffold(self.target)
+        hook = self.target / '.husky/pre-commit'
+        hook.chmod(0o644)
+        result = installer.scaffold(self.target)
+        self.assertIn('.husky/pre-commit', result['unchanged'])
+        self.assertTrue(hook.stat().st_mode & 0o100)
+
+    def test_scaffold_reports_unusable_destination_and_continues(self):
+        self.run_install()
+        elsewhere = self.base / 'shared-vscode'
+        elsewhere.mkdir()
+        try:
+            (self.target / '.vscode').symlink_to(elsewhere, target_is_directory=True)
+        except OSError:
+            self.skipTest('Symlinks need extra privileges on this platform')
+        result = installer.scaffold(self.target)
+        self.assertEqual({'.vscode/settings.json', '.vscode/extensions.json', '.vscode/tasks.json'}, set(result['failed']))
+        self.assertEqual([], list(elsewhere.iterdir()))
+        self.assertTrue((self.target / 'tooling/quality/check.py').is_file())
+
+    def test_doctor_reports_gaps_without_unity(self):
+        with patch.object(installer, 'probe', return_value=None), \
+                patch.object(installer, 'reachable', return_value=False), \
+                patch.object(installer, 'hub_editor_folders', return_value=[]), \
+                patch.dict(installer.os.environ, {'UNITY_EDITOR': ''}):
+            result = installer.doctor()
+        self.assertIsNone(result['tools']['unity_cli'])
+        self.assertEqual([], result['tools']['hub_editors'])
+        self.assertTrue(any('No Unity CLI' in g for g in result['guidance']))
+        self.assertTrue(any('No dotnet' in g for g in result['guidance']))
+        self.assertTrue(any('did not answer' in g for g in result['guidance']))
+
+    def test_doctor_finds_custom_hub_location_and_flags_certificate_errors(self):
+        home = self.base / 'home'
+        custom = self.base / 'D-drive/Unity'
+        (custom / '6000.7.0b3').mkdir(parents=True)
+        config = home / '.config/UnityHub'
+        config.mkdir(parents=True)
+        (config / 'secondaryInstallPath.json').write_text(json.dumps(str(custom)))
+        with patch.object(installer, 'probe', return_value=None), \
+                patch.object(installer, 'reachable', return_value='certificate-error'), \
+                patch.object(installer.Path, 'home', return_value=home), \
+                patch.dict(installer.os.environ, {'UNITY_EDITOR': '', 'APPDATA': ''}):
+            result = installer.doctor()
+        self.assertIn('6000.7.0b3', result['tools']['hub_editors'])
+        self.assertFalse(any('No Unity CLI' in g for g in result['guidance']))
+        self.assertTrue(any('TLS certificates' in g for g in result['guidance']))
+        self.assertFalse(any('did not answer' in g for g in result['guidance']))
 
     def test_lock_prevents_writes(self):
         self.run_install()

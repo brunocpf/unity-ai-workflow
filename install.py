@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Install global entrypoints or project-local workflow instructions; never creates or runs Unity."""
+"""Install global entrypoints or project-local workflow instructions, scaffold starter tooling
+and report the local toolchain; never creates or runs Unity."""
 import argparse
 import hashlib
 import json
@@ -271,8 +272,26 @@ def remove_empty_parents(root, path):
         parent = parent.parent
 
 
+def missing_parents(root, paths):
+    # Folders this run creates, deepest first, so a rollback can remove them again.
+    created = set()
+    for path in paths:
+        parent = path.parent
+        while parent != root and not parent.exists():
+            created.add(parent)
+            parent = parent.parent
+    return sorted(created, key=lambda p: len(p.parts), reverse=True)
+
+
+def remove_if_empty(folders):
+    for folder in folders:
+        if folder.is_dir() and not any(folder.iterdir()):
+            folder.rmdir()
+
+
 def apply_changes(root, changes, snapshots, lock_relative):
     lock = safe_path(root, lock_relative)
+    created = missing_parents(root, [lock] + [safe_path(root, r) for r in changes])
     lock.parent.mkdir(parents=True, exist_ok=True)
     try:
         fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
@@ -302,7 +321,212 @@ def apply_changes(root, changes, snapshots, lock_relative):
                     atomic_write(path, snapshots[relative])
             raise
     finally:
-        lock.unlink()
+        try:
+            lock.unlink()
+        finally:
+            remove_if_empty(created)
+
+
+# Starter files with a fixed destination (developer-tooling.md, ide.md, code-organization.md).
+# Values are installed-starter paths; a trailing '/' copies the folder.
+SCAFFOLD = {
+    '.editorconfig': '.editorconfig',
+    '.gitignore': '.gitignore',
+    '.gitattributes': '.gitattributes',
+    '.github/pull_request_template.md': '.github/pull_request_template.md',
+    'tooling/dotnet/Directory.Build.props': 'Directory.Build.props',
+    '.config/dotnet-tools.json': 'hooks/dotnet-tools.json',
+    '.husky/task-runner.json': 'hooks/task-runner.json',
+    '.husky/pre-commit': 'hooks/pre-commit',
+    'tooling/hooks/check_staged.py': 'hooks/check_staged.py',
+    '.vscode/settings.json': 'ide/settings.json',
+    '.vscode/extensions.json': 'ide/extensions.json',
+    '.vscode/tasks.json': 'ide/tasks.json',
+    'tooling/ide/owned-projects.json': 'ide/owned-projects.json',
+    'tooling/quality/': 'quality/',
+}
+EXECUTABLE = {'.husky/pre-commit'}
+PROFILES = {'csharp9': ('csc.rsp', '9.0'), 'csharp14': ('language-profiles/csharp14.rsp', '14.0')}
+SCAFFOLD_NEXT = [
+    'Replace the Game.* names in tooling/ide/owned-projects.json and tooling/quality/coverage.json with the real assemblies and solutions.',
+    'Pin a .NET 10 SDK in global.json, create tooling/dotnet/Game.sln with the pure projects, then run: dotnet tool restore && dotnet husky install.',
+    'Run git lfs install --local once the repository exists.',
+    'Rerun scaffold after adding owned asmdefs under Assets/Game; it adds the missing csc.rsp files with the profile in tooling/ide/owned-projects.json.',
+    'On Windows, mark the hook executable for Git: git update-index --chmod=+x .husky/pre-commit.',
+]
+CSHARP14_NEXT = 'Adopt docs/standards/starter/language-profiles/csharp14.editorconfig into the owned-code section of .editorconfig.'
+
+
+def project_profile(root):
+    # The profile a scaffolded project already uses, so reruns never mix language versions.
+    raw = read(root, 'tooling/ide/owned-projects.json')
+    if raw is None:
+        return None
+    try:
+        language = json.loads(raw).get('languageVersion')
+    except (ValueError, AttributeError):
+        raise InstallError('tooling/ide/owned-projects.json is not valid JSON; fix it before scaffolding') from None
+    for name, (_, version) in PROFILES.items():
+        if version == language:
+            return name
+    raise InstallError(f'tooling/ide/owned-projects.json uses languageVersion {language!r}, which no profile matches; '
+                       'add csc.rsp files by hand (language-profiles.md)')
+
+
+def scaffold(root, profile=None, dry_run=False):
+    """Copy the fixed-destination starter files into the project; never overwrites."""
+    if read_state(root) is None:
+        raise InstallError('Workflow is not installed; run install first')
+    existing = project_profile(root)
+    if profile and existing and profile != existing:
+        raise InstallError(f'The project uses the {existing} profile (tooling/ide/owned-projects.json); rerun with '
+                           f'--profile {existing}, or switch profiles by hand as language-profiles.md describes')
+    profile = profile or existing or 'csharp9'
+    starter = root / 'docs/standards/starter'
+    rsp, language = PROFILES[profile]
+    plan = {}
+    for destination, source in SCAFFOLD.items():
+        if destination.endswith('/'):
+            base = starter / source
+            for p in sorted(base.rglob('*')):
+                if p.is_file() and not any(part in EXCLUDED for part in p.relative_to(base).parts):
+                    plan[destination + p.relative_to(base).as_posix()] = p.read_bytes()
+        else:
+            plan[destination] = (starter / source).read_bytes()
+    if language != '9.0':
+        plan['tooling/dotnet/Directory.Build.props'] = plan['tooling/dotnet/Directory.Build.props'].replace(
+            b'>9.0</LangVersion>', f'>{language}</LangVersion>'.encode())
+        plan['tooling/ide/owned-projects.json'] = plan['tooling/ide/owned-projects.json'].replace(
+            b'"languageVersion": "9.0"', f'"languageVersion": "{language}"'.encode())
+    owned = root / 'Assets/Game'
+    for asmdef in sorted(owned.rglob('*.asmdef')) if owned.is_dir() else []:
+        plan[(asmdef.parent / 'csc.rsp').relative_to(root).as_posix()] = (starter / rsp).read_bytes()
+
+    next_steps = SCAFFOLD_NEXT + ([CSHARP14_NEXT] if profile == 'csharp14' else [])
+    result = {'operation': 'scaffold', 'dry_run': dry_run, 'profile': profile,
+              'written': [], 'unchanged': [], 'merge': [], 'failed': {}, 'next_steps': next_steps}
+    writes = {}
+    # Starter files are independent: report an unusable one and keep going, so a rerun only retries failures.
+    for relative, data in plan.items():
+        try:
+            current = read(root, relative)
+        except (OSError, InstallError) as error:
+            result['failed'][relative] = str(error)
+            continue
+        if current is None:
+            writes[relative] = data
+            result['written'].append(relative)
+        elif digest(current) == digest(data):
+            result['unchanged'].append(relative)
+        else:
+            result['merge'].append(relative)  # Existing project file: merge by hand, never replace.
+    if not dry_run:
+        for relative, data in writes.items():
+            try:
+                atomic_write(safe_path(root, relative), data)
+            except (OSError, InstallError) as error:
+                result['written'].remove(relative)
+                result['failed'][relative] = str(error)
+        # Also repairs an existing hook that lost its executable bit.
+        for relative in EXECUTABLE:
+            if relative in result['written'] or relative in result['unchanged']:
+                try:
+                    path = safe_path(root, relative)
+                    path.chmod(path.stat().st_mode | 0o755)
+                except (OSError, InstallError) as error:
+                    if relative in result['written']:
+                        result['written'].remove(relative)
+                    result['failed'][relative] = str(error)
+    return result
+
+
+def probe(command, timeout=10):
+    try:
+        done = subprocess.run(command, capture_output=True, text=True, timeout=timeout)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    output = (done.stdout or done.stderr).strip().splitlines()
+    return output[0][:200] if done.returncode == 0 and output else None
+
+
+def reachable(url):
+    import ssl
+    import urllib.request
+    try:
+        urllib.request.urlopen(urllib.request.Request(url, method='HEAD'), timeout=5)
+        return True
+    except Exception as error:
+        if isinstance(getattr(error, 'reason', None), ssl.SSLError):
+            return 'certificate-error'  # This Python can't verify TLS; the host may well be up.
+        # An HTTP error status still proves the host answered.
+        return hasattr(error, 'code')
+
+
+def hub_editor_folders():
+    # Default Hub locations plus the custom install location the Hub records.
+    folders = [Path('/Applications/Unity/Hub/Editor'), Path('C:/Program Files/Unity/Hub/Editor'), Path.home() / 'Unity/Hub/Editor']
+    configs = [Path.home() / 'Library/Application Support/UnityHub', Path.home() / '.config/UnityHub']
+    if os.environ.get('APPDATA'):
+        configs.append(Path(os.environ['APPDATA']) / 'UnityHub')
+    for config in configs:
+        try:
+            custom = json.loads((config / 'secondaryInstallPath.json').read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            continue
+        if isinstance(custom, str) and custom:
+            folders.append(Path(custom))
+    return folders
+
+
+def hub_editors():
+    editors = set()
+    for base in hub_editor_folders():
+        try:
+            editors.update(p.name for p in base.iterdir() if p.is_dir())
+        except OSError:
+            continue
+    return sorted(editors)
+
+
+def doctor(root=None):
+    """Report the local toolchain in one call so agents don't probe it piece by piece."""
+    unity = next((c for c in ('unity', str(Path.home() / '.unity/bin/unity'))
+                  if probe([c, '--version'])), None)
+    editor_env = os.environ.get('UNITY_EDITOR')
+    tools = {
+        'python': sys.version.split()[0],
+        'git': probe(['git', '--version']),
+        'git_lfs': probe(['git', 'lfs', 'version']),
+        'dotnet': probe(['dotnet', '--version']),
+        'unity_cli': probe([unity, '--version']) if unity else None,
+        'unity_cli_path': unity,
+        'hub_editors': hub_editors(),
+        'unity_editor_env': editor_env if editor_env and Path(editor_env).exists() else None,
+    }
+    network = {host: reachable(f'https://{host}/') for host in ('api.nuget.org', 'github.com', 'packages.unity.com')}
+    result = {'operation': 'doctor', 'tools': tools, 'network': network}
+    if root is not None:
+        try:
+            result['installation'] = verify(root)
+        except (InstallError, OSError, ValueError) as error:
+            result['installation'] = {'status': 'fail', 'error': str(error)}
+    gaps = []
+    if not tools['unity_cli'] and not tools['hub_editors'] and not tools['unity_editor_env']:
+        gaps.append('No Unity CLI or Editor in the standard locations (Unity CLI, Unity Hub folders, UNITY_EDITOR): '
+                    'unless the user names an Editor path, write project files directly, skip Editor import/compile/test/build checks '
+                    'and list the commands still to run in README.md. Don\'t search the disk for other installs.')
+    if not tools['dotnet']:
+        gaps.append('No dotnet: skip the pure SDK build, quality check and Husky install; list them in README.md.')
+    if not tools['git_lfs']:
+        gaps.append('No Git LFS: keep the LFS rules in .gitattributes and note git lfs install --local as a setup step in README.md.')
+    if 'certificate-error' in network.values():
+        gaps.append('This Python cannot verify TLS certificates (python.org macOS builds need "Install Certificates.command"), '
+                    'so the network check is inconclusive; git, dotnet and Unity downloads may still work.')
+    if False in network.values():
+        gaps.append('Some package hosts did not answer: use versions pinned in the references and lock files, and list the '
+                    'downloads still to run in README.md instead of retrying in a loop.')
+    result['guidance'] = gaps or ['Toolchain complete: verify setup with the real commands.']
+    return result
 
 
 def assess(source, root, examples=None):
@@ -331,14 +555,25 @@ def assess(source, root, examples=None):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=['install', 'update', 'assess', 'check', 'install-global', 'check-global'])
+    parser.add_argument('command', choices=['install', 'update', 'assess', 'check', 'scaffold', 'doctor', 'install-global', 'check-global'])
     parser.add_argument('--target', type=Path, help='Game workspace (not the kit checkout)')
     parser.add_argument('--home', type=Path, help='Home directory override for global commands (for isolated tests)')
     parser.add_argument('--agent', choices=['codex', 'claude', 'both'], help='Default: both on install, existing clients on update; selections only add clients')
     parser.add_argument('--examples', choices=['none', 'all'], help='New installs default to none; updates preserve the installed choice')
     parser.add_argument('--dry-run', action='store_true', help='Show the plan without writing files')
+    parser.add_argument('--profile', choices=sorted(PROFILES), help='scaffold only: C# language profile (default: the project\'s existing profile, else csharp9)')
     args = parser.parse_args()
+    if sys.version_info < (3, 9):
+        print('Error: Python 3.9+ is required', file=sys.stderr)
+        return 2
+    if args.profile and args.command != 'scaffold':
+        parser.error('--profile applies only to scaffold')
     try:
+        if args.command == 'doctor':
+            if args.agent or args.examples or args.dry_run or args.home:
+                parser.error('doctor accepts only --target')
+            print(json.dumps(doctor(args.target.expanduser().resolve() if args.target else None), indent=2))
+            return 0
         if args.command in ('install-global', 'check-global'):
             if args.examples or args.target or (args.command == 'check-global' and (args.agent or args.dry_run)):
                 parser.error('Global commands do not accept --target; check-global accepts only --home')
@@ -353,8 +588,12 @@ def main():
         root = args.target.expanduser().resolve()
         if args.command == 'check' and (args.agent or args.examples or args.dry_run):
             parser.error('check accepts only --target')
+        if args.command == 'scaffold' and (args.agent or args.examples):
+            parser.error('scaffold accepts only --target, --profile and --dry-run')
         if args.command == 'assess':
             result = assess(SOURCE, root, args.examples)
+        elif args.command == 'scaffold':
+            result = scaffold(root, args.profile, args.dry_run)
         elif args.command == 'check':
             result = verify(root)
         else:
