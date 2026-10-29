@@ -1,0 +1,44 @@
+schema_version: "1.0"
+name: new-project-setup
+description: Greenfield project setup only (bootstrap skill should fire).
+tags: [fire, setup]
+execution:
+  prompt: |
+    Set up a new Unity 6 project in this empty folder for a single-player, turn-based tactics game for PC (Steam), English only. Project setup only — no gameplay yet. I want a codebase that will stay maintainable as the game grows over a couple of years.
+    Unity is not installed in this environment, so write the project files directly; I'll open the project in Unity 6 later. Don't ask me questions — make reasonable choices and note them at the end.
+  max_turns: 80
+  timeout_seconds: 1800
+  allowed_tools: [Read, Glob, Grep, Skill, Write, Edit, Bash]
+runs: 3
+graders:
+  - name: skill-fired
+    type: tool_used
+    tool: Skill
+    min: 1
+  - name: has-asmdefs
+    type: file_exists
+    path: "**/*.asmdef"
+  - name: test-assembly
+    type: file_exists
+    path: "**/*Test*.asmdef"
+  - name: editorconfig
+    type: file_exists
+    path: "**/.editorconfig"
+    weight: 0.5
+  - name: ci-workflow
+    type: file_exists
+    path: ".github/workflows/*.y*ml"
+    weight: 0.5
+  - name: setup-quality
+    type: llm
+    focus: trace
+    weight: 3
+    criteria: |
+      Evidence is the run trace: grade only content the agent itself wrote (Write/Edit inputs, or files created via Bash). Ignore documentation or examples it merely read, and don't credit claims in its final message that the written files don't back up.
+      Judge the project files the agent created. Pass only if ALL of these hold:
+      1. Game rules/domain code has a home that does not depend on UnityEngine (a separate assembly or clearly separated layer), and assembly references point inward (engine-facing code depends on domain code, not the reverse).
+      2. There is a test assembly that would run in Unity's Test Runner, with at least one real test (not just an empty file).
+      3. Asmdefs are valid JSON, Packages/manifest.json uses real Unity package ids, and ProjectSettings/ProjectVersion.txt targets Unity 6 (6000.x), so the project would plausibly open.
+      4. A README explains how to open, run tests and build.
+      5. Scope was respected: no gameplay systems (units, grids, combat, AI) were implemented beyond trivial placeholders.
+      Fail if any item is missing or clearly broken.

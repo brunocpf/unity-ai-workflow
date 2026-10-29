@@ -1,0 +1,5 @@
+{
+  "name": "unity-ai-workflow",
+  "version": "0.7.0",
+  "description": "Unity AI workflow kit skills, loadable as a plugin for evaluation."
+}
