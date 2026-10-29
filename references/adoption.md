@@ -2,7 +2,7 @@
 
 ## Install
 
-From the kit checkout run `python3 install.py install --target /path/to/game --agent codex|claude|both` (choose one value), then `python3 install.py check --target /path/to/game`. The installer copies the standards into `docs/standards/` and the task skills into the client skill folders. It preserves existing instruction text, and it does not create the game, change compiler settings or install tools. A bootstrap request already authorizes installing the kit as its first step when the project doesn't have it yet.
+From the kit checkout run `python3 install.py doctor --target /path/to/game` to see which tools exist, then `python3 install.py install --target /path/to/game --agent codex|claude|both` (choose one value) and `python3 install.py check --target /path/to/game`. The installer copies the standards into `docs/standards/` and the task skills into the client skill folders. It preserves existing instruction text, and it does not create the game, change compiler settings or install tools. A bootstrap request already authorizes installing the kit as its first step when the project doesn't have it yet.
 
 ## Request scope
 
@@ -42,10 +42,12 @@ Bootstrap once; evolve the same project through features, fixes, balancing, cont
 
 ## Setup steps
 
+For setup scope, work from the [setup checklist](setup-checklist.md); the steps below are the reasoning behind it.
+
 1. Confirm target platforms using the clarification policy; select project name/path, render pipeline and Unity version accordingly. Inspect the destination. Generate Unity-owned settings/assets using the selected Editor/CLI. If its help exposes `projects create --with-pipeline`, use it for agent-driven setup, and confirm the Pipeline package actually installed (see [CLI](toolchain.md#cli)); otherwise install it separately. Don't reinstall it every session.
 2. Install the kit with the installer above. It tracks the installed version in `.unity-workflow/installation.json`.
 3. Set up the [Editor authoring defaults](authoring.md): saved scenes, prefabs and tuning definitions that designers can edit. Add gameplay scenes, prefabs and definitions alongside the features that use them. Setup and builds must preserve authored edits.
-4. Keep the installer-managed instruction routing intact; don't replace root AGENTS.md/CLAUDE.md with starter files. Merge starter .editorconfig, .gitignore and .gitattributes into the project root; copy Directory.Build.props to tooling/dotnet/ and set the language profile and SDK pin. Follow [code quality](code-quality.md) and [developer tooling](developer-tooling.md) for nullable settings, analyzers and the pre-commit hook. Place the Core asmdef beside Core sources and copy csc.rsp beside every owned asmdef. Follow [IDE setup](ide.md) and [code organization](code-organization.md): track VS Code configuration, install the IDE project hook, keep the Unity and pure SDK solutions separate, and install the quality check. Import chosen UI starter files through Unity so it creates metadata.
+4. Keep the installer-managed instruction routing intact; don't replace root AGENTS.md/CLAUDE.md with starter files. Run `python3 install.py scaffold --target /path/to/game` to place the starter EditorConfig, Git files, hooks, VS Code settings and tooling folders, then merge anything it lists under `merge` and set the SDK pin. Follow [code quality](code-quality.md) and [developer tooling](developer-tooling.md) for nullable settings, analyzers and the pre-commit hook. Place the Core asmdef beside Core sources and copy csc.rsp beside every owned asmdef. Follow [IDE setup](ide.md) and [code organization](code-organization.md): track VS Code configuration, install the IDE project hook, keep the Unity and pure SDK solutions separate, and install the quality check. Import chosen UI starter files through Unity so it creates metadata.
 5. Confirm the skills appear in the selected client: .agents/skills for Codex, .claude/skills for Claude Code. Skills read docs/standards/references; the shared rules are docs/standards/PROJECT-RULES.md.
 6. Create the project documents below and wire [CI](ci.md). Put real commands in the project README.
 7. Stop here for setup-only scope. Otherwise build the first playable slice.

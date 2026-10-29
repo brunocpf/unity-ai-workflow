@@ -4,7 +4,7 @@ Opinionated architecture for long-lived Unity projects built with AI agents: mod
 
 ## Install globally (recommended)
 
-Requires Python 3.10+. Clone separately from game workspaces, then install the two global entrypoints for Codex and Claude Code:
+Requires Python 3.9+. Clone separately from game workspaces, then install the two global entrypoints for Codex and Claude Code:
 
 ```sh
 git clone https://github.com/brunocpf/unity-ai-workflow.git

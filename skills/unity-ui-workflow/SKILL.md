@@ -7,10 +7,24 @@ Use project rules and the current request. Reference names below resolve under `
 
 Use the available Unity `ui-uitk` skill for UXML/USS/API mechanics, loading only its relevant references; `context-efficiency.md#skill-ownership` defines conflicts and fallback. This skill owns how UI fits the project.
 
-Build on pure MVVM/R3 ViewModels with mechanical Unity binding adapters. Reuse the project's control/content library; adapt the examples only for controls you actually need.
+These rules apply to every UI change, whatever its size:
 
-1. For new/substantial screens, set a concrete visual target and finish a representative polished screen before expanding (`ui-art-direction.md`, `ui-advanced.md`). Local fixes keep the approved target.
-2. Load the reference for the changed concern: `ui-construction.md` for constructor-complete Builder-compatible controls and UXML-owned USS; `ui-binding.md` for small state projections/property writers; `ui-styling.md` for USS; `ui-navigation.md` for native Move/Submit, Cancel ownership and screen/modal lifetimes.
-3. Use modern drawing/gradients/materials/filters and coordinated motion where they serve the visual target. `ui-capabilities.md` covers what the Editor supports; `ui-text-effects.md` covers glyph effects; `lifecycle.md` covers teardown/reload. Don't reload these for an unrelated text/style fix.
-4. Authored localized properties use native bindings with one writer (`localization.md`). Check UI Builder, input, binding and lifecycle behavior; run the game and compare the screen with the target, and keep refining.
-5. Update relevant project decisions and tests; no UI status report.
+- Display logic (formatting, ratios, enabled/busy/error/low states) lives in a pure Presentation ViewModel with no Unity references, covered by unit tests.
+- The Unity side is a mechanical binding adapter: it subscribes to ViewModel state, writes element properties and forwards input as commands. It never polls gameplay objects every frame or reaches into MonoBehaviours for data.
+- Layout lives in UXML and styling in USS beside the owning control or screen, not inline C# styles. Reuse the project's control/content library and theme tokens.
+- One owner disposes each subscription, ViewModel and binding when the screen or control goes away.
+
+Size the reading to the task:
+
+| Task | Read |
+|---|---|
+| Text, style or layout fix on existing UI | `ui-styling.md` only, and only for an unfamiliar USS question |
+| New control or HUD element | `ui-construction.md`, `ui-binding.md`, `ui-styling.md` |
+| New screen or substantial redesign | Above plus `ui-art-direction.md`; `ui-navigation.md` for focus/menus/screen stacks |
+| Custom drawing, shaders, glyph effects, motion | `ui-advanced.md`, `ui-capabilities.md`, `ui-text-effects.md` as needed |
+| Content loading, teardown/reload problems | `ui-content-loading.md`, `lifecycle.md` |
+
+1. For new screens and substantial redesigns, set a concrete visual target and finish one representative polished screen before expanding. A new element on an existing screen follows the approved target and theme instead.
+2. Authored localized properties use native bindings with one writer (`localization.md`) when the change adds player-facing text.
+3. Check UI Builder, input, binding and lifecycle behavior; run the game and compare the result with the target, and keep refining.
+4. Update relevant project decisions and tests; no UI status report.

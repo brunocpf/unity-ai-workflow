@@ -6,7 +6,8 @@ Don't read this entire directory. References below are authoritative by subject;
 |---|---|---|
 | Skill delegation / provider conflicts | [Skill ownership](context-efficiency.md#skill-ownership) | Available client skill inventory |
 | Session start / resumption / context cost | [Context discipline](context-efficiency.md) | Current issue; optional continuation note |
-| Project setup / first slice | [Adoption](adoption.md), [architecture](architecture.md), [repository](repository.md), [toolchain](toolchain.md) | [Dependencies](dependencies.md), selected [profile](profiles.md) |
+| Project setup | [Setup checklist](setup-checklist.md) | Only the reference the checklist names for an open decision |
+| First playable slice | [Adoption](adoption.md#first-playable-slice), [architecture](architecture.md) | [Dependencies](dependencies.md), selected [profile](profiles.md) |
 | Unclear requirements / user choices | [Clarification](clarification.md) | [Dependencies](dependencies.md) for framework tradeoffs |
 | Languages / translated UI / locale testing | [Localization](localization.md) | [Binding](ui-binding.md), [text effects](ui-text-effects.md) |
 | Project standards / release | [Engineering baseline](engineering-baseline.md) | [Modules](modules.md), [reliability](reliability.md) |
