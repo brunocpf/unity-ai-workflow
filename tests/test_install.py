@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import os
 from pathlib import Path
 import shutil
 import tempfile
@@ -241,7 +242,8 @@ class InstallationTests(unittest.TestCase):
                      'tooling/quality/check.py', 'tooling/quality/CodeOrganization/Program.cs',
                      '.vscode/settings.json', 'tooling/ide/owned-projects.json', 'Assets/Game/Core/csc.rsp'):
             self.assertTrue((self.target / path).is_file(), path)
-        self.assertTrue((self.target / '.husky/pre-commit').stat().st_mode & 0o100)
+        if os.name != 'nt':  # Windows has no POSIX execute bit; Git records it separately.
+            self.assertTrue((self.target / '.husky/pre-commit').stat().st_mode & 0o100)
         self.assertIn('-langversion:9.0', (self.target / 'Assets/Game/Core/csc.rsp').read_text())
         again = installer.scaffold(self.target)
         self.assertEqual([], again['written'])
