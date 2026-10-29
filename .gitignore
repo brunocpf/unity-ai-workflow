@@ -8,6 +8,3 @@
 .env
 .env.*
 **/node_modules/
-
-# claude plugin eval output
-evals/results/

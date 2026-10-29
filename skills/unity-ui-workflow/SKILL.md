@@ -11,7 +11,7 @@ These rules apply to every UI change, whatever its size:
 
 - Display logic (formatting, ratios, enabled/busy/error/low states) lives in a pure Presentation ViewModel with no Unity references, covered by unit tests.
 - The Unity side is a mechanical binding adapter: it subscribes to ViewModel state, writes element properties and forwards input as commands. It never polls gameplay objects every frame or reaches into MonoBehaviours for data.
-- Layout lives in UXML and styling in USS beside the owning control or screen, not inline C# styles. Reuse the project's control/content library and theme tokens.
+- Layout lives in UXML and styling in USS beside the owning control or screen. Inline styles from C# are only for continuous per-instance runtime values such as a fill width or drag position (`ui-styling.md`); discrete states toggle USS classes. Reuse the project's control/content library and theme tokens.
 - One owner disposes each subscription, ViewModel and binding when the screen or control goes away.
 
 Size the reading to the task:

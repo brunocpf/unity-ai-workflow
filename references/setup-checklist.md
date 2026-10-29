@@ -4,7 +4,7 @@ The working list for setup scope. It condenses the setup references so that proj
 
 ## 1. Check the machine once
 
-Run `python3 <kit>/install.py doctor --target <game>` and follow its `guidance`. If it reports no Unity CLI or Editor, write the project files directly, skip Editor import/compile/test/build checks, and list the commands still to run in README.md. Don't search the machine for other editors, interpreters or caches.
+Run `python3 <kit>/install.py doctor --target <game>` and follow its `guidance`. If it reports no Unity CLI or Editor and the user hasn't named an Editor path, write the project files directly, skip Editor import/compile/test/build checks, and list the commands still to run in README.md. Don't search the disk for other editors, interpreters or caches.
 
 Ask only for missing product intent (target platforms, languages, unclear scope; see [clarification](clarification.md)). Continue with everything that doesn't depend on the answer.
 
@@ -16,7 +16,7 @@ python3 <kit>/install.py check --target <game>
 python3 <kit>/install.py scaffold --target <game> --profile csharp9
 ```
 
-`scaffold` places the EditorConfig, Git files, Husky hook, VS Code settings and the tooling/dotnet, tooling/ide and tooling/quality folders. Merge anything it lists under `merge` by hand. Use `--profile csharp14` only when the pinned Editor supports it ([language profiles](language-profiles.md)).
+`scaffold` places the EditorConfig, Git files, Husky hook, VS Code settings and the tooling/dotnet, tooling/ide and tooling/quality folders. Merge anything it lists under `merge` by hand. Use `--profile csharp14` only when the pinned Editor supports it ([language profiles](language-profiles.md)), then adopt its EditorConfig overlay as `next_steps` says.
 
 ## 3. Unity project and pins
 
@@ -39,7 +39,7 @@ Replace `Game` with the project's logical root namespace. Every owned asmdef use
 | Unity/Editor | Game.Editor (Editor only) | needed runtime assemblies |
 | Tests/EditMode, Tests/PlayMode | Game.Tests.EditMode / .PlayMode | the boundaries under test; `UNITY_INCLUDE_TESTS` |
 
-Create only the assemblies setup uses; add the rest with the first feature that needs them. Then rerun `scaffold` (it adds `csc.rsp` beside each new asmdef) and replace the sample names in tooling/ide/owned-projects.json and tooling/quality/coverage.json with the real ones. Include at least one real test, such as an architecture test that Core references no Unity assembly.
+Create only the assemblies setup uses; add the rest with the first feature that needs them. Then rerun `scaffold` (it adds `csc.rsp` beside each new asmdef, using the profile already recorded in tooling/ide/owned-projects.json) and replace the sample names in tooling/ide/owned-projects.json and tooling/quality/coverage.json with the real ones. Include at least one real test, such as an architecture test that Core references no Unity assembly.
 
 ## 5. Pure SDK build and hooks
 

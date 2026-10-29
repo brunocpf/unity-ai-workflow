@@ -283,15 +283,72 @@ class InstallationTests(unittest.TestCase):
         with self.assertRaises(installer.InstallError):
             installer.scaffold(self.target)
 
+    def test_scaffold_rerun_keeps_the_project_profile(self):
+        self.run_install()
+        (self.target / 'Assets/Game/Core').mkdir(parents=True)
+        (self.target / 'Assets/Game/Core/Game.Core.asmdef').write_text('{}')
+        installer.scaffold(self.target, 'csharp14')
+        (self.target / 'Assets/Game/Application').mkdir()
+        (self.target / 'Assets/Game/Application/Game.Application.asmdef').write_text('{}')
+        result = installer.scaffold(self.target)
+        self.assertEqual('csharp14', result['profile'])
+        self.assertEqual(['Assets/Game/Application/csc.rsp'], result['written'])
+        self.assertIn('-langversion:14.0', (self.target / 'Assets/Game/Application/csc.rsp').read_text())
+        self.assertTrue(any('csharp14.editorconfig' in step for step in result['next_steps']))
+        with self.assertRaises(installer.InstallError):
+            installer.scaffold(self.target, 'csharp9')
+
+    @unittest.skipIf(os.name == 'nt', 'Windows has no POSIX execute bit')
+    def test_scaffold_repairs_hook_executable_bit(self):
+        self.run_install()
+        installer.scaffold(self.target)
+        hook = self.target / '.husky/pre-commit'
+        hook.chmod(0o644)
+        result = installer.scaffold(self.target)
+        self.assertIn('.husky/pre-commit', result['unchanged'])
+        self.assertTrue(hook.stat().st_mode & 0o100)
+
+    def test_scaffold_reports_unusable_destination_and_continues(self):
+        self.run_install()
+        elsewhere = self.base / 'shared-vscode'
+        elsewhere.mkdir()
+        try:
+            (self.target / '.vscode').symlink_to(elsewhere, target_is_directory=True)
+        except OSError:
+            self.skipTest('Symlinks need extra privileges on this platform')
+        result = installer.scaffold(self.target)
+        self.assertEqual({'.vscode/settings.json', '.vscode/extensions.json', '.vscode/tasks.json'}, set(result['failed']))
+        self.assertEqual([], list(elsewhere.iterdir()))
+        self.assertTrue((self.target / 'tooling/quality/check.py').is_file())
+
     def test_doctor_reports_gaps_without_unity(self):
         with patch.object(installer, 'probe', return_value=None), \
                 patch.object(installer, 'reachable', return_value=False), \
-                patch.object(installer.Path, 'is_dir', return_value=False):
+                patch.object(installer, 'hub_editor_folders', return_value=[]), \
+                patch.dict(installer.os.environ, {'UNITY_EDITOR': ''}):
             result = installer.doctor()
         self.assertIsNone(result['tools']['unity_cli'])
         self.assertEqual([], result['tools']['hub_editors'])
         self.assertTrue(any('No Unity CLI' in g for g in result['guidance']))
         self.assertTrue(any('No dotnet' in g for g in result['guidance']))
+        self.assertTrue(any('did not answer' in g for g in result['guidance']))
+
+    def test_doctor_finds_custom_hub_location_and_flags_certificate_errors(self):
+        home = self.base / 'home'
+        custom = self.base / 'D-drive/Unity'
+        (custom / '6000.7.0b3').mkdir(parents=True)
+        config = home / '.config/UnityHub'
+        config.mkdir(parents=True)
+        (config / 'secondaryInstallPath.json').write_text(json.dumps(str(custom)))
+        with patch.object(installer, 'probe', return_value=None), \
+                patch.object(installer, 'reachable', return_value='certificate-error'), \
+                patch.object(installer.Path, 'home', return_value=home), \
+                patch.dict(installer.os.environ, {'UNITY_EDITOR': '', 'APPDATA': ''}):
+            result = installer.doctor()
+        self.assertIn('6000.7.0b3', result['tools']['hub_editors'])
+        self.assertFalse(any('No Unity CLI' in g for g in result['guidance']))
+        self.assertTrue(any('TLS certificates' in g for g in result['guidance']))
+        self.assertFalse(any('did not answer' in g for g in result['guidance']))
 
     def test_lock_prevents_writes(self):
         self.run_install()

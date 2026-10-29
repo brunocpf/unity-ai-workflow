@@ -1,6 +1,0 @@
-{
-  "name": "Skyforge",
-  "rootNamespace": "Skyforge",
-  "references": ["Unity.InputSystem"],
-  "autoReferenced": true
-}

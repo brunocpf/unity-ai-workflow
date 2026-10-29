@@ -20,7 +20,7 @@ python3 install.py scaffold --target /path/to/game --dry-run
 python3 install.py scaffold --target /path/to/game --profile csharp9
 ```
 
-`doctor` reports Python, Git, Git LFS, dotnet, the Unity CLI, Hub editors and package-host reachability in one call, with guidance for anything missing. `scaffold` copies the fixed-destination starter files (EditorConfig, Git attributes/ignore, Husky hook, VS Code settings, tooling/dotnet, tooling/ide, tooling/quality) and a `csc.rsp` beside each asmdef under Assets/Game. It never overwrites: files that already exist with different content are listed under `merge`. These copies are project-owned, not installer-managed; rerun `scaffold` after adding asmdefs. Choose `csharp14` only when the pinned Editor supports it ([language profiles](references/language-profiles.md)).
+`doctor` reports Python, Git, Git LFS, dotnet, the Unity CLI, Hub editors and package-host reachability in one call, with guidance for anything missing. `scaffold` copies the fixed-destination starter files (EditorConfig, Git attributes/ignore, Husky hook, VS Code settings, tooling/dotnet, tooling/ide, tooling/quality) and a `csc.rsp` beside each asmdef under Assets/Game. It never overwrites: files that already exist with different content are listed under `merge`. These copies are project-owned, not installer-managed; rerun `scaffold` after adding asmdefs. Without `--profile`, reruns reuse the profile recorded in tooling/ide/owned-projects.json (else `csharp9`) and refuse a conflicting one. Choose `csharp14` only when the pinned Editor supports it ([language profiles](references/language-profiles.md)).
 
 ## Global entrypoints
 
