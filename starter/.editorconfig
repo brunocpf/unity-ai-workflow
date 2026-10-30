@@ -37,7 +37,9 @@ csharp_indent_case_contents_when_block = false
 csharp_indent_switch_labels = true
 csharp_indent_labels = one_less_than_current
 csharp_preserve_single_line_statements = false
-csharp_preserve_single_line_blocks = false
+# true keeps auto-properties ({ get; init; }) on one line; false makes dotnet format (IDE0055) expand them.
+# CodeOrganization ORG003 still rejects compressed statement blocks.
+csharp_preserve_single_line_blocks = true
 csharp_prefer_braces = true:warning
 csharp_space_after_keywords_in_control_flow_statements = true
 csharp_space_after_cast = false

@@ -97,8 +97,11 @@ def main():
     file_list = root / 'artifacts/quality/organization-files.json'
     file_list.parent.mkdir(parents=True, exist_ok=True)
     file_list.write_text(json.dumps([str(path) for path in files]))
+    # File-scoped namespaces (C# 10+) are mandatory once the project leaves the C# 9 profile.
+    major = profile['languageVersion'].split('.')[0]
+    namespaces = ['--file-scoped-namespaces'] if major.isdigit() and int(major) >= 10 else []
     run(['dotnet', 'run', '--project', str(root / config['organizationProject']), '--configuration', 'Release',
-         '--no-restore', '--', str(file_list), *config['syntaxSymbols']], 'Code organization')
+         '--no-restore', '--', str(file_list), *namespaces, *config['syntaxSymbols']], 'Code organization')
 
     for solution, covered in [(unity_solution, unity_files), (sdk_solution, sdk_files)]:
         included = sorted(selected & covered)

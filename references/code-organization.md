@@ -10,7 +10,7 @@ Formatting, code organization, analyzers and compilation each catch different pr
 - Keep multi-property object configuration multiline. Wrap long parameter/argument lists (the supplied check uses 120 columns). Break long fluent chains and complex expressions at meaningful boundaries; don't split string literals or URLs just to hit a width. Formatting doesn't replace readability review.
 - Logical namespaces follow the owning module, not every Assets/Unity directory segment. See [IDE setup](ide.md). Vendor and generated source keep their own organization.
 
-[CodeOrganization](../starter/quality/CodeOrganization/Program.cs) uses Roslyn's parser, not regular expressions. It checks top-level types (including delegates and file-scoped namespaces), filename/partial naming, compressed statements, member spacing and long list/configuration layout. It is read-only and fails on syntax errors. It is not a compiler or formatter and never rewrites files.
+[CodeOrganization](../starter/quality/CodeOrganization/Program.cs) uses Roslyn's parser, not regular expressions. It checks top-level types (including delegates and file-scoped namespaces), filename/partial naming, compressed statements, member spacing, long list/configuration layout and, under a C# 10+ profile, block namespaces (ORG006). It is read-only and fails on syntax errors. It is not a compiler or formatter and never rewrites files.
 
 ## The quality check
 
