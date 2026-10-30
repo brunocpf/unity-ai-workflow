@@ -1,9 +1,22 @@
 # Merge into the root owned-code section only after selecting the validated modern profile.
+# Replace the block_scoped namespace line. A ":warning" suffix alone is not enforced by builds or
+# dotnet format, so the matching IDE diagnostics below are set explicitly (warnings fail builds).
 [{Assets/Game,tooling}/**/*.cs]
 csharp_style_namespace_declarations = file_scoped:warning
 csharp_style_prefer_primary_constructors = true:suggestion
-dotnet_style_prefer_collection_expression = true:suggestion
+dotnet_style_prefer_collection_expression = when_types_loosely_match:warning
 csharp_style_prefer_utf8_string_literals = true:suggestion
 csharp_style_prefer_readonly_struct = true:suggestion
 csharp_style_prefer_readonly_struct_member = true:suggestion
 csharp_style_prefer_extended_property_pattern = true:suggestion
+
+# File-scoped namespaces (CodeOrganization ORG006 checks the same rule).
+dotnet_diagnostic.IDE0161.severity = warning
+# Collection expressions for initializers, arrays, empty collections, stack allocs, builders and fluent ToX() calls.
+dotnet_diagnostic.IDE0028.severity = warning
+dotnet_diagnostic.IDE0300.severity = warning
+dotnet_diagnostic.IDE0301.severity = warning
+dotnet_diagnostic.IDE0302.severity = warning
+dotnet_diagnostic.IDE0303.severity = warning
+dotnet_diagnostic.IDE0304.severity = warning
+dotnet_diagnostic.IDE0305.severity = warning

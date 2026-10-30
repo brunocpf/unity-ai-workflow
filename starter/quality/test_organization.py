@@ -38,15 +38,22 @@ def main():
         ('configuration', 'Widget.cs', 'public class Widget\n{\n    public object A() => new Thing { X = 1, Y = 2 };\n}\n', 'ORG005'),
         ('parameters', 'Widget.cs', 'public class Widget\n{\n    public Widget(string veryLongArgumentNameOne, string veryLongArgumentNameTwo, string veryLongArgumentNameThree, string veryLongArgumentNameFour) {}\n}\n', 'ORG005'),
         ('syntax', 'Widget.cs', 'public class Widget {', 'error CS'),
+        # C# 14 profile: check.py passes --file-scoped-namespaces.
+        ('block namespace', 'Widget.cs', good, 'ORG006', ['--file-scoped-namespaces']),
+        ('file scoped profile', 'Widget.cs', 'namespace Example;\n\npublic class Widget\n{\n    public int Value { get; init; }\n}\n',
+            None, ['--file-scoped-namespaces', 'UNITY_EDITOR']),
+        ('C# 14 syntax', 'Widget.cs',
+            'namespace Example;\n\npublic static class Widget\n{\n    extension(string s)\n    {\n        public int Twice => s.Length * 2;\n    }\n}\n',
+            None, ['--file-scoped-namespaces']),
     ]
     with tempfile.TemporaryDirectory(prefix='organization-tests-') as directory:
         scratch = Path(directory)
         file_list = scratch / 'files.json'
-        for name, filename, source, diagnostic in cases:
+        for name, filename, source, diagnostic, *options in cases:
             file = scratch / filename
             file.write_text(source)
             file_list.write_text(json.dumps([str(file)]))
-            result = subprocess.run(['dotnet', str(checker), str(file_list)], cwd=root,
+            result = subprocess.run(['dotnet', str(checker), str(file_list), *(options[0] if options else [])], cwd=root,
                                     capture_output=True, text=True)
             output = result.stdout + result.stderr
             expected = 1 if diagnostic else 0

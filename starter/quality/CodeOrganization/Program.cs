@@ -15,19 +15,25 @@ namespace Workflow.Tooling
         {
             if (args.Length < 1)
             {
-                Console.Error.WriteLine("Usage: CodeOrganization files.json [preprocessor symbols ...]");
+                Console.Error.WriteLine(
+                    "Usage: CodeOrganization files.json [--file-scoped-namespaces] [preprocessor symbols ...]");
                 return 2;
             }
 
-            string[] files = JsonSerializer.Deserialize<string[]>(File.ReadAllText(args[0])) ?? Array.Empty<string>();
-            if (files.Length == 0)
+            // No collection expressions, so one source builds under both profiles; scaffold rewrites the namespace.
+            string[]? files = JsonSerializer.Deserialize<string[]>(File.ReadAllText(args[0]));
+            if (files == null || files.Length == 0)
             {
                 Console.Error.WriteLine("No source files selected.");
                 return 2;
             }
 
             int failures = 0;
-            var options = new CSharpParseOptions(LanguageVersion.Preview, preprocessorSymbols: args.Skip(1));
+            // check.py passes the flag when the project's language profile uses file-scoped namespaces.
+            const string FileScopedFlag = "--file-scoped-namespaces";
+            bool fileScoped = args.Skip(1).Contains(FileScopedFlag);
+            var symbols = args.Skip(1).Where(arg => arg != FileScopedFlag);
+            var options = new CSharpParseOptions(LanguageVersion.Preview, preprocessorSymbols: symbols);
             foreach (string file in files.Distinct(StringComparer.Ordinal))
             {
                 string source = File.ReadAllText(file);
@@ -45,6 +51,14 @@ namespace Workflow.Tooling
                 {
                     Console.Error.WriteLine(error.ToString());
                     failures++;
+                }
+
+                if (fileScoped)
+                {
+                    foreach (var block in root.DescendantNodes().OfType<NamespaceDeclarationSyntax>())
+                    {
+                        Report(block, "ORG006", "Use a file-scoped namespace (namespace X;), not a block namespace.");
+                    }
                 }
 
                 var types = root.DescendantNodes().OfType<MemberDeclarationSyntax>()

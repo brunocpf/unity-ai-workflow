@@ -356,6 +356,20 @@ SCAFFOLD_NEXT = [
 ]
 CSHARP14_NEXT = 'Adopt docs/standards/starter/language-profiles/csharp14.editorconfig into the owned-code section of .editorconfig.'
 
+# The checker is written as C# 9 with one block namespace; later profiles get the file-scoped form (ORG006).
+FILE_SCOPED_STARTERS = ('tooling/quality/CodeOrganization/Program.cs',)
+
+
+def file_scoped(source):
+    """Rewrite a single top-level block namespace as file-scoped, dedenting its body one level."""
+    lines = source.decode().split('\n')
+    start = next(i for i, line in enumerate(lines) if line.startswith('namespace '))
+    end = max(i for i, line in enumerate(lines) if line == '}')
+    if lines[start + 1] != '{':
+        raise InstallError('Starter namespace layout changed; update file_scoped()')
+    body = [line[4:] if line.startswith('    ') else line for line in lines[start + 2:end]]
+    return '\n'.join(lines[:start] + [lines[start] + ';', ''] + body + lines[end + 1:]).encode()
+
 
 def project_profile(root):
     # The profile a scaffolded project already uses, so reruns never mix language versions.
@@ -398,6 +412,8 @@ def scaffold(root, profile=None, dry_run=False):
             b'>9.0</LangVersion>', f'>{language}</LangVersion>'.encode())
         plan['tooling/ide/owned-projects.json'] = plan['tooling/ide/owned-projects.json'].replace(
             b'"languageVersion": "9.0"', f'"languageVersion": "{language}"'.encode())
+        for relative in FILE_SCOPED_STARTERS:
+            plan[relative] = file_scoped(plan[relative])
     owned = root / 'Assets/Game'
     for asmdef in sorted(owned.rglob('*.asmdef')) if owned.is_dir() else []:
         plan[(asmdef.parent / 'csc.rsp').relative_to(root).as_posix()] = (starter / rsp).read_bytes()

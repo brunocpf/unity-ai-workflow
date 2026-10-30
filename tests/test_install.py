@@ -245,6 +245,8 @@ class InstallationTests(unittest.TestCase):
         if os.name != 'nt':  # Windows has no POSIX execute bit; Git records it separately.
             self.assertTrue((self.target / '.husky/pre-commit').stat().st_mode & 0o100)
         self.assertIn('-langversion:9.0', (self.target / 'Assets/Game/Core/csc.rsp').read_text())
+        self.assertIn('namespace Workflow.Tooling\n{',
+                      (self.target / 'tooling/quality/CodeOrganization/Program.cs').read_text())
         again = installer.scaffold(self.target)
         self.assertEqual([], again['written'])
         self.assertEqual(['.gitignore'], again['merge'])
@@ -261,6 +263,11 @@ class InstallationTests(unittest.TestCase):
         self.assertIn('-langversion:14.0', (self.target / 'Assets/Game/Core/csc.rsp').read_text())
         self.assertIn('>14.0</LangVersion>', (self.target / 'tooling/dotnet/Directory.Build.props').read_text())
         self.assertIn('"14.0"', (self.target / 'tooling/ide/owned-projects.json').read_text())
+        # The checker itself must pass ORG006/IDE0161 under the file-scoped profile.
+        checker = (self.target / 'tooling/quality/CodeOrganization/Program.cs').read_text()
+        self.assertIn('namespace Workflow.Tooling;\n\ninternal static class Program\n{\n    //', checker)
+        self.assertNotIn('\n        private static int Main', checker)
+        self.assertTrue(checker.endswith('}\n'))
 
     def test_scaffold_reports_unwritable_files_and_continues(self):
         self.run_install()
